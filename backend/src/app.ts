@@ -1,10 +1,12 @@
 import express from "express";
+import { routerComps } from "./routes/competitions";
 
 const app = express();
 
 app.use(express.json());
 
 //routes
+app.use('/api/v1/competitions', routerComps);
 
 app.use((req, res) => {
     res.status(404).json({
