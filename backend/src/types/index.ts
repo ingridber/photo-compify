@@ -8,6 +8,7 @@ export interface InterfaceUser {
 };
 
 export interface CompetitionInterface {
+    id: number;
     owner: string;
     title: string;
     logoBanner?: string;
