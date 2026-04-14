@@ -1,8 +1,7 @@
 import { CompetitionInterface } from "../types/index";
 import { Request, Response } from "express";
 
-
-const mockCompetitions: CompetitionInterface[] = [
+let mockCompetitions: CompetitionInterface[] = [
     {
         id: 1,
         owner: "alice_dev",
@@ -168,7 +167,6 @@ export function updateCompetition(req: Request, res: Response) {
         })
     };
 
-    console.log(req.body);
     const {title, description, themes} = req.body;
 
     // ----- INPUT VALIDATION -----
@@ -200,4 +198,25 @@ export function updateCompetition(req: Request, res: Response) {
         message: 'Update successful',
         status: 200,
     });
+};
+
+// --------------------------------------
+// --------- DELETE COMPETITION ---------
+// --------------------------------------
+export function deleteCompetition(req: Request, res: Response) {
+    //@ts-ignore
+    const id = parseInt(req.params.id); // ID kommer ändras senare till string
+    const competition = mockCompetitions.find( comp => comp.id === id);
+
+    if (!competition) {
+        return res.status(404).json({
+            code: 'COMPETITION_NOT_FOUND',
+            message: 'The requested competition was not found',
+            status: 404
+        })
+    };
+
+    mockCompetitions = mockCompetitions.filter(c => c.id !== id)
+
+    res.status(204).send();
 };
