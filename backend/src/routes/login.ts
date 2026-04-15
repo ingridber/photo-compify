@@ -2,6 +2,6 @@ import express from "express";
 
 const routerLogIn = express.Router();
 
-routerLogIn.post('/');
+//routerLogIn.post('/');
 
 export {routerLogIn};

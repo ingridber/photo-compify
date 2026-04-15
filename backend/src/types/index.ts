@@ -1,9 +1,11 @@
-export interface InterfaceUser {
+import {Document} from "mongoose";
+
+export interface InterfaceUser extends Document {
     name: string;
     email?: string;
     username: string;
     password: string;
-    profilePicture: ImageInterface;
+    profilePicture?: ImageInterface;
     warnings: number;
 };
 
