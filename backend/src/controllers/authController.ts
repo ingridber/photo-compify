@@ -44,3 +44,49 @@ export async function register(req: Request, res: Response): Promise<Response> {
         data: user.email
     });
 };
+
+// --------------------------------------
+// ---------- LOGIN CONTROLLER ----------
+// --------------------------------------
+export async function login(req: Request, res: Response): Promise<Response> {
+    const {username, password} = req.body;
+
+    // ---------- KONTROLLERA INPUT ----------
+    // ---------------------------------------
+    if (!username || !password){
+        return res.status(400).json({
+            code: "MISSING_CREDENTIALS",
+            message: "Username and password are required",
+            status: 400
+        });
+    };
+
+    const user = await User.findOne({ username });
+    const dummyHash = "ijklmnopqrstuv$2b$10$abcdefgh"
+    const hashToCheck = user ? user.password : dummyHash;
+    const valid = await bcrypt.compare(password, hashToCheck);
+
+    // ---------- KONTROLLERA ANVÄNDARE FINNS OCH LÖSENORD MATCHAR ----------
+    // ----------------------------------------------------------------------
+    if(!user || !valid) {
+        return res.status(401).json({
+            code: "INVALID_CREDENTIALS",
+            message: "Invalid credentials, email or password is incorrect",
+            status: 401
+        });
+    };
+
+    // ---------- SKAPA TOKEN ----------
+    // ---------------------------------
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN } as any);
+
+    // ---------- SPARA TOKEN ----------
+    // ---------------------------------
+    res.cookie("token", token, { httpOnly: true, secure: NODE_ENV === "production", sameSite: "strict" })
+
+    return res.status(200).json({
+        code: "LOGIN_SUCCESS",
+        message: "Login successful",
+        status: 200
+    });
+};

@@ -2,7 +2,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import { routerComps } from "./routes/competitions";
 import imagesRoutes from "./routes/images";
-import { routerLogIn } from "./routes/login";
+import { routerProfile } from "./routes/profile";
 import { authRouter } from "./routes/auth";
 import { errorHandler } from "./middleware/errorHandler";
 
@@ -13,9 +13,9 @@ app.use(cookieParser());
 
 //routes
 app.use('/api/v1/competitions', routerComps);
-app.use('/api/v1/login', routerLogIn);
 app.use('/api/v1/auth', authRouter);
 app.use("/api/v1/images", imagesRoutes);
+app.use("/api/v1/user", routerProfile);
 
 
 app.use((req, res) => {
