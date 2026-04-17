@@ -49,6 +49,7 @@ export async function register(req: Request, res: Response): Promise<Response> {
 // ---------- LOGIN CONTROLLER ----------
 // --------------------------------------
 export async function login(req: Request, res: Response): Promise<Response> {
+    // Get username and password
     const {username, password} = req.body;
 
     // ---------- KONTROLLERA INPUT ----------
@@ -61,14 +62,40 @@ export async function login(req: Request, res: Response): Promise<Response> {
         });
     };
 
+    // Get user from db
     const user = await User.findOne({ username });
+
+    // ---------- KONTROLLERA KONTOT LÅST? ----------
+    // ----------------------------------------------
+    if(user?.lockUntil && user.lockUntil > new Date()) {
+        return res.status(423).json({
+            code: "ACCOUNT_LOCKED",
+            message: "Too many failed logins, try again in 1h",
+            status: 423
+        });
+    };
+
     const dummyHash = "ijklmnopqrstuv$2b$10$abcdefgh"
     const hashToCheck = user ? user.password : dummyHash;
     const valid = await bcrypt.compare(password, hashToCheck);
 
     // ---------- KONTROLLERA ANVÄNDARE FINNS OCH LÖSENORD MATCHAR ----------
+    // ---------------- LOGGA MISSLYCKADE INLOGGNINGSFÖRSÖK -----------------
     // ----------------------------------------------------------------------
     if(!user || !valid) {
+        // ---------- Logga misslyckade inloggningsförsök ----------
+        if (user) {
+            user.loginAttempts++;
+
+            if (user.loginAttempts >= 5){
+                user.lockUntil = new Date(Date.now() + 60 * 60 * 1000);
+                // user.lockUntil = new Date(Date.now() + 2 * 60 * 1000)
+                user.loginAttempts = 0;
+            };
+
+            await user.save();
+        };
+
         return res.status(401).json({
             code: "INVALID_CREDENTIALS",
             message: "Invalid credentials, email or password is incorrect",
@@ -83,6 +110,11 @@ export async function login(req: Request, res: Response): Promise<Response> {
     // ---------- SPARA TOKEN ----------
     // ---------------------------------
     res.cookie("token", token, { httpOnly: true, secure: NODE_ENV === "production", sameSite: "strict" })
+
+    // ---------- RESET attempts och datum vid SUCCESS ----------
+    user.loginAttempts = 0;
+    user.lockUntil = undefined;
+    await user.save();
 
     return res.status(200).json({
         code: "LOGIN_SUCCESS",
