@@ -7,6 +7,8 @@ export interface InterfaceUser extends Document {
     password: string;
     profilePicture?: ImageInterface;
     warnings: number;
+    loginAttempts: number;
+    lockUntil: Date | undefined;
 };
 
 export interface CompetitionInterface {
