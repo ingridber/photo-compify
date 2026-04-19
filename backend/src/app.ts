@@ -5,6 +5,8 @@ import imagesRoutes from "./routes/images";
 import { routerProfile } from "./routes/profile";
 import { authRouter } from "./routes/auth";
 import { errorHandler } from "./middleware/errorHandler";
+import { competitionsRateLimit } from "./middleware/rateLimiter";
+
 
 const app = express();
 
@@ -12,7 +14,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 //routes
-app.use('/api/v1/competitions', routerComps);
+app.use('/api/v1/competitions', competitionsRateLimit, routerComps);
 app.use('/api/v1/auth', authRouter);
 app.use("/api/v1/images", imagesRoutes);
 app.use("/api/v1/user", routerProfile);
