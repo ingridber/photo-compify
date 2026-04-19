@@ -220,3 +220,41 @@ export function deleteCompetition(req: Request, res: Response) {
 
     res.status(204).send();
 };
+
+// ----------------------------------------------------
+// --------- ACTIVE & HISTORICAL COMPETITIONS ---------
+// ----------------------------------------------------
+export const searchCompetitions = (req: Request, res: Response) => {
+    const search = req.query.search as string | undefined
+
+    let filteredCompetitions: CompetitionInterface[] = mockCompetitions
+
+    // Search by title or owner
+    if (search) {
+        const searchLower = search.toLowerCase()
+
+        filteredCompetitions = filteredCompetitions.filter(c =>
+            c.title.toLowerCase().includes(searchLower) ||
+            c.owner.toLowerCase().includes(searchLower)
+        )
+    }
+
+    // Active competitions
+    const activeCompetitions = filteredCompetitions
+        .filter(c => c.phase !== "ended")
+        .sort((a, b) =>
+            new Date(a.endDate).getTime() - new Date(b.endDate).getTime()
+        )
+
+    // Historical competitions
+    const historicalCompetitions = filteredCompetitions
+        .filter(c => c.phase === "ended")
+        .sort((a, b) =>
+            new Date(b.endDate).getTime() - new Date(a.endDate).getTime()
+        )
+
+    res.json({
+        activeCompetitions,
+        historicalCompetitions
+    })
+}
