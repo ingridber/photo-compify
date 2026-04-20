@@ -13,7 +13,7 @@ export async function login(email: string, password: string) {
     const data = await res.json();
 
     if(!res.ok) {
-        throw new Error(`Status: ${data.status} Code: ${data.code} Message: ${data.message}`);
+        throw new Error(data.message);
     };
 
     return data;
