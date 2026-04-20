@@ -130,6 +130,7 @@ export async function login(req: Request, res: Response): Promise<Response> {
     return res.status(200).json({
         code: "LOGIN_SUCCESS",
         message: "Login successful",
-        status: 200
+        status: 200,
+        username: user.username,
     });
 };
