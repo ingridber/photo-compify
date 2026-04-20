@@ -47,10 +47,6 @@ export async function register(req: Request, res: Response): Promise<Response> {
     });
     await user.save();
 
-    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN } as any);
-
-    res.cookie("token", token, { httpOnly: true, secure: NODE_ENV === "production", sameSite: "strict" })
-
     return res.status(201).json({
         data: user.username
     });
