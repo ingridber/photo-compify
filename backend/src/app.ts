@@ -6,12 +6,18 @@ import { routerProfile } from "./routes/profile";
 import { authRouter } from "./routes/auth";
 import { errorHandler } from "./middleware/errorHandler";
 import { competitionsRateLimit } from "./middleware/rateLimiter";
+import cors from "cors";
 
 
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors({
+    origin: 'http://localhost:5173', // Tillåt bara vår frontend
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 //routes
 app.use('/api/v1/competitions', competitionsRateLimit, routerComps);
