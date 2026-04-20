@@ -9,10 +9,12 @@ export async function login(email: string, password: string) {
         body: JSON.stringify({username: email, password: password})
     });
 
+    const data = await res.json();
+
     if(!res.ok) {
-        throw new Error('Login failed');
+        throw new Error(`Status: ${data.status} Code: ${data.code} Message: ${data.message}`);
     };
 
-    return res.json();
+    return data;
     
 };
