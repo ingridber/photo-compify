@@ -2,6 +2,7 @@ import {Request, Response} from "express";
 import {User} from "../models/User";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import verifyPassword from "../utils/passwordVerifier";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
@@ -15,6 +16,13 @@ export async function register(req: Request, res: Response): Promise<Response> {
     if (!password || password.length > 128 || password.length < 8) {
         return res.status(400).json({
             message: "password must be between 8 and 128 charachters",
+            code: "BAD_PASSWORD"
+        });
+    };
+
+    if (!verifyPassword(password)) {
+        return res.status(400).json({
+            message: "password must include at least one capital letter, one number and one symbol",
             code: "BAD_PASSWORD"
         });
     };
