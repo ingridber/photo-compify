@@ -5,10 +5,12 @@ export function Home() {
 
     return (
         <div>
-            
             <nav>
                 <Link to="/login">
                     <button>Sign In</button>
+                </Link>
+                <Link to="/register">
+                    <button>Register user</button>
                 </Link>
             </nav>
 
