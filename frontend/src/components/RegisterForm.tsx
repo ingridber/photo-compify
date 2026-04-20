@@ -121,7 +121,6 @@ export default function RegisterForm() {
                 {errors.confirmPassword && <small style={{ color: "red" }}>{errors.confirmPassword}</small>}
             </label>
             <button type="submit">Register</button>
-            {success && <p style={{ color: "green" }}>Account created! You can now log in.</p>}
         </form>
     );
 }
