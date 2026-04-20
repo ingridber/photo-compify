@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState} from "react";
 import { login } from "../services/api";
 
 export function SignInForm() {
@@ -11,15 +11,19 @@ export function SignInForm() {
 
         try {
             const data = await login(email, password);
-            console.log("Inloggad: " + data.username)
+            console.log(`${data.code} User: ${data.username}`)
+            setEmail('');
+            setPassword('');
+
         } catch (err) {
-            console.log(`Failed login, error: ${err}`);
+            console.log(`${err}`);
         };
+
+
     };
 
     return (
         <>
-            {/* <form action=""> */}
             <form onSubmit={handleSubmit}>
                 <label htmlFor="username">Enter username (email)</label>
                 <input 
