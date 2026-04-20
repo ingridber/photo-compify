@@ -1,11 +1,11 @@
-import { LoginForm } from "../components/LoginForm";
+import { SignInForm } from "../components/LoginForm";
 import { Link } from "react-router";
 
-export function Login() {
+export function SignIn() {
     return (
         <div>
             <h2>Sign In</h2>
-            <LoginForm/>
+            <SignInForm/>
 
             <Link to="/">
                 <button>Back</button>
