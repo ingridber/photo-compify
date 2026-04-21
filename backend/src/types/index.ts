@@ -36,8 +36,17 @@ export interface CompetitionSubmissionInterface {
     uploadedAt: string;
 };
 
+// export interface ImageInterface {
+//     url: string;
+//     uploadedBy: string;
+//     uploadedAt: string;
+// };
+
 export interface ImageInterface {
     url: string;
     uploadedBy: string;
-    uploadedAt: string;
+    filename: string;
+    fileSize: number;
+    fileFormat: string;
+    uploadedAt: Date;
 };
