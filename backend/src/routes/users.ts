@@ -1,3 +1,4 @@
+import express, { Request, Response } from "express";
 import { 
     changeUsername, 
     changePassword, 
@@ -6,11 +7,11 @@ import {
     changeProfilePicture 
 } from "../controllers/usersControllers";
 import { authenticateToken } from "../middleware/auth";
-import express from "express";
+
 
 const routerUser = express.Router();
 
-routerUser.get("/profile", authenticateToken, (req, res) => {
+routerUser.get("/profile", authenticateToken, (req: Request, res: Response) => {
     res.json({
         message: "Authenticated",
         user: (req as any).user

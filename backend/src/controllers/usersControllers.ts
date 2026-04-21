@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import bcrypt from "bcrypt";
+import bcrypt = require("bcrypt");
 import { User } from "../models/User";
 import verifyPassword from "../utils/passwordVerifier";
 
