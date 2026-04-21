@@ -5,7 +5,7 @@ import imagesRoutes from "./routes/images";
 import { routerProfile } from "./routes/profile";
 import { authRouter } from "./routes/auth";
 import { errorHandler } from "./middleware/errorHandler";
-import { competitionsRateLimit } from "./middleware/rateLimiter";
+import { RateLimit } from "./middleware/rateLimiter";
 import cors from "cors";
 
 
@@ -13,6 +13,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(RateLimit);
 app.use(cors({
     origin: 'http://localhost:5173', // Tillåt bara vår frontend
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
@@ -20,7 +21,7 @@ app.use(cors({
 }));
 
 //routes
-app.use('/api/v1/competitions', competitionsRateLimit, routerComps);
+app.use('/api/v1/competitions', routerComps);
 app.use('/api/v1/auth', authRouter);
 app.use("/api/v1/images", imagesRoutes);
 app.use("/api/v1/user", routerProfile);
