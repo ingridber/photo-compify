@@ -1,12 +1,26 @@
-import { changeUsername, changePassword, logout, deleteUser, changeProfilePicture } from "../controllers/usersControllers";
+import { 
+    changeUsername, 
+    changePassword, 
+    logout, 
+    deleteUser, 
+    changeProfilePicture 
+} from "../controllers/usersControllers";
+import { authenticateToken } from "../middleware/auth";
 import express from "express";
 
-const routerUser = express.Router()
+const routerUser = express.Router();
 
-routerUser.patch(`/username`, changeUsername);
-routerUser.patch(`/password`, changePassword);
-routerUser.patch('/profilepicture', changeProfilePicture);
-routerUser.post(`/logout`, logout);
-routerUser.delete(`/`, deleteUser);
+routerUser.get("/profile", authenticateToken, (req, res) => {
+    res.json({
+        message: "Authenticated",
+        user: (req as any).user
+    });
+});
 
-export {routerUser};
+routerUser.patch('/username', authenticateToken, changeUsername);
+routerUser.patch('/password', authenticateToken, changePassword);
+routerUser.patch('/profilepicture', authenticateToken, changeProfilePicture);
+routerUser.post('/logout', logout);
+routerUser.delete('/', authenticateToken, deleteUser);
+
+export { routerUser };

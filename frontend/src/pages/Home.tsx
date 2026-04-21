@@ -1,8 +1,6 @@
 import { Link } from "react-router";
 
-
 export function Home() {
-
     return (
         <div>
             <nav>
@@ -11,6 +9,9 @@ export function Home() {
                 </Link>
                 <Link to="/register">
                     <button>Register user</button>
+                </Link>
+                <Link to="/edit-profile">
+                    <button>Edit Profile</button>
                 </Link>
             </nav>
 
