@@ -1,4 +1,5 @@
 import {Document, Types} from "mongoose";
+import { Request } from "express";
 
 export interface InterfaceUser extends Document {
     name: string;
@@ -46,3 +47,9 @@ export interface ImageInterface {
     fileFormat: string;
     uploadedAt: Date;
 };
+
+export interface AuthRequest extends Request {
+    user?: {
+        id: string
+    }
+}
