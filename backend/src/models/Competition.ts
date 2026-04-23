@@ -21,7 +21,7 @@ competitionSchema.pre("save", function() {
         const start = this.startDate ?? new Date();
         if (!this.startDate) this.startDate = start;
         if (!this.votingStartDate) this.votingStartDate = new Date(start.getTime() + 5 * MS_PER_DAY);
-        if (!this.endDate) this.endDate = new Date(start.getTime() + 5 * MS_PER_DAY);
+        if (!this.endDate) this.endDate = new Date(start.getTime() + 7 * MS_PER_DAY);
     }
 });
 

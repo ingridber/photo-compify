@@ -38,9 +38,9 @@ export function getCompetitionById(req: Request, res: Response) {
 // --------- CREATE COMPETITION ---------
 // --------------------------------------
 export async function createCompetition(req: AuthRequest, res: Response) {
-    const { userId, title, description, themes } = req.body;
+    const { title, description, themes } = req.body;
 
-    if (!userId || !title || !description || !themes) {
+    if (!title || !description || !themes) {
         return res.status(400).json({
             code: 'MISSING_DATA',
             message: 'One or more required fields are missing',
