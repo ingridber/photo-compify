@@ -1,30 +1,27 @@
-import {Document} from "mongoose";
+import {Document, Types} from "mongoose";
+import { Request } from "express";
 
 export interface InterfaceUser extends Document {
     name: string;
     email?: string;
     username: string;
     password: string;
-    profilePicture?: ImageInterface;
+    profilePicture?: string;
     warnings: number;
     loginAttempts: number;
     lockUntil: Date | undefined;
 };
 
-export interface CompetitionInterface {
-    id: number;
-    owner: string;
+export interface CompetitionInterface extends Document {
+    owner: Types.ObjectId;
     title: string;
     logoBanner?: string;
     description: string;
     themes: string[];
-    submissionTimeLimit: number;
-    votingTimeLimit: number;
-    startDate: string;
-    endDate: string;
-    phase: "submission" | "voting" | "ended";
-    participantCount: number;
-    submissions: CompetitionSubmissionInterface[];
+    startDate: Date;
+    votingStartDate: Date;
+    endDate: Date;
+    submissions: Types.ObjectId[];
     totalVoteCount: number;
 };
 
@@ -50,3 +47,9 @@ export interface ImageInterface {
     fileFormat: string;
     uploadedAt: Date;
 };
+
+export interface AuthRequest extends Request {
+    user?: {
+        id: string
+    }
+}
