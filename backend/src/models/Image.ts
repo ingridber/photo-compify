@@ -20,7 +20,8 @@ const imageSchema = new Schema<ImageInterface>({
   },
   fileSize: {
    type: Number,
-   required: true
+   required: true,
+   max: 1048576
   },
 
   fileFormat: {
