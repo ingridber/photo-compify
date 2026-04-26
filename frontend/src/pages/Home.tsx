@@ -13,6 +13,10 @@ export function Home() {
                 <Link to="/edit-profile">
                     <button>Edit Profile</button>
                 </Link>
+                
+                <Link to="/competitions">
+                    <button>Competitions</button>
+                </Link>
             </nav>
 
             <h1>Welcome</h1>
