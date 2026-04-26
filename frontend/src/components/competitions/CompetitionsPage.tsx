@@ -32,6 +32,13 @@ export default function CompetitionsPage() {
   // State that controls which view is shown in the UI (active or historical)
   const [view, setView] = useState<"active" | "historical">("active");
 
+  // Controls if search panel is visible
+  const [showSearch, setShowSearch] = useState(false);
+
+  // Search inputs
+  const [titleSearch, setTitleSearch] = useState("");
+  const [ownerSearch, setOwnerSearch] = useState("");
+
   useEffect(() => {
     async function load() {
       try {
@@ -62,24 +69,74 @@ export default function CompetitionsPage() {
   }, []);
 
   // Decide which list to display depending on selected view
-  const competitionsToShow =
+  const competitionsToShowBase =
     view === "active" ? activeCompetitions : historicalCompetitions;
+
+  // Filtering for searching competition by title and username
+  const competitionsToShow = competitionsToShowBase.filter((comp) => {
+    const titleMatch = comp.title
+      .toLowerCase()
+      .includes(titleSearch.toLowerCase());
+    const ownerMatch = comp.owner
+      .toLowerCase()
+      .includes(ownerSearch.toLowerCase());
+
+    return titleMatch && ownerMatch;
+  });
 
   return (
     <div>
       <h1>Competitions</h1>
 
-      <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
+      <div
+        style={{
+          display: "flex",
+          gap: 10,
+          marginBottom: 20,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <button onClick={() => setView("active")}>Active Competitions</button>
         <button onClick={() => setView("historical")}>
           Historical Competitions
         </button>
+        <button onClick={() => setShowSearch((prev) => !prev)}>Search</button>
       </div>
+      {showSearch && (
+        <div
+          style={{
+            marginBottom: 20,
+            display: "flex",
+            gap: 10,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <input
+            type="text"
+            placeholder="Search by competition title..."
+            value={titleSearch}
+            onChange={(e) => setTitleSearch(e.target.value)}
+          />
+
+          <input
+            type="text"
+            placeholder="Search by username"
+            value={ownerSearch}
+            onChange={(e) => setOwnerSearch(e.target.value)}
+          />
+        </div>
+      )}
 
       {/* Render the list of competitions as cards */}
-      {competitionsToShow.map((comp) => (
-        <CompetitionsCard key={comp.id} competition={comp} />
-      ))}
+      {competitionsToShow.length === 0 ? (
+        <p>No competitions match your search.</p>
+      ) : (
+        competitionsToShow.map((comp) => (
+          <CompetitionsCard key={comp.id} competition={comp} />
+        ))
+      )}
     </div>
   );
 }
