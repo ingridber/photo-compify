@@ -1,7 +1,7 @@
 import './App.css'
 import { Routes, Route } from 'react-router'
 import { Home } from './pages/Home'
-import { SignIn } from './pages/Login'
+import { SignIn } from './pages/SignIn'
 import Register from './pages/Register'
 import EditProfile from './components/EditProfile' 
 import CompetitionsPage from './components/competitions/CompetitionsPage'
