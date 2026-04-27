@@ -4,10 +4,14 @@ import { Link } from "react-router";
 const EditProfile = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [message, setMessage] = useState({ text: "", isError: false });
 
+  // --------------------------------------------
+  // ---------- HANDLE UPDATE USERNAME ----------
+  // --------------------------------------------
   const handleUpdateUsername = async (e: React.SubmitEvent) => {
     e.preventDefault();
     try {
@@ -26,24 +30,33 @@ const EditProfile = () => {
     }
   };
 
+  // --------------------------------------------
+  // ---------- HANDLE UPDATE PASSWORD ----------
+  // --------------------------------------------
   const handleUpdatePassword = async (e: React.SubmitEvent) => {
     e.preventDefault();
+    
     try {
       const res = await fetch("http://localhost:3000/api/v1/user/password", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include", // 👈
-        body: JSON.stringify({ newPassword: password, confirmPassword: confirmPassword }),
+        body: JSON.stringify({ newPassword: newPassword, confirmPassword: confirmPassword }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
       setMessage({ text: "Password updated successfully!", isError: false });
-      setPassword(""); setConfirmPassword("");
+      setNewPassword(""); setConfirmPassword("");
     } catch (err: any) {
       setMessage({ text: err.message, isError: true });
     }
   };
 
+
+
+  // -------------------------------------------
+  // ---------- HANDLE LOGOUT SESSION ----------
+  // -------------------------------------------
   const handleLogout = async () => {
     try {
       await fetch("http://localhost:3000/api/v1/user/logout", {
@@ -56,6 +69,9 @@ const EditProfile = () => {
     }
   };
 
+  // -------------------------------------------
+  // ---------- HANDLE DELETE ACCOUNT ----------
+  // -------------------------------------------
   const handleDeleteAccount = async (e: React.SubmitEvent) => {
     e.preventDefault();
     if (deleteConfirm !== "DELETE") return;
@@ -75,6 +91,8 @@ const EditProfile = () => {
       setMessage({ text: err.message, isError: true });
     }
   };
+
+
 
   return (
     <div style={{ maxWidth: "450px", margin: "2rem auto", fontFamily: "Arial, sans-serif", padding: "20px", border: "1px solid #ddd", borderRadius: "10px", boxShadow: "0 4px 6px rgba(0,0,0,0.1)", position: "relative" }}>
@@ -106,8 +124,16 @@ const EditProfile = () => {
       <section style={{ margin: "2rem 0" }}>
         <h3>Change Password</h3>
         <form onSubmit={handleUpdatePassword}>
-          <input type="password" placeholder="New password" value={password} onChange={(e) => setPassword(e.target.value)} style={{ width: "100%", padding: "10px", marginBottom: "10px", boxSizing: "border-box" }} />
-          <input type="password" placeholder="Confirm new password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} style={{ width: "100%", padding: "10px", marginBottom: "10px", boxSizing: "border-box" }} />
+
+          <label htmlFor="password">Enter old password</label>
+          <input id="password" type="password" placeholder="Old Password" value={password} onChange={(e) => setPassword(e.target.value)} style={{ width: "100%", padding: "10px", marginBottom: "10px", boxSizing: "border-box" }} />
+
+          <label htmlFor="newPassword">Enter new password</label>
+          <input id="newPassword" type="password" placeholder="New password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} style={{ width: "100%", padding: "10px", marginBottom: "10px", boxSizing: "border-box" }} />
+
+          <label htmlFor="confirmPassword">Confirm password</label>
+          <input id="confirmPassword" type="password" placeholder="Confirm new password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} style={{ width: "100%", padding: "10px", marginBottom: "10px", boxSizing: "border-box" }} />
+
           <button type="submit" style={{ cursor: "pointer", padding: "10px 20px" }}>Update Password</button>
         </form>
       </section>
