@@ -6,7 +6,7 @@ import { Competition } from "../models/Competition";
 // --------- GET ALL COMPETITION ---------
 // ---------------------------------------
 export async function getAllCompetitions(req: Request, res: Response) {
-    const competitions = await Competition.find()
+    const competitions = await Competition.find().populate("owner", "username");
     if (!competitions) return res.status(404).json({
         code: "NO_COMPETITIONS_FOUND",
         message: "Could not find any competitions",
@@ -19,9 +19,9 @@ export async function getAllCompetitions(req: Request, res: Response) {
 // -----------------------------------------
 // --------- GET COMPETITION BY ID ---------
 // -----------------------------------------
-export function getCompetitionById(req: Request, res: Response) {
+export async function getCompetitionById(req: Request, res: Response) {
     const id = req.params.id;
-    const competition = Competition.findById(id);
+    const competition = await Competition.findById(id).populate("owner", "username");
 
     if (!competition) {
         return res.status(404).json({
@@ -29,6 +29,11 @@ export function getCompetitionById(req: Request, res: Response) {
             message: 'The requested competition was not found',
             status: 404
         })
+    };
+
+    const now = new Date();
+    if (competition.votingStartDate <= now) {
+        await competition.populate("submissions");
     };
 
     res.status(200).json(competition);
@@ -180,7 +185,7 @@ export async function searchCompetitions(req: Request, res: Response) {
             ? { title: { $regex: search, $options: "i" } }
             : {};
 
-        const competitions = await Competition.find(query);
+        const competitions = await Competition.find(query).populate("owner", "username");;
         const now = new Date();
 
         const activeCompetitions = competitions
