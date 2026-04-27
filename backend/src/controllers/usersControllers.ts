@@ -3,6 +3,10 @@ import bcrypt from "bcrypt";
 import { User } from "../models/User";
 import verifyPassword from "../utils/passwordVerifier";
 
+
+// -------------------------------------
+// ---------- CHANGE USERNAME ----------
+// -------------------------------------
 export async function changeUsername(req: Request, res: Response) {
     const userId = (req as any).user.id; 
     const { newUsername } = req.body;
@@ -34,57 +38,126 @@ export async function changeUsername(req: Request, res: Response) {
     }
 }
 
+
+// -------------------------------------
+// ---------- CHANGE PASSWORD ----------
+// -------------------------------------
 export async function changePassword(req: Request, res: Response) {
     const userId = (req as any).user.id; 
-    const { newPassword, confirmPassword } = req.body;
+    const { password, newPassword, confirmPassword } = req.body;
 
-    if (!newPassword || !confirmPassword) {
-        return res.status(400).json({ message: "Need to fill both fields" });
-    }
-
-    if (newPassword !== confirmPassword) {
-        return res.status(400).json({ message: "Passwords do not match" });
-    }
-
-    if (newPassword.length < 8 || newPassword.length > 120) {
-        return res.status(400).json({ 
-            message: "Password must be between 8 and 120 characters" 
+    if(!password) {
+        return res.status(400).json({
+            code: "MISSING_PASSWORD",
+            message: "Please provide old password for validation",
+            status: 400, 
         });
-    }
-
-    if (!verifyPassword(newPassword)) {
-        return res.status(400).json({ 
-            message: "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character." 
-        });
-    }
+    };
 
     try {
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
-        
-        const updatedUser = await User.findByIdAndUpdate(
-            userId,
-            { password: hashedPassword }
-        );
+        const user = await User.findById(userId);
 
-        if (!updatedUser) {
-            return res.status(404).json({ message: "User not found" });
+        if(!user) {
+            return res.status(404).json({
+                code: "USER_NOT_FOUND",
+                message: "User not found",
+                status: 404
+            });
+        };
+        
+        const valid = await bcrypt.compare(password, user.password);
+
+        if(!valid) {
+            return res.status(400).json({
+                code: "NOT_VALID",
+                message: "Old password doesn't match",
+                status: 400
+            });
+        };
+  
+        if (!newPassword || !confirmPassword) {
+            return res.status(400).json({ message: "Need to fill both fields" });
         }
 
-        res.status(200).json({ message: "Password updated successfully" });
-    } catch (error) {
-        res.status(500).json({ message: "Server error", error });
+        if (newPassword !== confirmPassword) {
+            return res.status(400).json({ message: "Passwords do not match" });
+        }
+
+        if (newPassword.length < 8 || newPassword.length > 120) {
+            return res.status(400).json({ 
+                message: "Password must be between 8 and 120 characters" 
+            });
+        }
+
+        if (!verifyPassword(newPassword)) {
+            return res.status(400).json({ 
+                message: "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character." 
+            });
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        user.password = hashedPassword;
+        await user.save();
+
+        return res.status(200).json({message: "Password updated successfully"});
+
+    } catch (err) {
+        return res.status(500).json({ message: "Server error", err });
+    }
+
+};
+
+    /* 
+    if (valid) {
+        try {
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+            
+            const updatedUser = await User.findByIdAndUpdate(
+                userId,
+                { password: hashedPassword }
+            );
+
+            if (!updatedUser) {
+                return res.status(404).json({ message: "User not found" });
+            }
+
+            res.status(200).json({ message: "Password updated successfully" });
+        } catch (error) {
+            res.status(500).json({ message: "Server error", error });
+        }
+    } else {
+        return res.status(400).json({
+            code: "NOT_VALID",
+            message: "Old password doesn't match",
+            status: 400,
+        })
     }
 }
+ */
 
+
+
+// ----------------------------------------
+// ---------- CHANGE PROFILE PIC ----------
+// ----------------------------------------
 export async function changeProfilePicture(req: Request, res: Response) {
     res.status(200).json({ message: "Profile picture updated" });
 }
 
+
+// ------------------------------------
+// ---------- LOGOUT SESSION ----------
+// ------------------------------------
 export function logout(req: Request, res: Response) {
     res.clearCookie("token"); 
     res.status(200).json({ message: "Logged out" });
 }
 
+
+// ------------------------------------
+// ---------- DELETE ACCOUNT ----------
+// ------------------------------------
 export async function deleteUser(req: Request, res: Response) {
     const userId = (req as any).user.id;
 
