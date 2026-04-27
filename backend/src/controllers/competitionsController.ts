@@ -6,7 +6,7 @@ import { Competition } from "../models/Competition";
 // --------- GET ALL COMPETITION ---------
 // ---------------------------------------
 export async function getAllCompetitions(req: Request, res: Response) {
-    const competitions = await Competition.find()
+    const competitions = await Competition.find().populate("owner", "username");
     if (!competitions) return res.status(404).json({
         code: "NO_COMPETITIONS_FOUND",
         message: "Could not find any competitions",
@@ -185,7 +185,7 @@ export async function searchCompetitions(req: Request, res: Response) {
             ? { title: { $regex: search, $options: "i" } }
             : {};
 
-        const competitions = await Competition.find(query);
+        const competitions = await Competition.find(query).populate("owner", "username");;
         const now = new Date();
 
         const activeCompetitions = competitions
