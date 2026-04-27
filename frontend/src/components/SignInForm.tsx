@@ -1,13 +1,13 @@
 
 import { useState} from "react";
 import { login } from "../services/api";
+import { useUser } from "../hooks/useUser";
 
 export function SignInForm() {
     const [email, setEmail] = useState(''); 
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
-    const [user, setUser] = useState('');
-
+    const {user, setUser} = useUser();
 
     const handleSubmit = async (e: React.SubmitEvent ) => {
         e.preventDefault();

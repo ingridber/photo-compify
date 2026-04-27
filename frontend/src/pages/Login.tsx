@@ -1,4 +1,4 @@
-import { SignInForm } from "../components/LoginForm";
+import { SignInForm } from "../components/SignInForm";
 import { Link } from "react-router";
 
 export function SignIn() {

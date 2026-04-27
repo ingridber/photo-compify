@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router"; 
+import { useUser } from "../hooks/useUser";
 
 const EditProfile = () => {
   const [username, setUsername] = useState("");
@@ -8,6 +9,7 @@ const EditProfile = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [message, setMessage] = useState({ text: "", isError: false });
+  const {user} = useUser();
 
   // --------------------------------------------
   // ---------- HANDLE UPDATE USERNAME ----------
@@ -119,7 +121,7 @@ const EditProfile = () => {
         ← Back to Home
       </Link>
 
-      <h1 style={{ textAlign: "center" }}>Profile Settings</h1>
+      <h1 style={{ textAlign: "center" }}>Profile Settings {user ? ` for: ${user}` : ""}</h1>
 
       {message.text && (
         <div style={{ padding: "12px", marginBottom: "1.5rem", borderRadius: "5px", backgroundColor: message.isError ? "#ffdce0" : "#defabe", color: message.isError ? "#af233a" : "#3d7a22", border: `1px solid ${message.isError ? "#ff8080" : "#80ff80"}` }}>
