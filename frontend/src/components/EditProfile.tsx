@@ -41,12 +41,14 @@ const EditProfile = () => {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include", // 👈
-        body: JSON.stringify({ newPassword: newPassword, confirmPassword: confirmPassword }),
+        body: JSON.stringify({ password: password, newPassword: newPassword, confirmPassword: confirmPassword }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
       setMessage({ text: "Password updated successfully!", isError: false });
-      setNewPassword(""); setConfirmPassword("");
+      setPassword("");
+      setNewPassword(""); 
+      setConfirmPassword("");
     } catch (err: any) {
       setMessage({ text: err.message, isError: true });
     }
@@ -134,7 +136,7 @@ const EditProfile = () => {
           <label htmlFor="confirmPassword">Confirm password</label>
           <input id="confirmPassword" type="password" placeholder="Confirm new password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} style={{ width: "100%", padding: "10px", marginBottom: "10px", boxSizing: "border-box" }} />
 
-          <button type="submit" style={{ cursor: "pointer", padding: "10px 20px" }}>Update Password</button>
+          <button type="submit" disabled={!password || !newPassword || !confirmPassword} style={{ cursor: "pointer", padding: "10px 20px" }}>Update Password</button>
         </form>
       </section>
 
