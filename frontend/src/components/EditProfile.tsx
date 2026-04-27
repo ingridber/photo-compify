@@ -36,6 +36,22 @@ const EditProfile = () => {
   const handleUpdatePassword = async (e: React.SubmitEvent) => {
     e.preventDefault();
     
+    if(password === newPassword) {
+      setMessage({
+        text: "New password must be different from the old password.",
+        isError: true
+      });
+      return;
+    }
+
+    if(newPassword !== confirmPassword) {
+      setMessage({
+        text: "Passwords doesn't match.",
+        isError: true
+      });
+      return;
+    }
+
     try {
       const res = await fetch("http://localhost:3000/api/v1/user/password", {
         method: "PATCH",
