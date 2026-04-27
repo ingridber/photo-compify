@@ -1,7 +1,7 @@
 // Definition of types from API
 type Competition = {
   id: string;
-  owner: string;
+  owner: {username: string};
   title: string;
   logoBanner?: string;
   description: string;
@@ -42,8 +42,8 @@ export default function CompetitionsCard({ competition }: Props) {
   return (
     <div
       style={{
-        border: "1px solid #ccc",
-        borderRadius: 12,
+        border: "2px solid #ccc",
+        borderRadius: 10,
         padding: 16,
         marginBottom: 12,
         display: "flex",
@@ -54,8 +54,8 @@ export default function CompetitionsCard({ competition }: Props) {
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <div
           style={{
-            width: 60,
-            height: 60,
+            width: 62,
+            height: 55,
             borderRadius: "50%",
             background: "#ddd",
             overflow: "hidden",
@@ -79,15 +79,19 @@ export default function CompetitionsCard({ competition }: Props) {
           )}
         </div>
 
-        <div style={{ display: "flex", gap: 8 }}>
+        <div style={{ display: "flex", gap: 8, }}>
           {competition.themes.map((theme) => (
             <span
               key={theme}
               style={{
-                padding: "4px 10px",
-                borderRadius: 20,
+                padding: "1px 3px",
+                borderRadius: 16,
                 background: "#e5e5e5",
-                fontSize: 12,
+                fontSize: 10,
+                width: "58px",
+                height: "16px",
+              
+                
               }}
             >
               {theme}
@@ -118,8 +122,9 @@ export default function CompetitionsCard({ competition }: Props) {
         <span>
           Ends on: {new Date(competition.endDate).toLocaleDateString()}
         </span>
-
+        <span>Created by: {competition.owner.username} </span>
         <span>Participants: {competition.participantCount}</span>
+        
       </div>
     </div>
   );

@@ -5,7 +5,10 @@ import CompetitionsCard from "./CompetitionsCard";
 // Definition of types from API
 type Competition = {
   id: string;
-  owner: string;
+  owner: {
+    _id: string;
+    username: string;
+  };
   title: string;
   logoBanner?: string;
   description: string;
@@ -74,12 +77,10 @@ export default function CompetitionsPage() {
 
   // Filtering for searching competition by title and username
   const competitionsToShow = competitionsToShowBase.filter((comp) => {
-    const titleMatch = comp.title
-      .toLowerCase()
-      .includes(titleSearch.toLowerCase());
-    const ownerMatch = comp.owner
-      .toLowerCase()
-      .includes(ownerSearch.toLowerCase());
+    const title = comp.title ?? "";
+    const ownerUsername = comp.owner?.username ?? "";
+    const titleMatch = title.toLowerCase().includes(titleSearch.toLowerCase())
+    const ownerMatch = ownerUsername.toLowerCase().includes(ownerSearch.toLowerCase())
 
     return titleMatch && ownerMatch;
   });
@@ -97,11 +98,11 @@ export default function CompetitionsPage() {
           alignItems: "center",
         }}
       >
-        <button onClick={() => setView("active")}>Active Competitions</button>
-        <button onClick={() => setView("historical")}>
-          Historical Competitions
+        <button style={{borderRadius: 10, height: "39px", width: "65px"}} onClick={() => setView("active")}>Active</button>
+        <button style={{borderRadius: 10, height: "39px", width: "65px"}} onClick={() => setView("historical")}>
+          Finished
         </button>
-        <button onClick={() => setShowSearch((prev) => !prev)}>Search</button>
+        <button style={{borderRadius: 10, height: "39px", width: "65px"}} onClick={() => setShowSearch((prev) => !prev)}>Search</button>
       </div>
       {showSearch && (
         <div
@@ -115,7 +116,7 @@ export default function CompetitionsPage() {
         >
           <input
             type="text"
-            placeholder="Search by competition title..."
+            placeholder="Search by title"
             value={titleSearch}
             onChange={(e) => setTitleSearch(e.target.value)}
           />
