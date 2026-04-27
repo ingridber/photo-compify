@@ -5,6 +5,7 @@ import { SignIn } from './pages/Login'
 import Register from './pages/Register'
 import EditProfile from './components/EditProfile' 
 import CompetitionsPage from './components/competitions/CompetitionsPage'
+import ImageUpload from "./pages/ImageUpload";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/register" element={<Register />}/>
           <Route path="/edit-profile" element={<EditProfile />}/> 
           <Route path='/competitions' element={<CompetitionsPage />}/> 
+          <Route path="/image-upload" element={<ImageUpload />} />
         </Routes>
     </>
   )
