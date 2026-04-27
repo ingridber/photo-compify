@@ -40,7 +40,7 @@ export function SignInForm() {
                 <input 
                     id="username"
                     type="text"
-                    placeholder="Plz enter your email"
+                    placeholder="Username"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -50,7 +50,7 @@ export function SignInForm() {
                 <input 
                     id="password"
                     type="password"
-                    placeholder="Plz enter your secret"
+                    placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
