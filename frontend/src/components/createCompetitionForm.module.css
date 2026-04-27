@@ -1,0 +1,114 @@
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 560px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-family: system-ui, sans-serif;
+}
+
+.form label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.form label>span {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.form input[type='text'],
+.form input[type='url'],
+.form textarea {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font: inherit;
+}
+
+.counter {
+    font-size: 0.75rem;
+    color: #666;
+    align-self: flex-end;
+}
+
+.fieldset {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 0.75rem;
+}
+
+.themesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.themeOption {
+    flex-direction: row !important;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+}
+
+.error {
+    padding: 0.5rem 0.75rem;
+    background: #fee;
+    border: 1px solid #f99;
+    border-radius: 4px;
+    color: #900;
+    font-size: 0.9rem;
+}
+
+.success {
+    padding: 0.5rem 0.75rem;
+    background: #efe;
+    border: 1px solid #9c9;
+    border-radius: 4px;
+    color: #060;
+    font-size: 0.9rem;
+}
+
+.submit {
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 4px;
+    background: #222;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.preview {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.preview img {
+  max-width: 120px;
+  max-height: 120px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.clearBtn {
+  padding: 0.4rem 0.7rem;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
