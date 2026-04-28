@@ -22,6 +22,17 @@ export async function changeUsername(req: Request, res: Response) {
     }
 
     try {
+
+        const existingUser = await User.findOne({username: newUsername})
+
+        if (existingUser) {
+            return res.status(409).json({
+                code: "USER_ALREADY_EXIST",
+                message: "Username is already taken",
+                status: 409
+            });
+        };
+
         const updatedUser = await User.findByIdAndUpdate(
             userId,
             { username: newUsername },
@@ -110,36 +121,6 @@ export async function changePassword(req: Request, res: Response) {
     }
 
 };
-
-    /* 
-    if (valid) {
-        try {
-            const hashedPassword = await bcrypt.hash(newPassword, 10);
-            
-            const updatedUser = await User.findByIdAndUpdate(
-                userId,
-                { password: hashedPassword }
-            );
-
-            if (!updatedUser) {
-                return res.status(404).json({ message: "User not found" });
-            }
-
-            res.status(200).json({ message: "Password updated successfully" });
-        } catch (error) {
-            res.status(500).json({ message: "Server error", error });
-        }
-    } else {
-        return res.status(400).json({
-            code: "NOT_VALID",
-            message: "Old password doesn't match",
-            status: 400,
-        })
-    }
-}
- */
-
-
 
 // ----------------------------------------
 // ---------- CHANGE PROFILE PIC ----------
