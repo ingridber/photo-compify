@@ -7,6 +7,7 @@ import EditProfile from './components/EditProfile'
 import CompetitionsPage from './components/competitions/CompetitionsPage'
 import { ManageAccount } from './pages/ManageAccount'
 import { ChangeUsername } from './components/manage-account/ChangeUsername'
+import { ChangePassword } from './components/manage-account/ChangePassword'
 
 function App() {
   return (
@@ -21,6 +22,8 @@ function App() {
           <Route path="/manage-account">
             <Route index element={<ManageAccount/>} />
             <Route path="change-username" element={<ChangeUsername />} />
+            <Route path="change-password" element={<ChangePassword />} />
+
           </Route>
 
 

@@ -73,12 +73,30 @@ export async function updateUsername(username: string) {
     return data;
 }
 
+// ---------- UPDATE PASSWORD ----------
+// -------------------------------------
+export async function updatePassword(
+    password: string, 
+    newPassword: string, 
+    confirmPassword: string) {
 
-// const res = await fetch("http://localhost:3000/api/v1/user/username", {
-//         method: "PATCH",
-//         headers: { "Content-Type": "application/json" },
-//         credentials: "include", // 👈
-//         body: JSON.stringify({ newUsername: username }),
-//       });
-//       const data = await res.json();
-//       if (!res.ok) throw new Error(data.message);
+    const res = await fetch("http://localhost:3000/api/v1/user/password", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+            password: password,
+            newPassword: newPassword,
+            confirmPassword: confirmPassword 
+        }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        throw new Error(data.message);
+    }
+
+    return data;
+}
+

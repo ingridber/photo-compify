@@ -103,7 +103,7 @@ export async function changePassword(req: Request, res: Response) {
         user.password = hashedPassword;
         await user.save();
 
-        return res.status(200).json({message: "Password updated successfully"});
+        return res.status(200).json({message: "Password updated"});
 
     } catch (err) {
         return res.status(500).json({ message: "Server error", err });
