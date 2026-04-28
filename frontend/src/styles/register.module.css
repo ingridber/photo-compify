@@ -1,0 +1,17 @@
+.title {
+    text-transform: uppercase;
+    font-weight: 800;
+    font-size: 1.3rem;
+    color: var(--text-h);
+    letter-spacing: 0.05rem;
+    margin-bottom: 0.8rem;
+    margin-top: 1.8rem;
+}
+
+small {
+    display: block;
+}
+
+.submitBtn {
+    padding: 0.8rem 1rem;
+}
