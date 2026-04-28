@@ -4,10 +4,12 @@ import { useState } from "react";
 import { register } from "../services/api";
 import { useNavigate } from "react-router";
 import { DisplayProfilePicture } from "./display-profile-picture/DisplayProfilePicture";
-const labelStyle: React.CSSProperties = { display: "flex", flexDirection: "column" };
+
 
 const usernameRegex = /^[^\u0080-\uFFFF]+$/;
-const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]).+$/;
+const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?`~]).+$/;
+// /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]).+$/;
+
 
 interface FormErrors {
     username?: string;
