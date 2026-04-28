@@ -6,6 +6,7 @@ import Register from './pages/Register'
 import EditProfile from './components/EditProfile' 
 import CompetitionsPage from './components/competitions/CompetitionsPage'
 import { ManageAccount } from './pages/ManageAccount'
+import { ChangeUsername } from './components/manage-account/ChangeUsername'
 
 function App() {
   return (
@@ -17,8 +18,11 @@ function App() {
           <Route path="/edit-profile" element={<EditProfile />}/> 
           <Route path='/competitions' element={<CompetitionsPage />}/> 
 
-          <Route path="/manage-account" element={<ManageAccount />}/>
-          <Route path='/manage-account/change-username' element={<EditProfile />}/>
+          <Route path="/manage-account">
+            <Route index element={<ManageAccount/>} />
+            <Route path="change-username" element={<ChangeUsername />} />
+          </Route>
+
 
         </Routes>
     </>
