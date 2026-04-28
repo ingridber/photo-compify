@@ -1,3 +1,4 @@
+import styles from "./change.module.css";
 import { useState } from "react";
 import { updateUsername } from "../../services/api";
 import { useNavigate } from "react-router";
@@ -15,7 +16,7 @@ export function ChangeUsername() {
 
         try {
             const data = await updateUsername(username);
-            setUser(data.username);
+            setUser(prev => prev ? {...prev, username: data.username} : null);
             setMessage(data.message || "Username updated successfully")
             setUsername('');
         } catch (err: unknown) {
@@ -31,12 +32,12 @@ export function ChangeUsername() {
     return (
         <section>
             <button onClick={()=> navigate(-1)}>
-                Back
+                <img src="/arrow-left.svg" alt="icon of arrow pointing left" className={styles.back} />
             </button>
 
 
             <div><p>PIC HERE</p></div>
-            <p>{user ? `${user}` : ''}</p>
+            <p>{user?.username}</p>
 
             <h3>Update Username</h3>
             <form onSubmit={handleUpdateUsername}>

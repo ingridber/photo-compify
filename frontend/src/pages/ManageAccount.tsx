@@ -9,7 +9,7 @@ export function ManageAccount() {
         <div>
             <h2>Manage Account</h2>
 
-            <p>{user ? `${user}` : ''}</p>
+            <p>{user?.username}</p>
             <div><p>PIC HERE</p></div>
 
             <Link to="change-picture">
@@ -18,10 +18,6 @@ export function ManageAccount() {
 
             <Link to="change-username">
                 <button>Change Username</button>
-            </Link>
-
-            <Link to="change-email">
-                <button>Change Email</button>
             </Link>
 
             <Link to="change-password">

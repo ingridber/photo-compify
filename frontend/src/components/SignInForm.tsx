@@ -4,33 +4,33 @@ import { login } from "../services/api";
 import { useUser } from "../hooks/useUser";
 
 export function SignInForm() {
-    const [email, setEmail] = useState(''); 
+    const [username, setUsername] = useState(''); 
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
     const {user, setUser} = useUser();
+
 
     const handleSubmit = async (e: React.SubmitEvent ) => {
         e.preventDefault();
 
         try {
-            const data = await login(email, password);
-            console.log(`${data.code}`)
-            setMessage(data.message)
-            setUser(data.username)
-            setEmail('');
+            const data = await login(username, password);
+            setMessage(data.message);
+            setUser({
+                username: data.username,
+                profilePicture: data.profilePicture || ''
+            });
+            setUsername('');
             setPassword('');
 
         } catch (err) {
-            console.log(err);
-            setUser('');
+            setUser(null);
             if (err instanceof Error) {
-                setMessage(err.message)
+                setMessage(err.message);
             } else {
-                setMessage('Something went wrong')
+                setMessage('Something went wrong');
             }
         };
-
-
     };
 
     return (
@@ -41,8 +41,8 @@ export function SignInForm() {
                     id="username"
                     type="text"
                     placeholder="Username"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     required
                 />
 
@@ -60,8 +60,8 @@ export function SignInForm() {
             </form>
 
             {message && (
-                <p>{message} {user ? `Welcome ${user}` : ''}</p>
-            )}
+                <p>{message}</p>) }
+            {user && <p>Welcome {user.username}</p>}
         </>
     )
 };

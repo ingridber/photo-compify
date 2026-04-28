@@ -128,5 +128,6 @@ export async function login(req: Request, res: Response): Promise<Response> {
         message: "Login successful",
         status: 200,
         username: user.username,
+        profilePicture: user.profilePicture
     });
 };
