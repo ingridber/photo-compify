@@ -6,7 +6,7 @@ import { useUser } from "../../hooks/useUser";
 export function ChangeUsername() {
     const [username, setUsername] = useState('');
     const [message, setMessage] = useState('');
-    const {user} = useUser();
+    const {user, setUser} = useUser();
 
     const navigate = useNavigate();
 
@@ -15,6 +15,7 @@ export function ChangeUsername() {
 
         try {
             const data = await updateUsername(username);
+            setUser(data.username);
             setMessage(data.message || "Username updated successfully")
             setUsername('');
         } catch (err: unknown) {

@@ -1,11 +1,15 @@
 import { Link } from "react-router"
+import { useUser } from "../hooks/useUser"
 
 export function ManageAccount() {
+
+    const {user} = useUser();
 
     return(
         <div>
             <h2>Manage Account</h2>
 
+            <p>{user ? `${user}` : ''}</p>
             <div><p>PIC HERE</p></div>
 
             <Link to="change-picture">
