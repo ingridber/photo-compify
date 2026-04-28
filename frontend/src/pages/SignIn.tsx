@@ -1,21 +1,19 @@
 import { SignInForm } from "../components/SignInForm";
 import { Link } from "react-router";
+import styles from "../styles/sign-in.module.css";
 
 export function SignIn() {
     return (
         <div>
-            <h2>Sign In</h2>
+
             <SignInForm/>
 
-            <br /> {/* !!!!! TA BORT SEN !!!!! */}
-            <p>Not a member?</p>
-            <Link to="/register">
-                <p>Create an account</p>
+
+            <p className={styles.registerTitle}>Not a member?</p>
+            <Link to="/register" className={styles.register}>
+                Create an account
             </Link>
-            <br /> {/* !!!!! TA BORT SEN !!!!! */}
-            <Link to="/">
-                <button>Back</button>
-            </Link>
+
 
         </div>
     )

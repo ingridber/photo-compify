@@ -60,6 +60,14 @@ export async function changePassword(req: Request, res: Response) {
     const userId = (req as any).user.id; 
     const { password, newPassword, confirmPassword } = req.body;
 
+    if(password === newPassword) {
+        return res.status(400).json({
+            code: "BAD_DATA",
+            message: "New password must be different from the old password",
+            status: 400
+        });
+    };
+
     if(!password) {
         return res.status(400).json({
             code: "MISSING_PASSWORD",

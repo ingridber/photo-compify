@@ -1,8 +1,10 @@
-import styles from "./change.module.css";
+import mixins from "../../styles/mixins.module.css";
 import { useState } from "react";
 import { useUser } from "../../hooks/useUser";
 import { useNavigate } from "react-router";
 import { updatePassword } from "../../services/api";
+import { DisplayProfilePicture } from "../display-profile-picture/DisplayProfilePicture";
+
 
 export function ChangePassword() {
     const [password, setPassword] = useState('');
@@ -22,6 +24,11 @@ export function ChangePassword() {
 
     const handleUpdatePassword = async (e:React.SubmitEvent) => {
         e.preventDefault();
+
+        if(password === newPassword) {
+        setMessage("New password must be different from the old password.");
+        return;
+        }
 
         try {
             const data = await updatePassword(password, newPassword, confirmPassword);
@@ -43,88 +50,122 @@ export function ChangePassword() {
     }
 
     return (
-        <section>
-            <button onClick={()=> navigate(-1)}>
-                <img src="/arrow-left.svg" alt="icon of arrow pointing left" className={styles.back} />
+        <section className={mixins.sectionContainer}>
+
+            {/* BACK BUTTON */}
+            <button 
+                onClick={()=> navigate(-1)}
+                className={mixins.backBtn}>
+                <img src="/arrow-left.svg" alt="icon of arrow pointing left" className={mixins.backBtnIcon} />
             </button>
 
-            <div><p>PIC HERE</p></div>
-            <p>{user?.username}</p>
+            {/* PROFILE PICTURE & USER NAME */}
+            <div style= {{width: "7rem", margin: "auto"}}>
+                <DisplayProfilePicture src={user?.profilePicture} />
+            </div>
+            <p className={mixins.username}>{user? user.username : "USER"}</p>
 
-            <h3>Change Password</h3>
+            {/* CHANGE PASSWORD FORM  */}
             <form onSubmit={handleUpdatePassword}>
 
-                <label htmlFor="password">Enter old password</label>
-                <br /> {/* !!!!! TA BORT SEN !!!!! */}
+            {/* FIELD GROUP: CURRENT PASSWORD */}
+            <div className={mixins.fieldGroup}>
 
-                <input 
-                    id="password" 
-                    type={showPassword ? "text" : "password"} 
-                    placeholder="Old Password" 
-                    value={password} 
-                    onChange={(e) => setPassword(e.target.value)}/>
-                <button
-                    type="button"
-                    onClick={() => setShowPassword(prev => !prev)}>
+                <label 
+                    htmlFor="password" 
+                    className={mixins.labelForInput}>
+                        Current password</label>
+
+                <div className={mixins.inputFieldContainer}>
+                    <input 
+                        id="password" 
+                        className={mixins.inputField}
+                        type={showPassword ? "text" : "password"} 
+                        placeholder="Current Password" 
+                        value={password} 
+                        onChange={(e) => setPassword(e.target.value)}/>
+                    <button
+                        className={mixins.displayPasswordBtn}
+                        type="button"
+                        onClick={() => setShowPassword(prev => !prev)}>
+                            <img
+                                className={mixins.displayPasswordBtnIcon}
+                                src={showPassword ? "/eye-off.svg" : "/eye.svg"} 
+                                alt={showPassword ? "icon for displaying password" : "icon for hideing password"}  />
+                    </button>
+                </div>
+            </div>
+
+            {/* FIELD GROUP: NEW PASSWORD */}
+            <div className={mixins.fieldGroup}>
+
+                <label 
+                    htmlFor="newPassword" 
+                    className={mixins.labelForInput}>
+                        New password</label>
+
+                <div className={mixins.inputFieldContainer}>
+                    <input 
+                        id="newPassword"
+                        className={mixins.inputField}
+                        type={showNewPassword ? "text" : "password"}  
+                        placeholder="New password" 
+                        value={newPassword} 
+                        onChange={(e) => setNewPassword(e.target.value)} />
+                    <button 
+                        className={mixins.displayPasswordBtn}
+                        type="button"
+                        onClick={() => setShowNewPassword(prev => !prev)}>
                         <img
-                            className={styles.icon}
-                            src={showPassword ? "/eye-off.svg" : "/eye.svg"} 
-                            alt={showPassword ? "icon for displaying password" : "icon for hideing password"}  />
-                </button>
-    
-                <br /> {/* !!!!! TA BORT SEN !!!!! */}
-
-                <label htmlFor="newPassword">Enter new password</label>
-                <br /> {/* !!!!! TA BORT SEN !!!!! */}
-
-                <input 
-                    id="newPassword" 
-                    type={showNewPassword ? "text" : "password"}  
-                    placeholder="New password" 
-                    value={newPassword} 
-                    onChange={(e) => setNewPassword(e.target.value)} />
-                <button
-                    type="button"
-                    onClick={() => setShowNewPassword(prev => !prev)}>
-                        <img
-                            className={styles.icon}
+                            className={mixins.displayPasswordBtnIcon}
                             src={showNewPassword ? "/eye-off.svg" : "/eye.svg"} 
                             alt={showNewPassword ? "icon for displaying password" : "icon for hideing password"}  />
-                </button>
+                    </button>
+                </div>
+            </div>
 
-                <br /> {/* !!!!! TA BORT SEN !!!!! */}
+            {/* FIELD GROUP: CONFIRM PASSWORD */}
+            <div className={mixins.fieldGroup}>
+                
+                <label 
+                    htmlFor="confirmPassword"
+                    className={mixins.labelForInput}>
+                        Confirm password</label>
 
+                <div className={mixins.inputFieldContainer}> 
+                    <input 
+                        id="confirmPassword"
+                        className={mixins.inputField}
+                        type={showConfirmPassword ? "text" : "password"} 
+                        placeholder="Confirm password" 
+                        value={confirmPassword} 
+                        onChange={(e) => setConfirmPassword(e.target.value)} />
+                    <button
+                        className={mixins.displayPasswordBtn}
+                        type="button"
+                        onClick={() => setShowConfirmPassword(prev => !prev)}>
+                            <img
+                                className={mixins.displayPasswordBtnIcon}
+                                src={showConfirmPassword ? "/eye-off.svg" : "/eye.svg"} 
+                                alt={showConfirmPassword ? "icon for displaying password" : "icon for hideing password"}  />
+                    </button>
+                </div>
+            </div>
 
-                <label htmlFor="confirmPassword">Confirm password</label>
-                <br /> {/* !!!!! TA BORT SEN !!!!! */}
+            {/* UX MESSAGE */}
+            {message && 
+                <p className={mixins.message}>{message}</p>
+            }
 
-                <input 
-                    id="confirmPassword" 
-                    type={showConfirmPassword ? "text" : "password"} 
-                    placeholder="Confirm new password" 
-                    value={confirmPassword} 
-                    onChange={(e) => setConfirmPassword(e.target.value)} />
-                <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(prev => !prev)}>
-                        <img
-                            className={styles.icon}
-                            src={showConfirmPassword ? "/eye-off.svg" : "/eye.svg"} 
-                            alt={showConfirmPassword ? "icon for displaying password" : "icon for hideing password"}  />
-                </button>
-
-                <br /> {/* !!!!! TA BORT SEN !!!!! */}
-
-                <button 
-                    type="submit" 
-                    disabled={!password || !newPassword || !confirmPassword} >
-                        Update Password
-                </button>
+            {/* SUBMIT BUTTON */}
+            <button 
+                className={mixins.submitBtn}
+                type="submit" 
+                disabled={!password || !newPassword || !confirmPassword} >
+                    <img src="/check.svg" alt="icon of arrow pointing left" className={mixins.submitBtnIcon} />
+            </button>
 
             </form>
-
-            {message && <p>{message}</p>}
-
         </section>
-    )
-}
+    );
+};

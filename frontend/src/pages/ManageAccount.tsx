@@ -1,46 +1,68 @@
-import { Link } from "react-router"
-import { useUser } from "../hooks/useUser"
+import mixins from "../styles/mixins.module.css";
+import styles from "../styles/manage-account.module.css";
+import { Link } from "react-router";
+import { useUser } from "../hooks/useUser";
+import { useNavigate } from "react-router";
+
+import { DisplayProfilePicture } from "../components/display-profile-picture/DisplayProfilePicture";
 
 export function ManageAccount() {
 
     const {user} = useUser();
+    const navigate = useNavigate();
 
     return(
-        <div>
-            <h2>Manage Account</h2>
+        <div className={mixins.sectionContainer}>
+            {/* BACK BUTTON */}
+            <button 
+                onClick={()=> navigate(-1)}
+                className={mixins.backBtn}>
+                <img src="/arrow-left.svg" alt="icon of arrow pointing left" className={mixins.backBtnIcon} />
+            </button>
 
-            <p>{user?.username}</p>
-            <div><p>PIC HERE</p></div>
+            {/* USER NAME & PROFILE PICTURE */}
+            <p className={styles.username}>{user? user.username : "USER"}</p>
+            <div style= {{width: "7rem", margin: "auto"}}>
+                <DisplayProfilePicture src={user?.profilePicture} />
+            </div>
 
-            <Link to="change-picture">
-                <p>Change Profile Picture</p>
+            <Link to="change-picture" className={styles.changeProfilePicLink}>
+                Change Profile Picture
             </Link>
 
-            <Link to="change-username">
-                <button>Change Username</button>
+
+            {/* UPDATE BUTTONS */}
+            <Link to="change-username" className={styles.changePageBtn}>
+                Change Username
             </Link>
 
-            <Link to="change-password">
-                <button>Change Password</button>
+            <Link to="change-password" className={styles.changePageBtn}>
+                Change Password
             </Link>
+
+
+            {/* LOG OUT */}
 
             <article>
-                <p>Need a break?</p>
-                <Link to="logout">
-                    <p>Sign Out</p>
+                <p className={`${styles.signOutTitle} ${styles.space}`}>
+                    Need a break?</p>
+                <Link to="logout" className={styles.signOut}>
+                    Sign Out
                 </Link>
             </article>
 
+
+            {/* DELETE ACCOUNT  */}
+
             <article>
-                <p>Wanna break up? :-(</p>
-                <Link to="delete-account">
-                    <p>Delete Account</p>
+                <p className={styles.deleteAccountTitle}>
+                    Wanna break up? :-(</p>
+                <Link to="delete-account" className={styles.deleteAccount}>
+                    Delete Account
                 </Link>
             </article>
 
-            <Link to="/">
-                <button>Back</button>
-            </Link>
+            
 
         </div>    
     )

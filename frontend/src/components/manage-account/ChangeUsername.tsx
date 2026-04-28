@@ -1,8 +1,9 @@
-import styles from "./change.module.css";
+import mixins from "../../styles/mixins.module.css";
 import { useState } from "react";
 import { updateUsername } from "../../services/api";
 import { useNavigate } from "react-router";
 import { useUser } from "../../hooks/useUser";
+import { DisplayProfilePicture } from "../display-profile-picture/DisplayProfilePicture";
 
 export function ChangeUsername() {
     const [username, setUsername] = useState('');
@@ -30,31 +31,59 @@ export function ChangeUsername() {
     }
 
     return (
-        <section>
-            <button onClick={()=> navigate(-1)}>
-                <img src="/arrow-left.svg" alt="icon of arrow pointing left" className={styles.back} />
+        <section className={mixins.sectionContainer}>
+
+            {/* BACK BUTTON */}
+            <button 
+                onClick={()=> navigate(-1)}
+                className={mixins.backBtn}>
+                <img src="/arrow-left.svg" alt="icon of arrow pointing left" className={mixins.backBtnIcon} />
             </button>
 
+            {/* PROFILE PICTURE & USER NAME */}
+            <div style= {{width: "7rem", margin: "auto"}}>
+                <DisplayProfilePicture src={user?.profilePicture} />
+            </div>
+            <p className={mixins.username}>{user? user.username : "USER"}</p>
 
-            <div><p>PIC HERE</p></div>
-            <p>{user?.username}</p>
-
-            <h3>Update Username</h3>
+            {/* CHANGE PASSWORD FORM  */}
             <form onSubmit={handleUpdateUsername}>
-                <input 
-                    required
-                    type="text" 
-                    placeholder="New username" 
-                    value={username} 
-                    onChange={(e) => {
-                        setUsername(e.target.value);
-                        setMessage('')
-                    }}/>
-                <button type="submit">Save Changes</button>
+
+            {/* FIELD GROUP: NEW USERNAME */}
+            <div className={mixins.fieldGroup}>
+
+                <label htmlFor="username" className={mixins.labelForInput}>
+                    New username</label>
+
+                <div className={mixins.inputFieldContainer}>
+                    <input 
+                        id="username"
+                        className={mixins.inputField}
+                        required
+                        type="text" 
+                        placeholder="New username" 
+                        value={username} 
+                        onChange={(e) => {
+                            setUsername(e.target.value);
+                            setMessage('')
+                        }}/>
+                </div>
+            </div>
+
+            {/* UX MESSAGE */}
+            {message && 
+                <p className={mixins.message}>{message}</p>
+            }
+
+            {/* SUBMIT BUTTON */}
+            <button
+                className={mixins.submitBtn}
+                type="submit"
+                disabled={!username}>
+                    <img src="/check.svg" alt="icon of arrow pointing left" className={mixins.submitBtnIcon} />
+            </button>
+
             </form>
-
-            {message && <p>{message}</p>}
-
         </section>
-    )
-}
+    );
+};
