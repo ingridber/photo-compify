@@ -32,7 +32,10 @@ export async function changeUsername(req: Request, res: Response) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        res.status(200).json(updatedUser);
+        res.status(200).json({
+            message: "Username updated",
+            username: updatedUser.username});
+
     } catch (error) {
         res.status(500).json({ message: "Server error", error });
     }
