@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { fetchCompetitions } from "../../services/api";
 import CompetitionsCard from "./CompetitionsCard";
 
@@ -39,8 +39,9 @@ export default function CompetitionsPage() {
   const [showSearch, setShowSearch] = useState(false);
 
   // Search inputs
-  const [titleSearch, setTitleSearch] = useState("");
-  const [ownerSearch, setOwnerSearch] = useState("");
+  const [search, setSearch] = useState("");
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     async function load() {
@@ -71,6 +72,12 @@ export default function CompetitionsPage() {
     load();
   }, []);
 
+  useEffect(() => {
+    if(showSearch) {
+      inputRef.current?.focus();
+    }
+  }, [showSearch]);
+
   // Decide which list to display depending on selected view
   const competitionsToShowBase =
     view === "active" ? activeCompetitions : historicalCompetitions;
@@ -79,10 +86,13 @@ export default function CompetitionsPage() {
   const competitionsToShow = competitionsToShowBase.filter((comp) => {
     const title = comp.title ?? "";
     const ownerUsername = comp.owner?.username ?? "";
-    const titleMatch = title.toLowerCase().includes(titleSearch.toLowerCase())
-    const ownerMatch = ownerUsername.toLowerCase().includes(ownerSearch.toLowerCase())
 
-    return titleMatch && ownerMatch;
+    const searchLower = search.toLowerCase();
+
+    return (
+      title.toLowerCase().includes(searchLower) ||
+      ownerUsername.toLowerCase().includes(searchLower)
+    );
   });
 
   return (
@@ -98,11 +108,32 @@ export default function CompetitionsPage() {
           alignItems: "center",
         }}
       >
-        <button style={{borderRadius: 10, height: "39px", width: "65px"}} onClick={() => setView("active")}>Active</button>
-        <button style={{borderRadius: 10, height: "39px", width: "65px"}} onClick={() => setView("historical")}>
+        <button
+          style={{ borderRadius: 10, height: "39px", width: "65px" }}
+          onClick={() => {
+            setView("active");
+            setShowSearch(false);
+            setSearch("");
+          }}
+        >
+          Active
+        </button>
+        <button
+          style={{ borderRadius: 10, height: "39px", width: "65px" }}
+          onClick={() => {
+            setView("historical");
+            setShowSearch(false);
+            setSearch("");
+        }}
+        >
           Finished
         </button>
-        <button style={{borderRadius: 10, height: "39px", width: "65px"}} onClick={() => setShowSearch((prev) => !prev)}>Search</button>
+        <button
+          style={{ borderRadius: 10, height: "39px", width: "65px" }}
+          onClick={() => setShowSearch((prev) => !prev)}
+        >
+          Search
+        </button>
       </div>
       {showSearch && (
         <div
@@ -114,19 +145,40 @@ export default function CompetitionsPage() {
             alignItems: "center",
           }}
         >
-          <input
-            type="text"
-            placeholder="Search by title"
-            value={titleSearch}
-            onChange={(e) => setTitleSearch(e.target.value)}
-          />
-
-          <input
-            type="text"
-            placeholder="Search by username"
-            value={ownerSearch}
-            onChange={(e) => setOwnerSearch(e.target.value)}
-          />
+          <div style={{ position: "relative" }}>
+            <input
+             ref={inputRef}
+              type="text"
+              placeholder="Search competition title or username"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={{
+                width: "348px",
+                height: "39px",
+                borderRadius: "10px",
+                padding: "0 10px",
+              }}
+            />
+            <button
+              onClick={() => setSearch("")}
+              style={{
+                position: "absolute",
+                right: "20px",
+                width: "10px",
+                height: "18px",
+                top: "40%",
+                transform: "translateY(-50%)",
+                border: "none",
+                background: "transparent",
+                fontSize: "16px",
+                cursor: "pointer",
+                color: search ? "#fff" : "#666",
+                opacity: 1
+              }}
+            >
+              ✕
+            </button>
+          </div>
         </div>
       )}
 
