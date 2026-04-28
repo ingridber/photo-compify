@@ -49,7 +49,7 @@ export function ChangePassword() {
             </button>
 
             <div><p>PIC HERE</p></div>
-            <p>{user ? `${user}` : ''}</p>
+            <p>{user?.username}</p>
 
             <h3>Change Password</h3>
             <form onSubmit={handleUpdatePassword}>
