@@ -71,7 +71,7 @@ export async function changePassword(req: Request, res: Response) {
     if(!password) {
         return res.status(400).json({
             code: "MISSING_PASSWORD",
-            message: "Please provide old password for validation",
+            message: "Please provide current password for validation",
             status: 400, 
         });
     };
@@ -152,14 +152,48 @@ export function logout(req: Request, res: Response) {
 // ------------------------------------
 export async function deleteUser(req: Request, res: Response) {
     const userId = (req as any).user.id;
+    const {password} = req.body;
+
+    if(!password) {
+        return res.status(400).json({
+            code: "MISSING_PASSWORD",
+            message: "Please provide current password for validation",
+            status: 400, 
+        });
+    };
 
     try {
-        const deletedUser = await User.findByIdAndDelete(userId);
-        if (!deletedUser) {
-            return res.status(404).json({ message: "User not found" });
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({
+                code: "USER_NOT_FOUND",
+                message: "User not found",
+                status: 404
+            });
         }
-        res.status(200).json({ message: "Account deleted" });
-    } catch (error) {
-        res.status(500).json({ message: "Server error", error });
-    }
-}
+
+        const valid = await bcrypt.compare(password, user.password);
+
+        if (!valid) {
+            return res.status(400).json({
+                code: "NOT_VALID",
+                message: "Password is incorrect",
+                status: 400
+            });
+        }
+
+        await User.findByIdAndDelete(userId);
+        res.clearCookie("token");
+
+        return res.status(200).json({
+            message: "Account deleted successfully"
+        })
+    } catch (err) {
+        return res.status(500).json({
+            message: "Server error",
+            err
+        });
+    };
+
+};
