@@ -59,7 +59,7 @@ export function SignInForm() {
                 setRedirect(true);
                 setTimeout(() => {
                     navigate("/");
-                }, 2000);
+                }, 1500);
             }
 
             if (res.status === 423) {
