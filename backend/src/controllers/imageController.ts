@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { mockImages } from "../mock/imagesMock";
 import { supabase } from "../config/supabase";
 import { Image } from "../models/Image";
 
@@ -8,11 +7,18 @@ export async function getAllImages(req: Request, res: Response) {
   try {
     const images = await Image.find();
 
+    console.log("ALL IMAGES:", images);
+
     const imagesWithFreshUrl = await Promise.all(
       images.map(async (image) => {
+        console.log("FILENAME:", image.filename);
+
         const { data, error } = await supabase.storage
           .from("images")
+          // här skapas en ny signed URL varje gång för säkerhet
           .createSignedUrl(image.filename, 60 * 60);
+
+        console.log("SUPABASE ERROR:", error);
 
         return {
           ...image.toObject(),
@@ -103,7 +109,6 @@ export async function createImage(req: Request, res: Response) {
     }
 
     const newImage = {
-      id: `img${mockImages.length + 1}`,
       url: signedUrlData.signedUrl,
       uploadedBy,
       uploadedAt: new Date().toISOString()
