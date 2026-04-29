@@ -40,13 +40,11 @@ export interface CompetitionSubmissionInterface {
 // };
 
 export interface ImageInterface {
-    url: string;
-    uploadedBy: string;
-    competitionId: string;
     filename: string;
     fileSize: number;
     fileFormat: string;
     uploadedAt: Date;
+    getSignedUrl(): Promise<string | null>;
 };
 
 export interface AuthRequest extends Request {
