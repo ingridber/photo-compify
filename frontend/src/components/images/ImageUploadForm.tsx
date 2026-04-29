@@ -1,85 +1,104 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
+import "./ImageUploadForm.css";
+import { uploadImage } from "../../services/imageApi";
+import FileSizeValidation from "./FileSizeValidation";
+import FileFormatValidation from "./FileFormatValidation";
 
 export default function ImageUploadForm() {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [message, setMessage] = useState<string>("");
 
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
+  const fileSizeRules = FileSizeValidation();
+  const fileFormatRules = FileFormatValidation();
+
+  const handleOpenFilePicker = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
 
     setMessage("");
 
     if (!file) return;
 
-    setSelectedFile(file);
-    setPreview(URL.createObjectURL(file));
-  }
+    console.log(file.type);
 
-  async function handleUpload(e: React.FormEvent) {
-    e.preventDefault();
-
-    if (!selectedFile) {
-      setMessage("Please select an image first.");
+    const formatError = fileFormatRules.validateFileFormat(file);
+    if (formatError) {
+      setMessage(formatError);
+      setSelectedFile(null);
+      setPreviewUrl(null);
       return;
     }
 
+    const sizeError = fileSizeRules.validateFileSize(file);
+    if (sizeError) {
+      setMessage(sizeError);
+      setSelectedFile(null);
+      setPreviewUrl(null);
+      return;
+    }
+
+    setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile) return;
+
     const formData = new FormData();
     formData.append("image", selectedFile);
-    formData.append("uploadedBy", "delzar");
+    formData.append("uploadedBy", "Delzar");
+    formData.append("competitionId", "comp1");
 
-    try {
-      const response = await fetch("http://localhost:3000/api/v1/images", {
-        method: "POST",
-        body: formData,
-        credentials: "include"
-      });
+    const response = await uploadImage(formData);
+    const data = await response.json();
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        setMessage(data.message);
-        return;
-      }
-
-      setMessage(data.message);
-      setSelectedFile(null);
-      setPreview(null);
-
-    } catch (error) {
-      setMessage("Server connection failed.");
-    }
-  }
+    console.log(data);
+  };
 
   return (
-    <form onSubmit={handleUpload}>
+    <div className="image-upload-form">
       <input
         type="file"
+        ref={fileInputRef}
         onChange={handleFileChange}
+        style={{ display: "none" }}
       />
 
-      {preview && (
-        <div style={{ marginTop: "20px" }}>
+      <div className="upload-box" onClick={handleOpenFilePicker}>
+        {previewUrl ? (
           <img
-            src={preview}
-            alt="Preview"
-            style={{
-              width: "300px",
-              borderRadius: "10px"
-            }}
+            src={previewUrl}
+            alt="preview"
+            className="preview-image"
           />
-        </div>
-      )}
+        ) : (
+          <div>
+            <p className="upload-plus">+</p>
+            <h2 className="upload-title">Upload Image</h2>
+            <p className="upload-text">or drag & drop image here</p>
+          </div>
+        )}
+      </div>
 
-      <button type="submit">
-        Upload Image
-      </button>
+      <p className="upload-info">Max 1MB, JPG, PNG, WEBP</p>
 
       {message && (
-        <p style={{ marginTop: "20px" }}>
+        <p style={{ color: "red" }}>
           {message}
         </p>
       )}
-    </form>
+
+      <button
+        className={`upload-button ${selectedFile ? "active" : ""}`}
+        onClick={handleUpload}
+      >
+        Upload
+      </button>
+    </div>
   );
 }
