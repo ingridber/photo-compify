@@ -6,30 +6,26 @@ const imageSchema = new Schema<ImageInterface>({
     type: String,
     required: true
   },
-  uploadedBy: {
-    type: String,
-    required: true
-  },
-    competitionId: {
-    type: String,
-    required: true
-  },
+
   filename: {
     type: String,
     required: true
   },
+
   uploadedAt: {
     type: Date,
     default: Date.now
   },
+
   fileSize: {
-   type: Number,
-   required: true,
-   max: 1048576
+    type: Number,
+    required: true,
+    max: 1048576
   },
+
   fileFormat: {
-   type: String,
-   required: true
+    type: String,
+    required: true
   }
 });
 
