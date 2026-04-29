@@ -27,3 +27,7 @@
     letter-spacing: 0.02rem;
     color: var(--text-h);
 }
+
+.redirect {
+    margin-top: 10rem;
+}

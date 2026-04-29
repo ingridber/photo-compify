@@ -7,9 +7,11 @@ export function Home() {
                 <Link to="/login">
                     <button>Sign In</button>
                 </Link>
-                <Link to="/register">
+
+                {/* <Link to="/register">
                     <button>Register user</button>
-                </Link>
+                </Link> */}
+
                 <Link to="/manage-account">
                     <button>Manage Account</button>
                 </Link>
@@ -17,9 +19,10 @@ export function Home() {
                 <Link to="/competitions">
                     <button>Competitions</button>
                 </Link>
-                <Link to="/edit-profile">
+                
+                {/* <Link to="/edit-profile">
                     <button>Edit Profile</button>
-                </Link>
+                </Link> */}
             </nav>
 
             <h1>Welcome</h1>

@@ -127,14 +127,21 @@
 }
 
 
-/* ----------------------------- */
-/* ---------- MESSAGE ---------- */
-/* ----------------------------- */
+/* ------------------------------ */
+/* ---------- MESSAGES ---------- */
+/* ------------------------------ */
 .message {
     margin-top: 1.5rem;
     font-weight: 500;
     font-size: 1.1rem;
     color: var(--text-h);
+}
+
+.errorMessage {
+    margin-top: 1.5rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: red;
 }
 
 
