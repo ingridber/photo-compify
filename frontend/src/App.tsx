@@ -1,16 +1,35 @@
-import './App.css'
-import { Routes, Route } from 'react-router'
-import { Home } from './pages/Home'
-import { SignIn } from './pages/SignIn'
-import Register from './pages/Register'
-import EditProfile from './components/EditProfile' 
-import CompetitionsPage from './components/competitions/CompetitionsPage'
+import './App.css';
+import { Routes, Route } from 'react-router';
+import { Home } from './pages/Home';
+import { SignIn } from './pages/SignIn';
+import Register from './pages/Register';
+import EditProfile from './components/EditProfile';
+import CompetitionsPage from './components/competitions/CompetitionsPage';
 import ImageUpload from "./pages/ImageUpload";
-import { ManageAccount } from './pages/ManageAccount'
-import { ChangeUsername } from './components/manage-account/ChangeUsername'
-import { ChangePassword } from './components/manage-account/ChangePassword'
+import { ManageAccount } from './pages/ManageAccount';
+import { ChangeUsername } from './components/manage-account/ChangeUsername';
+import { ChangePassword } from './components/manage-account/ChangePassword';
+import { ProtectedRoute } from './components/ProtectedRoute';
+import { useEffect } from 'react';
+import { useUser } from './hooks/useUser';
+import { getCurrentUser } from './services/api';
 
 function App() {
+
+  const{setUser} = useUser();
+
+  useEffect(() => {
+    async function fetchUser() {
+      const res = await getCurrentUser();
+
+      if (res?.data) {
+        setUser(res.data);
+      };
+    };
+
+    fetchUser();
+  }, []);
+
   return (
     <>
         <Routes>
@@ -22,13 +41,19 @@ function App() {
           <Route path="/image-upload" element={<ImageUpload />} />
 
           <Route path="/manage-account">
-            <Route index element={<ManageAccount/>} />
-            <Route path="change-username" element={<ChangeUsername />} />
-            <Route path="change-password" element={<ChangePassword />} />
-
+            <Route index element={
+              <ProtectedRoute>
+                <ManageAccount/>
+              </ProtectedRoute>} />
+            <Route path="change-username" element={
+              <ProtectedRoute>
+                <ChangeUsername/>
+              </ProtectedRoute>} />
+            <Route path="change-password" element={
+              <ProtectedRoute>
+                <ChangePassword/>
+              </ProtectedRoute>} />
           </Route>
-
-
         </Routes>
     </>
   )
