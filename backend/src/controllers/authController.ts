@@ -105,7 +105,7 @@ export async function login(req: Request, res: Response): Promise<Response> {
 
         return res.status(401).json({
             code: "INVALID_CREDENTIALS",
-            message: "Invalid credentials, email or password is incorrect",
+            message: "Invalid credentials, username or password is incorrect",
             status: 401
         });
     };
@@ -128,5 +128,6 @@ export async function login(req: Request, res: Response): Promise<Response> {
         message: "Login successful",
         status: 200,
         username: user.username,
+        profilePicture: user.profilePicture
     });
 };

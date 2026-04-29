@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router"; 
+import { useUser } from "../hooks/useUser";
 
 const EditProfile = () => {
   const [username, setUsername] = useState("");
@@ -8,6 +9,7 @@ const EditProfile = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [message, setMessage] = useState({ text: "", isError: false });
+  const {user} = useUser();
 
   // --------------------------------------------
   // ---------- HANDLE UPDATE USERNAME ----------
@@ -36,6 +38,22 @@ const EditProfile = () => {
   const handleUpdatePassword = async (e: React.SubmitEvent) => {
     e.preventDefault();
     
+    if(password === newPassword) {
+      setMessage({
+        text: "New password must be different from the old password.",
+        isError: true
+      });
+      return;
+    }
+
+    if(newPassword !== confirmPassword) {
+      setMessage({
+        text: "Passwords doesn't match.",
+        isError: true
+      });
+      return;
+    }
+
     try {
       const res = await fetch("http://localhost:3000/api/v1/user/password", {
         method: "PATCH",
@@ -103,7 +121,7 @@ const EditProfile = () => {
         ← Back to Home
       </Link>
 
-      <h1 style={{ textAlign: "center" }}>Profile Settings</h1>
+      <h1 style={{ textAlign: "center" }}>Profile Settings {user ? ` for: ${user}` : ""}</h1>
 
       {message.text && (
         <div style={{ padding: "12px", marginBottom: "1.5rem", borderRadius: "5px", backgroundColor: message.isError ? "#ffdce0" : "#defabe", color: message.isError ? "#af233a" : "#3d7a22", border: `1px solid ${message.isError ? "#ff8080" : "#80ff80"}` }}>

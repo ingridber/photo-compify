@@ -1,0 +1,29 @@
+.title {
+    text-transform: uppercase;
+    font-weight: 800;
+    font-size: 1.3rem;
+    color: var(--text-h);
+    letter-spacing: 0.05rem;
+    margin-bottom: 0.8rem;
+    margin-top: 1.8rem;
+}
+
+.submitBtn {
+    padding: 0.8rem 1rem;
+}
+
+
+.registerTitle {
+    margin-top: 2rem;
+    font-size: 0.8rem;
+    color: var(--text-h);
+}
+
+.register {
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.02rem;
+    color: var(--text-h);
+}
