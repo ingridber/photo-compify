@@ -5,9 +5,9 @@ export function checkFileSize(
   res: Response,
   next: NextFunction
 ) {
-  if (req.file && req.file.size > 1000) {
+  if (req.file && req.file.size > 1 * 1024 * 1024) {
     return res.status(400).json({
-      message: "File size must be less than test limit"
+      message: "File size must be less than 1MB"
     });
   }
 
