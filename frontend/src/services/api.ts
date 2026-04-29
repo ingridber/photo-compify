@@ -17,7 +17,22 @@ export async function login(email: string, password: string) {
     }
 
     return data;
-}
+};
+
+// ---------- LOG OUT ----------
+// -----------------------------
+export async function logout() {
+    const res = await fetch("http://localhost:3000/api/v1/user/logout", {
+        method: "POST",
+        credentials: "include",
+    });
+
+    if(!res.ok) {
+        throw new Error('Logout failed');
+    }
+
+    return res;
+};
 
 // ---------- REGISTER ----------
 // ------------------------------
@@ -35,7 +50,7 @@ export async function register(email: string, username: string, password: string
     });
 
     return res;
-}
+};
 
 // ---------- FETCH COMPETITIONS ----------
 // ----------------------------------------
@@ -47,9 +62,7 @@ export async function fetchCompetitions() {
     }
 
     return await res.json();
-
-}
-
+};
 
 // ---------- UPDATE USERNAME ----------
 // -------------------------------------
@@ -71,7 +84,7 @@ export async function updateUsername(username: string) {
     }
 
     return data;
-}
+};
 
 // ---------- UPDATE PASSWORD ----------
 // -------------------------------------
@@ -98,5 +111,4 @@ export async function updatePassword(
     }
 
     return data;
-}
-
+};
