@@ -107,10 +107,11 @@ export default function RegisterForm() {
             {/* FIELD GROUP: USERNAME */}
             <div className={mixins.fieldGroup}>
 
-                <label htmlFor="username" className={mixins.labelForInput}>
+                {errors.username 
+                    ? <p className={mixins.labelForInput} style={{ color: "red" }}>{errors.username}</p>
+                    : <label htmlFor="username" className={mixins.labelForInput}>
                     Username</label>
-                
-                {errors.username && <small style={{ color: "red" }}> - {errors.username}</small>}
+                }
 
                 <div className={mixins.inputFieldContainer}>
                     <input
@@ -128,10 +129,11 @@ export default function RegisterForm() {
             {/* FIELD GROUP: EMAIL */}
             <div className={mixins.fieldGroup}>
 
-                <label htmlFor="email" className={mixins.labelForInput}>
+                {errors.email
+                    ? <p className={mixins.labelForInput} style={{ color: "red" }}>{errors.email}</p>
+                    : <label htmlFor="email" className={mixins.labelForInput}>
                     Email</label>
-
-                {errors.email && <small style={{ color: "red" }}> - {errors.email}</small>}
+                }
 
                 <div className={mixins.inputFieldContainer}>
                     <input
@@ -149,10 +151,12 @@ export default function RegisterForm() {
             {/* FIELD GROUP: PASSWORD */}
             <div className={mixins.fieldGroup}>
 
-                <label htmlFor="password" className={mixins.labelForInput}>
+                { errors.password 
+                    ? <p className={mixins.labelForInput} style={{ color: "red" }}>{errors.password}</p>
+                    : <label htmlFor="password" className={mixins.labelForInput}>
                     Password</label>
-
-                {errors.password && <small style={{ color: "red" }}> - {errors.password}</small>}
+                }
+                
                 <small>At least 1 capital letter, 1 number, and 1 symbol</small>
                 
                 <div className={mixins.inputFieldContainer}>
@@ -180,12 +184,12 @@ export default function RegisterForm() {
 
             {/* FIELD GROUP: CONFIRM PASSWORD */}
             <div className={mixins.fieldGroup}>
-                <label 
-                    htmlFor="confirmPassword"
-                    className={mixins.labelForInput}>
-                        Confirm password</label>
-                 
-                 {errors.confirmPassword && <small style={{ color: "red" }}> - {errors.confirmPassword}</small>}
+
+                { errors.confirmPassword
+                    ? <p className={mixins.labelForInput} style={{ color: "red" }}>{errors.confirmPassword}</p>
+                    : <label htmlFor="confirmPassword" className={mixins.labelForInput}>
+                    Confirm password</label>
+                }
 
                 <div className={mixins.inputFieldContainer}> 
                     <input

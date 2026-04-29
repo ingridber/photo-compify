@@ -27,7 +27,7 @@ export function ManageAccount() {
             </div>
 
             <Link to="change-picture" className={styles.changeProfilePicLink}>
-                Change Profile Picture
+                {user?.profilePicture ? "Change " : "Upload "}Profile Picture
             </Link>
 
 
@@ -41,12 +41,12 @@ export function ManageAccount() {
             </Link>
 
 
-            {/* LOG OUT */}
+            {/* SIGN OUT */}
 
             <article>
                 <p className={`${styles.signOutTitle} ${styles.space}`}>
                     Need a break?</p>
-                <Link to="logout" className={styles.signOut}>
+                <Link to="sign-out" className={styles.signOut}>
                     Sign Out
                 </Link>
             </article>
