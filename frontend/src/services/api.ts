@@ -13,6 +13,30 @@ export async function login(username: string, password: string) {
     return res;
 };
 
+// ---------- GET CURRENT USER ----------
+// --------------------------------------
+export async function getCurrentUser() {
+    try {
+        const res = await fetch("http://localhost:3000/api/v1/auth/me", {
+            credentials: "include",
+        });
+
+        if (res.status === 401) {
+            return null;
+        };
+
+        if (!res.ok) {
+            throw new Error("Failed to fetch user");
+        };
+
+        return await res.json();
+
+    } catch (err) {
+        console.log(err);
+        return null;
+    };
+};
+
 // ---------- LOG OUT ----------
 // -----------------------------
 export async function logout() {

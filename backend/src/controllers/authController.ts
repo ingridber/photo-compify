@@ -82,8 +82,7 @@ export async function login(req: Request, res: Response): Promise<Response> {
         });
     };
 
-    // const dummyHash = "ijklmnopqrstuv$2b$10$abcdefgh"
-    const dummyHash = await bcrypt.hash("ijklmnopqrstuv$2b$10$abcdefgh", 10);
+    const dummyHash = "ijklmnopqrstuv$2b$10$abcdefgh"
     const hashToCheck = user ? user.password : dummyHash;
     const valid = await bcrypt.compare(password, hashToCheck);
 
@@ -117,7 +116,8 @@ export async function login(req: Request, res: Response): Promise<Response> {
 
     // ---------- SPARA TOKEN ----------
     // ---------------------------------
-    res.cookie("token", token, { httpOnly: true, secure: NODE_ENV === "production", sameSite: "strict" })
+    // res.cookie("token", token, { httpOnly: true, secure: NODE_ENV === "production", sameSite: "strict" })
+    res.cookie("token", token, { httpOnly: true, secure: false, sameSite: "lax" })
 
     // ---------- RESET attempts och datum vid SUCCESS ----------
     user.loginAttempts = 0;
@@ -131,4 +131,36 @@ export async function login(req: Request, res: Response): Promise<Response> {
         username: user.username,
         profilePicture: user.profilePicture
     });
+};
+
+// --------------------------------------
+// ---------- GET CURRENT USER ----------
+// --------------------------------------
+export async function getCurrentUser(req: Request, res: Response): Promise<Response> {
+    try {
+        const userId = (req as any).user.id;
+
+        const user = await User.findById(userId).select("username profilePicture");
+
+        if (!user) {
+            return res.status(404).json({
+                code: "USER_NOT_FOUND",
+                message: "User not found"
+            });
+        }
+
+       return res.status(200).json({
+            code: "USER_FETCHED",
+            data: {
+                username: user.username,
+                profilePicture: user.profilePicture
+            }
+        });
+
+    } catch (err) {
+        return res.status(500).json({
+            code: "SERVER_ERROR",
+            message: "Something went wrong"
+        });
+    };
 };
