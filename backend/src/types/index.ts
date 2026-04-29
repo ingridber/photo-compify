@@ -42,6 +42,7 @@ export interface CompetitionSubmissionInterface {
 export interface ImageInterface {
     url: string;
     uploadedBy: string;
+    competitionId: string;
     filename: string;
     fileSize: number;
     fileFormat: string;

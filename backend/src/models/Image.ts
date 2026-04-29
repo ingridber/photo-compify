@@ -10,6 +10,10 @@ const imageSchema = new Schema<ImageInterface>({
     type: String,
     required: true
   },
+    competitionId: {
+    type: String,
+    required: true
+  },
   filename: {
     type: String,
     required: true
@@ -23,7 +27,6 @@ const imageSchema = new Schema<ImageInterface>({
    required: true,
    max: 1048576
   },
-
   fileFormat: {
    type: String,
    required: true
