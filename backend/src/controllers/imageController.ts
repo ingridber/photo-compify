@@ -70,12 +70,11 @@ export async function getImageById(req: Request, res: Response) {
 // POST - CREATE IMAGE
 export async function createImage(req: Request, res: Response) {
   try {
-    const { uploadedBy, competitionId } = req.body;
     const imageFile = req.file;
 
-    if (!imageFile || !uploadedBy || !competitionId) {
+    if (!imageFile ) {
       return res.status(400).json({
-        message: "Image file and uploadedBy are required"
+        message: "Image file is required"
       });
     }
 
@@ -110,14 +109,11 @@ export async function createImage(req: Request, res: Response) {
 
     const newImage = {
       url: signedUrlData.signedUrl,
-      uploadedBy,
       uploadedAt: new Date().toISOString()
     };
 
     await Image.create({
       url: signedUrlData.signedUrl,
-      uploadedBy,
-      competitionId,
       filename: data.path,
       fileSize: imageFile.size,
       fileFormat: imageFile.mimetype,
@@ -180,7 +176,6 @@ export async function deleteImage(req: Request, res: Response) {
 export async function updateImage(req: Request, res: Response) {
   try {
     const { id } = req.params;
-    const { uploadedBy } = req.body;
 
     const image = await Image.findById(id);
 
@@ -188,10 +183,6 @@ export async function updateImage(req: Request, res: Response) {
       return res.status(404).json({
         message: "Image not found"
       });
-    }
-
-    if (uploadedBy) {
-      image.uploadedBy = uploadedBy;
     }
 
     await image.save();
@@ -211,42 +202,6 @@ export async function updateImage(req: Request, res: Response) {
   }
 }
 
-// GET IMAGES BY COMPETITION ID
-export async function getImagesByCompetition(req: Request, res: Response) {
-  try {
-    const competitionId = req.params.competitionId as string;
-
-    const images = await Image.find({ competitionId });
-
-    const imagesWithFreshUrl = await Promise.all(
-      images.map(async (image) => {
-        const { data, error } = await supabase.storage
-          .from("images")
-          .createSignedUrl(image.filename, 60 * 60);
-
-      return {
-        _id: image._id,
-        url: error ? null : data?.signedUrl,
-        uploadedBy: image.uploadedBy,
-        competitionId: image.competitionId,
-        filename: image.filename,
-        uploadedAt: image.uploadedAt,
-        fileSize: image.fileSize,
-        fileFormat: image.fileFormat
-      };
-      })
-    );
-
-    return res.status(200).json({
-      data: imagesWithFreshUrl
-    });
-
-  } catch (error) {
-    return res.status(500).json({
-      message: "Failed to fetch competition images"
-    });
-  }
-}
 
 // GET - TEST SUPABASE CONNECTION
 export async function testSupabase(req: Request, res: Response) {
