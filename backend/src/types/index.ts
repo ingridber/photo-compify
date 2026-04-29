@@ -26,6 +26,7 @@ export interface CompetitionInterface extends Document {
 };
 
 export interface CompetitionSubmissionInterface {
+    competition: Types.ObjectId;
     user: Types.ObjectId;
     image: Types.ObjectId;
     description?: string;
