@@ -82,7 +82,8 @@ export async function login(req: Request, res: Response): Promise<Response> {
         });
     };
 
-    const dummyHash = "ijklmnopqrstuv$2b$10$abcdefgh"
+    // const dummyHash = "ijklmnopqrstuv$2b$10$abcdefgh"
+    const dummyHash = await bcrypt.hash("ijklmnopqrstuv$2b$10$abcdefgh", 10);
     const hashToCheck = user ? user.password : dummyHash;
     const valid = await bcrypt.compare(password, hashToCheck);
 
