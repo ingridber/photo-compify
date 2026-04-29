@@ -20,10 +20,10 @@ export function ManageAccount() {
 
             setMessage(`User: ${user?.username} succesfully logged out. Redirecting...`);
             setRedirect(true);
-            setUser(null);
             setTimeout(() => {
                 navigate("/");
-            }, 2000);
+                setUser(null);
+            }, 1500);
         } catch (err: unknown) {
             if(err instanceof Error) {
                 setMessage(err.message)
