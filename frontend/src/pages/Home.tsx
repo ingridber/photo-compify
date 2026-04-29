@@ -23,7 +23,7 @@ export function Home() {
                 </Link>
             </nav>
 
-            <h1>Welcome</h1>
+            <h1>{`Welcome ${user?.username ? user.username.toLocaleUpperCase() : 'Stranger'} <3`}</h1>
         </div>
     )
 }

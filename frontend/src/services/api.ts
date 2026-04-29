@@ -130,3 +130,20 @@ export async function updatePassword(
 
     return data;
 };
+
+// ---------- DELETE ACCOUNT ----------
+// ------------------------------------
+export async function deleteAccount(
+    password: string,) {
+
+    const res = await fetch("http://localhost:3000/api/v1/user/", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+            password: password,
+        }),
+    });
+
+    return res;
+}
