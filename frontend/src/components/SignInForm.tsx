@@ -5,43 +5,90 @@ import { login } from "../services/api";
 import { useUser } from "../hooks/useUser";
 import { useNavigate } from "react-router";
 import { DisplayProfilePicture } from "./display-profile-picture/DisplayProfilePicture";
+import { Link } from "react-router";
+
+
+interface FormErrors {
+    username?: string;
+    password?: string;
+    general?: string;
+    locked?: string;
+}
 
 export function SignInForm() {
     const [username, setUsername] = useState(''); 
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-
     const [message, setMessage] = useState('');
-    const {user, setUser} = useUser();
+    const [redirect, setRedirect] = useState(false);
+    const [errors, setErrors] = useState<FormErrors>({});
+
+    const {setUser} = useUser();
     const navigate = useNavigate();
 
 
     const handleSubmit = async (e: React.SubmitEvent ) => {
         e.preventDefault();
 
+        const newErrors: FormErrors = {};
+
+        if (!username) newErrors.username = "Username is required";
+        if (!password) newErrors.password = "Password is required";
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            return;
+        }
+
         try {
-            const data = await login(username, password);
-            setMessage(data.message);
-            setUser({
+            const res = await login(username, password);
+            const data = await res.json();
+
+            if (res.status === 200) {
+                setUser({
                 username: data.username,
                 profilePicture: data.profilePicture || ''
-            });
-            setUsername('');
-            setPassword('');
-            setShowPassword(false);
+                });
+
+                setErrors({});
+                setUsername('');
+                setPassword('');
+                setShowPassword(false);
+
+                setMessage(`User: ${data.username} succesfully signed in. Redirecting...`);
+                setRedirect(true);
+                setTimeout(() => {
+                    navigate("/");
+                }, 2000);
+            }
+
+            if (res.status === 423) {
+                setErrors({locked: data.message})
+                // "Too many failed logins, try again in 1h"
+                setPassword('');
+            }
+
+            if (res.status === 401) {
+                setErrors({general: "Invalid credentials, username or password is incorrect" })
+            }
 
         } catch (err) {
             setUser(null);
+
             if (err instanceof Error) {
-                setMessage(err.message);
+                setErrors({ general: err.message });
             } else {
-                setMessage('Something went wrong');
+                setErrors({ general: "Something went wrong" });
             }
-        };
+        }
     };
 
     return (
         <section className={mixins.sectionContainer}>
+
+            {redirect 
+            ? <p className={styles.redirect}>{message}</p> 
+            : <>
 
             {/* BACK BUTTON */}
             <button 
@@ -61,9 +108,13 @@ export function SignInForm() {
 
             {/* FIELD GROUP: USERNAME */}
             <div className={mixins.fieldGroup}>
-                <label htmlFor="username" className={mixins.labelForInput}>
-                    Username</label>
 
+                {errors.username 
+                    ? <p className={mixins.labelForInput} style={{ color: "red" }}>{errors.username}</p>
+                    : <label htmlFor="username" className={mixins.labelForInput}>
+                    Username</label>
+                }
+                
                 <div className={mixins.inputFieldContainer}>
                     <input 
                         id="username"
@@ -79,10 +130,11 @@ export function SignInForm() {
             {/* FIELD GROUP: PASSWORD */}
             <div className={mixins.fieldGroup}>
 
-                <label 
-                    htmlFor="password" 
-                    className={mixins.labelForInput}>
-                        Password</label>
+                {errors.password 
+                    ? <p className={mixins.labelForInput} style={{ color: "red" }}>{errors.password}</p>
+                    : <label htmlFor="password" className={mixins.labelForInput}>
+                    Password</label>
+                }
 
                 <div className={mixins.inputFieldContainer}>
                     <input 
@@ -105,9 +157,13 @@ export function SignInForm() {
             </div>
 
             {/* UX MESSAGE */}
-            {message && 
-                <p className={mixins.message}>{message}</p>
-            }
+            {errors.general 
+                ? <p className={mixins.errorMessage}>{errors.general}</p>
+                : <></>}
+
+            {errors.locked 
+                ? <p className={mixins.errorMessage}>{errors.locked}</p>
+                : <></>}
 
             {/* SUBMIT BUTTON */}
             <button
@@ -118,7 +174,12 @@ export function SignInForm() {
             </button>
             </form>
 
-            {user && <p>Welcome {user.username}</p>}
+            <p className={styles.registerTitle}>Not a member?</p>
+            <Link to="/register" className={styles.register}>
+                Create an account
+            </Link>
+            </>
+            }
         </section>
     )
 };
