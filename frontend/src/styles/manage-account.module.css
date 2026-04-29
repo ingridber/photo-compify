@@ -45,6 +45,10 @@
     margin-top: 3rem;
 }
 
+.space2 {
+    margin-top: 0.5rem;
+}
+
 .signOut,
 .deleteAccount {
     border: none;
@@ -70,7 +74,9 @@ article {
 }
 
 .confirmBtnYes,
-.confirmBtnNo {
+.confirmBtnNo,
+.confirmBtnStay,
+.confirmBtnBye {
     border: none;
     color: white;
     width: 2.8rem;
@@ -82,10 +88,45 @@ article {
     cursor: pointer;
 }
 
-.confirmBtnYes {
+.confirmBtnYes,
+.confirmBtnStay {
     background-color: var(--submit);
 }
 
-.confirmBtnNo {
+.confirmBtnNo,
+.confirmBtnBye {
     background-color: red;
+}
+
+.confirmBtnStay,
+.confirmBtnBye {
+    width: 3.1rem;
+    height: 2.1rem;
+}
+
+
+.confirmDeleteContainer {
+    width: 80%;
+    margin: auto;
+}
+
+.confirmDeleteBtnContainer {
+    display: flex;
+    width: 40%;
+    justify-content: space-around;
+    margin: 1rem auto auto auto;
+}
+
+
+
+/* ----------------------------------- */
+/* ---------- MOBILE LAYOUT ---------- */
+/* ----------------------------------- */
+@media (max-width: 600px) { 
+
+    .confirmDeleteContainer{
+        width: 90vw;
+    }
+
+
 }
