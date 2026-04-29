@@ -17,7 +17,14 @@ export const errorHandler = (
     });
     return;
   }
-
+  // Multer and normal errors
+  if (err instanceof Error) {
+    res.status(400).json({
+      success: false,
+      message: err.message
+    });
+    return;
+  }
   // Unknown Errors
   console.error("UNEXPECTED ERROR:", err);
 

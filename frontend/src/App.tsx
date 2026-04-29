@@ -5,6 +5,7 @@ import { SignIn } from './pages/SignIn'
 import Register from './pages/Register'
 import EditProfile from './components/EditProfile' 
 import CompetitionsPage from './components/competitions/CompetitionsPage'
+import ImageUpload from "./pages/ImageUpload";
 import { ManageAccount } from './pages/ManageAccount'
 import { ChangeUsername } from './components/manage-account/ChangeUsername'
 import { ChangePassword } from './components/manage-account/ChangePassword'
@@ -18,6 +19,7 @@ function App() {
           <Route path="/register" element={<Register />}/>
           <Route path="/edit-profile" element={<EditProfile />}/> 
           <Route path='/competitions' element={<CompetitionsPage />}/> 
+          <Route path="/image-upload" element={<ImageUpload />} />
 
           <Route path="/manage-account">
             <Route index element={<ManageAccount/>} />
