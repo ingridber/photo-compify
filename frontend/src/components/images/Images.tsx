@@ -42,7 +42,7 @@ export default function Images() {
       {images.length === 0 && <p>No images found</p>}
 
       {images.map((img) => (
-        <div key={img._id}>
+        <div key={img._id} style={{ marginBottom: 20 }}>
           <img
             src={img.url}
             alt={img.filename}
@@ -50,9 +50,9 @@ export default function Images() {
             style={{ cursor: "pointer" }}
             onClick={() => window.open(img.url, "_blank")}
           />
-          <p>{img.filename}</p>
-              <p><strong>ID:</strong> {img._id}</p>
-              <p><strong>URL:</strong> {img.url}</p>
+          <p><strong>filename:</strong> {img.filename}</p>
+          <p><strong>imageId:</strong> {img._id}</p>
+          <p><strong>url:</strong> {img.url}</p>
         </div>
       ))}
     </div>
