@@ -3,8 +3,15 @@ import "./ImageUploadForm.css";
 import { uploadImage } from "../../services/imageApi";
 import FileSizeValidation from "./FileSizeValidation";
 import FileFormatValidation from "./FileFormatValidation";
+import { updateProfilePicture } from "../../services/api";
+import { getCurrentUser } from "../../services/api";
+import { useUser } from "../../hooks/useUser";
 
-export default function ImageUploadForm() {
+type PictureProps = {
+    pictureType? : string | null;
+};
+
+export default function ImageUploadForm({pictureType}: PictureProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -13,6 +20,8 @@ export default function ImageUploadForm() {
 
   const fileSizeRules = FileSizeValidation();
   const fileFormatRules = FileFormatValidation();
+
+  const {setUser} = useUser();
 
   const handleOpenFilePicker = () => {
     fileInputRef.current?.click();
@@ -64,6 +73,22 @@ export default function ImageUploadForm() {
       }
 
       const data = await response.json();
+
+      if(pictureType === 'profile') {
+        updateProfilePicture(data._id)
+
+        const currentUser = await getCurrentUser();
+
+        if (!currentUser) {
+          throw new Error("No current User found")
+        }
+
+        setUser({
+          username: currentUser.username,
+          profilePicture: currentUser.profilePicture
+        })
+
+      }
 
       console.log("UPLOAD RESPONSE:", data);
 
