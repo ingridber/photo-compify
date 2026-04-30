@@ -51,6 +51,8 @@ export default function Images() {
             onClick={() => window.open(img.url, "_blank")}
           />
           <p>{img.filename}</p>
+              <p><strong>ID:</strong> {img._id}</p>
+              <p><strong>URL:</strong> {img.url}</p>
         </div>
       ))}
     </div>

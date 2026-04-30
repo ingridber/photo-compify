@@ -1,17 +1,15 @@
 export default function FileFormatValidation() {
-  const allowedTypes = [
-    "image/jpeg",
-    "image/png",
-    "image/webp"
-  ];
+    function validateFileFormat(file: File) {
+    const type = file.type.toLowerCase();
 
-  function validateFileFormat(file: File) {
-    if (!allowedTypes.includes(file.type)) {
-      return "Only JPG, PNG and WEBP files are allowed";
+    const allowedTypes = ["image/jpeg", "image/webp", "image/png"];
+
+    if (!allowedTypes.includes(type)) {
+        return `Invalid format: ${type}`;
     }
 
     return "";
-  }
+    }
 
   return {
     validateFileFormat
