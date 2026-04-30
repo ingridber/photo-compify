@@ -6,6 +6,7 @@ import FileFormatValidation from "./FileFormatValidation";
 
 export default function ImageUploadForm() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [message, setMessage] = useState<string>("");
@@ -24,8 +25,7 @@ export default function ImageUploadForm() {
 
     if (!file) return;
 
-    console.log(file.type);
-
+    // format check
     const formatError = fileFormatRules.validateFileFormat(file);
     if (formatError) {
       setMessage(formatError);
@@ -34,6 +34,7 @@ export default function ImageUploadForm() {
       return;
     }
 
+    // size check
     const sizeError = fileSizeRules.validateFileSize(file);
     if (sizeError) {
       setMessage(sizeError);
@@ -47,17 +48,39 @@ export default function ImageUploadForm() {
   };
 
   const handleUpload = async () => {
-    if (!selectedFile) return;
+    if (!selectedFile) {
+      setMessage("Please select a file first");
+      return;
+    }
 
-    const formData = new FormData();
-    formData.append("image", selectedFile);
-    formData.append("uploadedBy", "Delzar");
-    formData.append("competitionId", "comp1");
+    try {
+      const formData = new FormData();
+      formData.append("image", selectedFile);
 
-    const response = await uploadImage(formData);
-    const data = await response.json();
+      const response = await uploadImage(formData);
 
-    console.log(data);
+      if (!response.ok) {
+        throw new Error("Upload failed");
+      }
+
+      const data = await response.json();
+
+      console.log("UPLOAD RESPONSE:", data);
+
+      setMessage("Image uploaded successfully ✅");
+
+      // reset
+      setSelectedFile(null);
+      setPreviewUrl(null);
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+
+    } catch (err: any) {
+      console.log("UPLOAD ERROR:", err);
+      setMessage("Upload failed ❌");
+    }
   };
 
   return (
@@ -88,7 +111,7 @@ export default function ImageUploadForm() {
       <p className="upload-info">Max 1MB, JPG, PNG, WEBP</p>
 
       {message && (
-        <p style={{ color: "red" }}>
+        <p style={{ color: message.includes("success") ? "green" : "red" }}>
           {message}
         </p>
       )}
