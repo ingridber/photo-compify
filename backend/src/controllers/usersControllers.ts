@@ -4,7 +4,6 @@ import { User } from "../models/User";
 import verifyPassword from "../utils/passwordVerifier";
 
 
-// -------------------------------------
 // ---------- CHANGE USERNAME ----------
 // -------------------------------------
 export async function changeUsername(req: Request, res: Response) {
@@ -52,8 +51,6 @@ export async function changeUsername(req: Request, res: Response) {
     }
 }
 
-
-// -------------------------------------
 // ---------- CHANGE PASSWORD ----------
 // -------------------------------------
 export async function changePassword(req: Request, res: Response) {
@@ -130,15 +127,33 @@ export async function changePassword(req: Request, res: Response) {
 
 };
 
-// ----------------------------------------
 // ---------- CHANGE PROFILE PIC ----------
 // ----------------------------------------
 export async function changeProfilePicture(req: Request, res: Response) {
-    res.status(200).json({ message: "Profile picture updated" });
+
+    const userId = (req as any).user.id; 
+    // SKIKCA MED !!
+    const {pictureId} = req.body;
+
+    try {
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { profilePicture: pictureId },
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json({ 
+            message: "Profile picture updated"});
+
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error });
+    }
 }
 
-
-// ------------------------------------
 // ---------- LOGOUT SESSION ----------
 // ------------------------------------
 export function logout(req: Request, res: Response) {
@@ -146,8 +161,6 @@ export function logout(req: Request, res: Response) {
     res.status(200).json({ message: "Logged out" });
 }
 
-
-// ------------------------------------
 // ---------- DELETE ACCOUNT ----------
 // ------------------------------------
 export async function deleteUser(req: Request, res: Response) {
