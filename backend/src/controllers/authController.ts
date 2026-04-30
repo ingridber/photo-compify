@@ -140,7 +140,7 @@ export async function getCurrentUser(req: Request, res: Response): Promise<Respo
     try {
         const userId = (req as any).user.id;
 
-        const user = await User.findById(userId).select("username profilePicture");
+        const user = await User.findById(userId).select("username profilePicture").populate("profilePicture", "Image");
 
         if (!user) {
             return res.status(404).json({
@@ -149,11 +149,13 @@ export async function getCurrentUser(req: Request, res: Response): Promise<Respo
             });
         }
 
+        const profilePicture = await user.profilePicture!.getSignedUrl()
+
        return res.status(200).json({
             code: "USER_FETCHED",
             data: {
                 username: user.username,
-                profilePicture: user.profilePicture
+                profilePicture: profilePicture,
             }
         });
 
