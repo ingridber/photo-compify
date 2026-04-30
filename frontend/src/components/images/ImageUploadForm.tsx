@@ -1,53 +1,127 @@
-import { useEffect, useState } from "react";
-import { getImages } from "../../services/imageApi";
+import { useRef, useState } from "react";
+import "./ImageUploadForm.css";
+import { uploadImage } from "../../services/imageApi";
+import FileSizeValidation from "./FileSizeValidation";
+import FileFormatValidation from "./FileFormatValidation";
 
-type ImageItem = {
-  _id: string;
-  url: string;
-  filename: string;
-};
+export default function ImageUploadForm() {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-export default function Images() {
-  const [images, setImages] = useState<ImageItem[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [message, setMessage] = useState<string>("");
 
-  useEffect(() => {
-    async function fetchImages() {
-      try {
-        const data = await getImages();
-        setImages(data || []);
-      } catch (err: any) {
-        console.log("ERROR:", err);
-        setError(err.message);
-      }
+  const fileSizeRules = FileSizeValidation();
+  const fileFormatRules = FileFormatValidation();
+
+  const handleOpenFilePicker = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    setMessage("");
+
+    if (!file) return;
+
+    // format check
+    const formatError = fileFormatRules.validateFileFormat(file);
+    if (formatError) {
+      setMessage(formatError);
+      setSelectedFile(null);
+      setPreviewUrl(null);
+      return;
     }
 
-    fetchImages();
-  }, []);
+    // size check
+    const sizeError = fileSizeRules.validateFileSize(file);
+    if (sizeError) {
+      setMessage(sizeError);
+      setSelectedFile(null);
+      setPreviewUrl(null);
+      return;
+    }
 
-  if (error) return <p>{error}</p>;
+    setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile) {
+      setMessage("Please select a file first");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("image", selectedFile);
+
+      const response = await uploadImage(formData);
+
+      if (!response.ok) {
+        throw new Error("Upload failed");
+      }
+
+      const data = await response.json();
+
+      console.log("UPLOAD RESPONSE:", data);
+
+      setMessage("Image uploaded successfully ✅");
+
+      // reset
+      setSelectedFile(null);
+      setPreviewUrl(null);
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+
+    } catch (err: any) {
+      console.log("UPLOAD ERROR:", err);
+      setMessage("Upload failed ❌");
+    }
+  };
 
   return (
-    <div>
-      <h2>Images</h2>
+    <div className="image-upload-form">
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        style={{ display: "none" }}
+      />
 
-      {images.length === 0 && <p>No images found</p>}
-
-      {images.map((img) => (
-        <div key={img._id} style={{ marginBottom: 20 }}>
+      <div className="upload-box" onClick={handleOpenFilePicker}>
+        {previewUrl ? (
           <img
-            src={img.url}
-            alt={img.filename}
-            width={200}
-            style={{ cursor: "pointer" }}
-            onClick={() => window.open(img.url, "_blank")}
+            src={previewUrl}
+            alt="preview"
+            className="preview-image"
           />
+        ) : (
+          <div>
+            <p className="upload-plus">+</p>
+            <h2 className="upload-title">Upload Image</h2>
+            <p className="upload-text">or drag & drop image here</p>
+          </div>
+        )}
+      </div>
 
-          <p><strong>filename:</strong> {img.filename}</p>
-          <p><strong>imageId:</strong> {img._id}</p>
-          <p><strong>url:</strong> {img.url}</p>
-        </div>
-      ))}
+      <p className="upload-info">Max 1MB, JPG, PNG, WEBP</p>
+
+      {message && (
+        <p style={{ color: message.includes("success") ? "green" : "red" }}>
+          {message}
+        </p>
+      )}
+
+      <button
+        className={`upload-button ${selectedFile ? "active" : ""}`}
+        onClick={handleUpload}
+      >
+        Upload
+      </button>
     </div>
   );
 }
