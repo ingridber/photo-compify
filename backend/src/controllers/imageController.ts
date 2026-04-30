@@ -7,33 +7,27 @@ export async function getAllImages(req: Request, res: Response) {
   try {
     const images = await Image.find();
 
-    console.log("ALL IMAGES:", images);
-
-    const imagesWithFreshUrl = await Promise.all(
+    const imagesWithUrls = await Promise.all(
       images.map(async (image) => {
-        console.log("FILENAME:", image.filename);
-
-        const { data, error } = await supabase.storage
-          .from("images")
-          // här skapas en ny signed URL varje gång för säkerhet
-          .createSignedUrl(image.filename, 60 * 60);
-
-        console.log("SUPABASE ERROR:", error);
+        const signedUrl = await image.getSignedUrl();
 
         return {
           ...image.toObject(),
-          url: error ? null : data?.signedUrl
+          url: signedUrl
         };
       })
     );
 
     return res.status(200).json({
-      data: imagesWithFreshUrl
+      data: imagesWithUrls
     });
 
-  } catch (error) {
+  } catch (error: any) {
+    console.log("GET IMAGES ERROR:", error);
+
     return res.status(500).json({
-      message: "Failed to fetch images"
+      message: "Failed to fetch images",
+      error: error.message
     });
   }
 }
@@ -51,18 +45,19 @@ export async function getImageById(req: Request, res: Response) {
       });
     }
 
-    const { data, error } = await supabase.storage
-      .from("images")
-      .createSignedUrl(image.filename, 60 * 60);
+    const signedUrl = await image.getSignedUrl();
 
     return res.status(200).json({
       ...image.toObject(),
-      url: error ? null : data?.signedUrl
+      url: signedUrl
     });
 
-  } catch (error) {
+  } catch (error: any) {
+    console.log("GET IMAGE BY ID ERROR:", error);
+
     return res.status(500).json({
-      message: "Failed to fetch image"
+      message: "Failed to fetch image",
+      error: error.message
     });
   }
 }
@@ -72,7 +67,7 @@ export async function createImage(req: Request, res: Response) {
   try {
     const imageFile = req.file;
 
-    if (!imageFile ) {
+    if (!imageFile) {
       return res.status(400).json({
         message: "Image file is required"
       });
@@ -85,9 +80,6 @@ export async function createImage(req: Request, res: Response) {
       .upload(fileName, imageFile.buffer, {
         contentType: imageFile.mimetype
       });
-      // console.log("UPLOAD DATA:", data);
-      // console.log("FILE NAME:", fileName);
-      // console.log("UPLOAD ERROR:", error);
 
     if (error) {
       return res.status(500).json({
@@ -96,45 +88,35 @@ export async function createImage(req: Request, res: Response) {
       });
     }
 
-    const { data: signedUrlData, error: signedUrlError } = await supabase.storage
-      .from("images")
-      .createSignedUrl(fileName, 60 * 60)
-
-    if (signedUrlError) {
-      return res.status(500).json({
-        message: "Failed to create signed URL",
-        error: signedUrlError.message
-      });
-    }
-
-    const newImage = {
-      url: signedUrlData.signedUrl,
-      uploadedAt: new Date().toISOString()
-    };
-
     await Image.create({
-      url: signedUrlData.signedUrl,
       filename: data.path,
       fileSize: imageFile.size,
       fileFormat: imageFile.mimetype,
       uploadedAt: new Date()
     });
 
+    const signedUrlData = await supabase.storage
+      .from("images")
+      .createSignedUrl(fileName, 60 * 60);
+
     return res.status(201).json({
       message: "Image uploaded successfully",
-      data: newImage
+      data: {
+        filename: data.path,
+        url: signedUrlData.data?.signedUrl
+      }
     });
 
   } catch (error: any) {
-    // console.log("FULL ERROR:", error);
+    console.log("CREATE IMAGE ERROR:", error);
 
     return res.status(500).json({
       message: "Server error",
-      error: error.message,
-      details: error.errors
+      error: error.message
     });
   }
- }
+}
+
 // DELETE IMAGE
 export async function deleteImage(req: Request, res: Response) {
   try {
@@ -154,7 +136,7 @@ export async function deleteImage(req: Request, res: Response) {
 
     if (error) {
       return res.status(500).json({
-        message: "Failed to delete image from Supabase",
+        message: "Failed to delete from Supabase",
         error: error.message
       });
     }
@@ -165,14 +147,17 @@ export async function deleteImage(req: Request, res: Response) {
       message: "Image deleted successfully"
     });
 
-  } catch (error) {
+  } catch (error: any) {
+    console.log("DELETE IMAGE ERROR:", error);
+
     return res.status(500).json({
-      message: "Failed to delete image"
+      message: "Failed to delete image",
+      error: error.message
     });
   }
 }
 
-// PATCH - UPDATE IMAGE
+// PATCH
 export async function updateImage(req: Request, res: Response) {
   try {
     const { id } = req.params;
@@ -193,7 +178,7 @@ export async function updateImage(req: Request, res: Response) {
     });
 
   } catch (error: any) {
-    console.log("PATCH ERROR:", error);
+    console.log("UPDATE IMAGE ERROR:", error);
 
     return res.status(500).json({
       message: "Failed to update image",
@@ -202,8 +187,7 @@ export async function updateImage(req: Request, res: Response) {
   }
 }
 
-
-// GET - TEST SUPABASE CONNECTION
+// TEST SUPABASE
 export async function testSupabase(req: Request, res: Response) {
   try {
     const { data, error } = await supabase.storage
@@ -218,12 +202,14 @@ export async function testSupabase(req: Request, res: Response) {
     }
 
     return res.status(200).json({
-      message: "Supabase connected successfully",
+      message: "Supabase connected",
       data
     });
-  } catch (error) {
+
+  } catch (error: any) {
     return res.status(500).json({
-      message: "Server error"
+      message: "Server error",
+      error: error.message
     });
   }
 }
