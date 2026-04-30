@@ -35,17 +35,12 @@ export async function createImage(req: Request, res: Response) {
       fileFormat: imageFile.mimetype,
       uploadedAt: new Date()
     });
-
-    const signedUrlData = await supabase.storage
-      .from("images")
-      .createSignedUrl(fileName, 60 * 60);
-
+    
     return res.status(201).json({
       message: "Image uploaded successfully",
       data: {
         _id: savedImage._id,
         filename: savedImage.filename,
-        url: signedUrlData.data?.signedUrl
       }
     });
 
