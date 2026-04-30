@@ -2,6 +2,57 @@ import { Request, Response } from "express";
 import { supabase } from "../config/supabase";
 import { Image } from "../models/Image";
 
+
+// POST - CREATE IMAGE
+export async function createImage(req: Request, res: Response) {
+  try {
+    const imageFile = req.file;
+
+    if (!imageFile) {
+      return res.status(400).json({
+        message: "Image file is required"
+      });
+    }
+
+    const fileName = `${Date.now()}-${imageFile.originalname}`;
+
+    const { data, error } = await supabase.storage
+      .from("images")
+      .upload(fileName, imageFile.buffer, {
+        contentType: imageFile.mimetype
+      });
+
+    if (error) {
+      return res.status(500).json({
+        message: "Failed to upload image to Supabase",
+        error: error.message
+      });
+    }
+
+    const savedImage = await Image.create({
+      filename: data.path,
+      fileSize: imageFile.size,
+      fileFormat: imageFile.mimetype,
+      uploadedAt: new Date()
+    });
+    
+    return res.status(201).json({
+      message: "Image uploaded successfully",
+      data: {
+        _id: savedImage._id,
+        filename: savedImage.filename,
+      }
+    });
+
+  } catch (error: any) {
+    console.log("CREATE IMAGE ERROR:", error);
+
+    return res.status(500).json({
+      message: "Server error",
+      error: error.message
+    });
+  }
+}
 // GET ALL
 export async function getAllImages(req: Request, res: Response) {
   try {
@@ -57,61 +108,6 @@ export async function getImageById(req: Request, res: Response) {
 
     return res.status(500).json({
       message: "Failed to fetch image",
-      error: error.message
-    });
-  }
-}
-
-// POST - CREATE IMAGE
-export async function createImage(req: Request, res: Response) {
-  try {
-    const imageFile = req.file;
-
-    if (!imageFile) {
-      return res.status(400).json({
-        message: "Image file is required"
-      });
-    }
-
-    const fileName = `${Date.now()}-${imageFile.originalname}`;
-
-    const { data, error } = await supabase.storage
-      .from("images")
-      .upload(fileName, imageFile.buffer, {
-        contentType: imageFile.mimetype
-      });
-
-    if (error) {
-      return res.status(500).json({
-        message: "Failed to upload image to Supabase",
-        error: error.message
-      });
-    }
-
-    await Image.create({
-      filename: data.path,
-      fileSize: imageFile.size,
-      fileFormat: imageFile.mimetype,
-      uploadedAt: new Date()
-    });
-
-    const signedUrlData = await supabase.storage
-      .from("images")
-      .createSignedUrl(fileName, 60 * 60);
-
-    return res.status(201).json({
-      message: "Image uploaded successfully",
-      data: {
-        filename: data.path,
-        url: signedUrlData.data?.signedUrl
-      }
-    });
-
-  } catch (error: any) {
-    console.log("CREATE IMAGE ERROR:", error);
-
-    return res.status(500).json({
-      message: "Server error",
       error: error.message
     });
   }
