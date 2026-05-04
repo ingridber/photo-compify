@@ -1,10 +1,11 @@
 import { useEffect, useState, useRef } from "react";
 import { fetchCompetitions } from "../../services/api";
 import CompetitionsCard from "./CompetitionsCard";
+import Pagination from "./Pagination";
 
-// Definition of types from API
+// Type definition for a competition object coming from the API
 type Competition = {
-  id: string;
+  _id: string;
   owner: {
     _id: string;
     username: string;
@@ -22,78 +23,40 @@ type Competition = {
 };
 
 export default function CompetitionsPage() {
-  // State for active competitions
-  const [activeCompetitions, setActiveCompetitions] = useState<Competition[]>(
-    [],
-  );
-
-  // State for historical competitions
-  const [historicalCompetitions, setHistoricalCompetitions] = useState<
-    Competition[]
-  >([]);
-
-  // State that controls which view is shown in the UI (active or historical)
-  const [view, setView] = useState<"active" | "historical">("active");
-
-  // Controls if search panel is visible
+  const [competitions, setCompetitions] = useState<Competition[]>([]);
   const [showSearch, setShowSearch] = useState(false);
-
-  // Search inputs
   const [search, setSearch] = useState("");
-
   const inputRef = useRef<HTMLInputElement>(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  // view stays the same ("active" | "finished")
+  const [view, setView] = useState<"active" | "finished">("active");
 
   useEffect(() => {
     async function load() {
       try {
-        // Fetch all competitions from the API
-        // // Current time is used to determine status
-        const competitions = await fetchCompetitions();
-        const now = Date.now();
+        const result = await fetchCompetitions({
+          page,
+          status: view === "finished" ? "historical" : "active",
+          search,
+        });
 
-        // Filter out active competitions
-        const active = competitions.filter(
-          (c) => new Date(c.endDate).getTime() >= now,
-        );
-
-        // Filter out historical competitions
-        const historical = competitions.filter(
-          (c) => new Date(c.endDate).getTime() < now,
-        );
-
-        // Save to state
-        setActiveCompetitions(active);
-        setHistoricalCompetitions(historical);
+        setCompetitions(result.competitions);
+        setTotalPages(result.pagination.totalPages);
       } catch (err) {
         console.log(err);
       }
     }
 
     load();
-  }, []);
+  }, [page, view, search]);
 
   useEffect(() => {
-    if(showSearch) {
+    if (showSearch) {
       inputRef.current?.focus();
     }
   }, [showSearch]);
-
-  // Decide which list to display depending on selected view
-  const competitionsToShowBase =
-    view === "active" ? activeCompetitions : historicalCompetitions;
-
-  // Filtering for searching competition by title and username
-  const competitionsToShow = competitionsToShowBase.filter((comp) => {
-    const title = comp.title ?? "";
-    const ownerUsername = comp.owner?.username ?? "";
-
-    const searchLower = search.toLowerCase();
-
-    return (
-      title.toLowerCase().includes(searchLower) ||
-      ownerUsername.toLowerCase().includes(searchLower)
-    );
-  });
 
   return (
     <div>
@@ -112,22 +75,26 @@ export default function CompetitionsPage() {
           style={{ borderRadius: 10, height: "39px", width: "65px" }}
           onClick={() => {
             setView("active");
+            setPage(1);
             setShowSearch(false);
             setSearch("");
           }}
         >
           Active
         </button>
+
         <button
           style={{ borderRadius: 10, height: "39px", width: "65px" }}
           onClick={() => {
-            setView("historical");
+            setView("finished");
+            setPage(1);
             setShowSearch(false);
             setSearch("");
-        }}
+          }}
         >
           Finished
         </button>
+
         <button
           style={{ borderRadius: 10, height: "39px", width: "65px" }}
           onClick={() => setShowSearch((prev) => !prev)}
@@ -135,6 +102,7 @@ export default function CompetitionsPage() {
           Search
         </button>
       </div>
+
       {showSearch && (
         <div
           style={{
@@ -147,11 +115,14 @@ export default function CompetitionsPage() {
         >
           <div style={{ position: "relative" }}>
             <input
-             ref={inputRef}
+              ref={inputRef}
               type="text"
               placeholder="Search competition title or username"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
               style={{
                 width: "348px",
                 height: "39px",
@@ -159,8 +130,12 @@ export default function CompetitionsPage() {
                 padding: "0 10px",
               }}
             />
+
             <button
-              onClick={() => setSearch("")}
+              onClick={() => {
+                setSearch("");
+                setPage(1);
+              }}
               style={{
                 position: "absolute",
                 right: "20px",
@@ -173,7 +148,7 @@ export default function CompetitionsPage() {
                 fontSize: "16px",
                 cursor: "pointer",
                 color: search ? "#fff" : "#666",
-                opacity: 1
+                opacity: 1,
               }}
             >
               ✕
@@ -182,14 +157,19 @@ export default function CompetitionsPage() {
         </div>
       )}
 
-      {/* Render the list of competitions as cards */}
-      {competitionsToShow.length === 0 ? (
-        <p>No competitions match your search.</p>
+      {competitions.length === 0 ? (
+        <p>No competitions found.</p>
       ) : (
-        competitionsToShow.map((comp) => (
-          <CompetitionsCard key={comp.id} competition={comp} />
+        competitions.map((comp) => (
+          <CompetitionsCard key={comp._id} competition={comp} />
         ))
       )}
+
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        onPageChange={setPage}
+      />
     </div>
   );
 }
