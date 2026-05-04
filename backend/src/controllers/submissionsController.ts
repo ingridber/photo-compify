@@ -154,6 +154,41 @@ export async function voteOnSubmission(req: AuthRequest, res: Response) {
     };
 };
 
+export async function removeVoteFromSubmission(req: AuthRequest, res: Response) {
+    const id = req.params.id;
+    const submission = await Submission.findById(id);
+
+    if (!submission) {
+        return res.status(404).json({
+            code: 'SUBMISSION_NOT_FOUND',
+            message: 'could not find submission',
+            status: 404,
+        })
+    };
+
+    if (!submission.votes.some(v => v.toString() === req.user!.id)) {
+        return res.status(404).json({
+            code: 'VOTE_NOT_FOUND',
+            message: 'No vote found',
+        })
+    };
+
+    try {
+        await Submission.updateOne(
+            { _id: submission._id },
+            { $pull: { votes: new Types.ObjectId(req.user!.id) } }
+        );
+        return res.status(200).json({
+            message: 'Vote removed'
+        });
+    } catch (error) {
+        return res.status(500).json({
+            code: 'UNVOTE_FAILED',
+            message: 'Unable to remove vote from submission'
+        });
+    }
+}
+
 export async function deleteSubmission(req: AuthRequest, res: Response) {
     try {
         const submission = await Submission.findById(req.params.id);
