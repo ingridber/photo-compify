@@ -3,13 +3,29 @@ import { User } from "../models/User";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import verifyPassword from "../utils/passwordVerifier";
+import { verifyRecaptcha } from "../utils/verifyRecaptcha";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
 const NODE_ENV = process.env.NODE_ENV;
 
+
+
 export async function register(req: Request, res: Response): Promise<Response> {
-    const { name, email, profilePicture, username, password } = req.body;
+    const { name, email, profilePicture, username, password, recaptchaToken } = req.body;
+
+    
+
+    const isHuman = await verifyRecaptcha(recaptchaToken);
+    
+    console.log("isHuman:", isHuman);
+
+    if (!isHuman) {
+        return res.status(400).json({
+            message: "reCaptcha verification failed",
+            code: "RECAPTCHA_FAILED"
+        });
+    }
 
     const isAsciiOnly = /^[^\u0080-\uFFFF]+$/;
     if (!username || !isAsciiOnly.test(username)) return res.status(400).json({ message: "enter a valid username", code: "INVALID_USERNAME" });

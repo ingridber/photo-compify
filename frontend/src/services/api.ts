@@ -57,7 +57,7 @@ export async function logout() {
 
 // ---------- REGISTER ----------
 // ------------------------------
-export async function register(email: string, username: string, password: string,) {
+export async function register(email: string, username: string, password: string, token: string) {
     
     const res = await fetch("http://localhost:3000/api/v1/auth/register", {
         method: "POST",
@@ -67,6 +67,7 @@ export async function register(email: string, username: string, password: string
             email: email,
             username: username,
             password: password,
+            recaptchaToken: token,
         }),
     });
 
