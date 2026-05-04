@@ -16,6 +16,7 @@ export async function login(username: string, password: string) {
 // ---------- GET CURRENT USER ----------
 // --------------------------------------
 export async function getCurrentUser() {
+
     try {
         const res = await fetch("http://localhost:3000/api/v1/auth/me", {
             credentials: "include",
@@ -29,7 +30,9 @@ export async function getCurrentUser() {
             throw new Error("Failed to fetch user");
         };
 
-        return await res.json();
+       const data = await res.json();
+
+       return data;
 
     } catch (err) {
         console.log(err);
@@ -146,4 +149,25 @@ export async function deleteAccount(
     });
 
     return res;
+}
+
+
+// ---------- UPDATE PROFILE PIC ----------
+// ----------------------------------------
+export async function updateProfilePicture(pictureId: string) {
+
+    const res = await fetch("http://localhost:3000/api/v1/user/profilePicture", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+            profilePicture: pictureId
+        }),
+    });
+    
+    if(!res.ok) {
+     throw new Error("Failed to upload profile picture")
+    }
+
+    return;
 }

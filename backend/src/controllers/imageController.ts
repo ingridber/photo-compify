@@ -36,6 +36,7 @@ export async function createImage(req: Request, res: Response) {
       uploadedAt: new Date()
     });
     
+    console.log("saved image id", savedImage._id);
     return res.status(201).json({
       message: "Image uploaded successfully",
       data: {
