@@ -13,6 +13,7 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { useEffect } from 'react';
 import { useUser } from './hooks/useUser';
 import { getCurrentUser } from './services/api';
+import CreateCompetitionPage from './pages/CreateCompetitionPage'
 
 
 function App() {
@@ -39,10 +40,10 @@ function App() {
         <Route path="/login" element={<SignIn/>}/>
         <Route path="/register" element={<Register />}/>
         <Route path='/competitions' element={<CompetitionsPage />}/> 
+        <Route path='/create-competition' element={<CreateCompetitionPage />}/> 
         <Route path="/image-upload" element={<ImageUpload />} />
 
         <Route path="/manage-account">
-
           <Route index element={
             <ProtectedRoute>
               <ManageAccount/>
@@ -55,14 +56,11 @@ function App() {
             <ProtectedRoute>
               <ChangePassword/>
             </ProtectedRoute>} />
-          
           <Route path="change-picture" element={
             <ProtectedRoute>
               <ChangeProfilePicture/>
             </ProtectedRoute>} />
-
           </Route>
-
         </Routes>
     </>
   )
