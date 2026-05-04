@@ -76,15 +76,38 @@ export async function register(email: string, username: string, password: string
 
 // ---------- FETCH COMPETITIONS ----------
 // ----------------------------------------
-export async function fetchCompetitions() {
-    const res = await fetch("http://localhost:3000/api/v1/competitions");
+type FetchCompetitionsParams = {
+    page?: number;
+    status?: "active" | "historical";
+    search?: string;
+};
 
-    if (!res.ok) {
-        throw new Error(`Failed to fetch competitions: ${res.status} ${res.statusText}`);
+export async function fetchCompetitions(params?: FetchCompetitionsParams) {
+    const query = new URLSearchParams();
+
+    if(params?.page) {
+        query.append("page", params.page.toString());
     }
 
-    return await res.json();
-};
+    if(params?.status) {
+        query.append("status", params.status);
+    }
+
+    if(params?.search) {
+        query.append("search", params.search);
+    }
+
+    const res = await fetch(
+        `http://localhost:3000/api/v1/competitions?${query.toString()}`
+    );
+    
+    if (!res.ok) {
+        throw new Error(
+            `Failed to fetch competitions: ${res.status} ${res.statusText}`
+        );
+    }
+    return await res.json()
+ }
 
 // ---------- UPDATE USERNAME ----------
 // -------------------------------------
