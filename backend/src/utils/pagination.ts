@@ -10,7 +10,7 @@ export const getPagination = (query: any): PaginationResult => {
 
     // Convert limit from query to a number, default to 6,
     // ensure it is at least 1 and at most 100 (to prevent overload)
-    const limit = Math.min(Math.max(Number(query.limit) || 6, 1), 100);
+    const limit = Math.min(Math.max(Number(query.limit) || 5, 1), 100);
 
     // Calculate how many documents to skip based on current page and limit
     const skip = (page - 1) * limit;
