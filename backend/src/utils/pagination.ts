@@ -8,7 +8,7 @@ export const getPagination = (query: any): PaginationResult => {
     // Convert page from query to a number, default to 1, and ensure it is never below 1
     const page = Math.max(Number(query.page) || 1, 1);
 
-    // Convert limit from query to a number, default to 6,
+    // Convert limit from query to a number, default to 5,
     // ensure it is at least 1 and at most 100 (to prevent overload)
     const limit = Math.min(Math.max(Number(query.limit) || 5, 1), 100);
 
