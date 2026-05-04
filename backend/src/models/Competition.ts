@@ -4,7 +4,7 @@ import { CompetitionInterface } from "../types";
 const competitionSchema = new Schema<CompetitionInterface>({
     owner: { type: Schema.Types.ObjectId, ref: "User", required: true },
     title: { type: String, required: true, maxlength: 50 },
-    logoBanner: { type: String },
+    logoBanner: { type: Schema.Types.ObjectId, ref: "Image" },
     description: { type: String, required: true, maxlength: 250 },
     themes: { type: [String], required: true },
     startDate: { type: Date },
