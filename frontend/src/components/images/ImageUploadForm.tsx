@@ -71,11 +71,10 @@ export default function ImageUploadForm({pictureType}: PictureProps) {
       if (!response.ok) {
         throw new Error("Upload failed");
       }
-
       const data = await response.json();
 
       if(pictureType === 'profile') {
-        updateProfilePicture(data._id)
+        updateProfilePicture(data.data._id)
 
         const currentUser = await getCurrentUser();
 

@@ -133,12 +133,13 @@ export async function changeProfilePicture(req: Request, res: Response) {
 
     const userId = (req as any).user.id; 
     // SKIKCA MED !!
-    const {pictureId} = req.body;
+    const {profilePicture} = req.body;
 
     try {
+        console.log("this is the profile pic", profilePicture);
         const updatedUser = await User.findByIdAndUpdate(
             userId,
-            { profilePicture: pictureId },
+            { profilePicture: profilePicture },
             { new: true }
         );
 
