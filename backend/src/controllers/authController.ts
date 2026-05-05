@@ -86,7 +86,7 @@ export async function login(req: Request, res: Response): Promise<Response> {
     };
 
     // Get user from db
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username }).populate("profilePicture");
 
     // ---------- KONTROLLERA KONTOT LÅST? ----------
     // ----------------------------------------------
@@ -140,12 +140,21 @@ export async function login(req: Request, res: Response): Promise<Response> {
     user.lockUntil = undefined;
     await user.save();
 
+    // ---------- HÄMTA PROFILE PICTURE ----------
+    let profilePicture = user.profilePicture;
+
+    if (profilePicture) {
+        profilePicture = await profilePicture.getSignedUrl();
+    } else {
+        profilePicture = "";
+    }
+
     return res.status(200).json({
         code: "LOGIN_SUCCESS",
         message: "Login successful",
         status: 200,
         username: user.username,
-        profilePicture: user.profilePicture
+        profilePicture: profilePicture,
     });
 };
 
