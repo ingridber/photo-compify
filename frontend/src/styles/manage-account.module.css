@@ -63,6 +63,10 @@
     cursor: pointer;
 }
 
+.deleteTitle {
+    margin-bottom: 1.2rem;
+}
+
 article {
     margin-bottom: 1rem;
 }
@@ -118,9 +122,10 @@ article {
     margin: 1rem auto auto auto;
 }
 
-/* ------------------------------------ */
-/* ---------- CHANGE PICTURE ---------- */
-/* ------------------------------------ */
+/* ------------------------------------------ */
+/* ---------- CHANGE PICTURE MODAL ---------- */
+/* ---------- DELETE ACCOUNT MODAL ---------- */
+/* ------------------------------------------ */
 
 .modalOverlay {
   position: fixed;
@@ -138,7 +143,7 @@ article {
 }
 
 .modalContent {
-  background: white;
+  background: var(--bg);
   padding: 2rem;
   border-radius: 1rem;
   position: relative;
@@ -155,7 +160,6 @@ article {
   font-size: 1.5rem;
   cursor: pointer;
 }
-
 
 
 
