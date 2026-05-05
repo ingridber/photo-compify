@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import { DisplayProfilePicture } from "../components/display-profile-picture/DisplayProfilePicture";
 import { logout, deleteAccount } from "../services/api";
+import { Throbber } from "../components/user-feedback/Throbber";
 
 export function ManageAccount() {
   const navigate = useNavigate();
@@ -25,13 +26,13 @@ export function ManageAccount() {
       await logout();
 
       setMessage(
-        `User: ${user?.username} succesfully logged out. Redirecting...`,
+        `${user?.username} succesfully signed out`,
       );
       setRedirect(true);
       setTimeout(() => {
         navigate("/");
         setUser(null);
-      }, 1500);
+      }, 1800);
     } catch (err: unknown) {
       if (err instanceof Error) {
         setMessage(err.message);
@@ -80,7 +81,10 @@ export function ManageAccount() {
   return (
     <div className={mixins.sectionContainer}>
       {redirect ? (
-        <p>{message}</p>
+        <Throbber 
+          message={message}
+          action="Redirecting..."
+        />
       ) : (
         <>
           {/* BACK BUTTON */}
