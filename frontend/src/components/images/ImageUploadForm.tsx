@@ -9,9 +9,10 @@ import { useUser } from "../../hooks/useUser";
 
 type PictureProps = {
     pictureType? : string | null;
+    onUploadSuccess?: () => void;
 };
 
-export default function ImageUploadForm({pictureType}: PictureProps) {
+export default function ImageUploadForm({pictureType, onUploadSuccess}: PictureProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -74,7 +75,7 @@ export default function ImageUploadForm({pictureType}: PictureProps) {
       const data = await response.json();
 
       if(pictureType === 'profile') {
-        updateProfilePicture(data.data._id)
+        await updateProfilePicture(data.data._id);
 
         const currentUser = await getCurrentUser();
 
@@ -83,9 +84,15 @@ export default function ImageUploadForm({pictureType}: PictureProps) {
         }
 
         setUser({
-          username: currentUser.username,
-          profilePicture: currentUser.profilePicture
+          username: currentUser.data.username,
+          profilePicture: currentUser.data.profilePicture
         })
+
+        if(onUploadSuccess) {
+          setTimeout(() => {
+            onUploadSuccess();
+          }, 1000);
+        }
 
       }
 
