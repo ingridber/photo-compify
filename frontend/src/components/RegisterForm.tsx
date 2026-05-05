@@ -139,7 +139,7 @@ export default function RegisterForm() {
 
             <p className={styles.title}>Sign up</p>
             <div style={{ width: "7rem", margin: "auto", paddingBottom: "1.5rem" }}>
-                <DisplayProfilePicture src={'https://velvetescape.com/wp-content/uploads/2009/06/IMG_0136-1280x920.jpeg'} />
+                <DisplayProfilePicture src={"/logo.png"} />
             </div>
 
             {errors.general && <p style={{ color: "red", textAlign: "center" }}>{errors.general}</p>}
