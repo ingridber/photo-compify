@@ -62,7 +62,7 @@ export function ManageAccount() {
         throw new Error(data.message || "Failed to delete account");
       }
 
-      setMessage("Account successfully deleted. Redirecting...");
+      setMessage("Account successfully deleted.");
       setRedirect(true);
 
       setTimeout(() => {
