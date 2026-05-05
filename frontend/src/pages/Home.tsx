@@ -1,7 +1,6 @@
 import { Link } from "react-router";
 import { useUser } from "../hooks/useUser";
 import { DisplayProfilePicture } from "../components/display-profile-picture/DisplayProfilePicture";
-import { Throbber } from "../components/user-feedback/Throbber";
 
 export function Home() {
 
