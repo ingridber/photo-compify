@@ -6,6 +6,7 @@ import { useUser } from "../hooks/useUser";
 import { useNavigate } from "react-router";
 import { DisplayProfilePicture } from "./display-profile-picture/DisplayProfilePicture";
 import { Link } from "react-router";
+import { Throbber } from "./user-feedback/Throbber";
 
 
 interface FormErrors {
@@ -55,11 +56,11 @@ export function SignInForm() {
                 setPassword('');
                 setShowPassword(false);
 
-                setMessage(`User: ${data.username} succesfully signed in. Redirecting...`);
+                setMessage(`${data.username} succesfully signed in.`);
                 setRedirect(true);
                 setTimeout(() => {
                     navigate("/");
-                }, 1500);
+                }, 1800);
             }
 
             if (res.status === 423) {
@@ -87,7 +88,12 @@ export function SignInForm() {
         <section className={mixins.sectionContainer}>
 
             {redirect 
-            ? <p className={styles.redirect}>{message}</p> 
+            ? (
+                <Throbber 
+                    message={message}
+                    action="Redirecting..."
+                />
+                )
             : <>
 
             {/* BACK BUTTON */}
@@ -100,7 +106,7 @@ export function SignInForm() {
             {/* TITLE & LOGO */}
             <p className={styles.title}>Sign in</p>
             <div style= {{width: "7rem", margin: "auto"}}>
-                <DisplayProfilePicture src={'https://velvetescape.com/wp-content/uploads/2009/06/IMG_0136-1280x920.jpeg'} />
+                <DisplayProfilePicture src={"/logo.png"} />
             </div>
 
             {/* LOGIN FORM  */}
