@@ -19,31 +19,28 @@ export function ManageAccount() {
   const [showPassword, setShowPassword] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleteCheck, setDeleteCheck] = useState("");
+  const [finalWarning, setFinalWarning] = useState(false);
 
   // HANDLE SIGN OUT
   const handleSignOut = async () => {
     try {
       await logout();
 
-      setMessage(
-        `${user?.username} succesfully signed out`,
-      );
+      setMessage(`${user?.username} succesfully signed out`);
       setRedirect(true);
+
       setTimeout(() => {
         navigate("/");
         setUser(null);
       }, 1800);
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        setMessage(err.message);
-      } else {
-        setMessage("Something went wrong");
-      }
+    } catch (err) {
+      if (err instanceof Error) setMessage(err.message);
+      else setMessage("Something went wrong");
     }
   };
 
-  // HANDLE DELETE ACCOUNT
-  const handleDeleteAccount = async () => {
+  // VALIDATION STEP
+  const handleDeleteAccountValidation = () => {
     if (deleteCheck !== "DELETE") {
       setMessage('You must type "DELETE" to confirm');
       return;
@@ -54,6 +51,11 @@ export function ManageAccount() {
       return;
     }
 
+    setFinalWarning(true);
+  };
+
+  // FINAL DELETE
+  const handleDeleteAccount = async () => {
     try {
       const res = await deleteAccount(password);
       const data = await res.json();
@@ -69,22 +71,25 @@ export function ManageAccount() {
         navigate("/");
         setUser(null);
       }, 1500);
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        setMessage(err.message);
-      } else {
-        setMessage("Something went wrong");
-      }
+    } catch (err) {
+      if (err instanceof Error) setMessage(err.message);
+      else setMessage("Something went wrong");
     }
   };
+
+  // HANDLE STAY
+  const handleStay = () => {
+    setFinalWarning(false);
+    setConfirmDelete(false);
+    setPassword('');
+    setShowPassword(false);
+    setDeleteCheck('');
+  }
 
   return (
     <div className={mixins.sectionContainer}>
       {redirect ? (
-        <Throbber 
-          message={message}
-          action="Redirecting..."
-        />
+        <Throbber message={message} action="Redirecting..." />
       ) : (
         <>
           {/* BACK BUTTON */}
@@ -96,8 +101,9 @@ export function ManageAccount() {
             />
           </button>
 
-          {/* USER NAME & PROFILE PICTURE */}
+          {/* USER */}
           <p className={styles.username}>{user ? user.username : "USER"}</p>
+
           <div style={{ width: "7rem", margin: "auto" }}>
             <DisplayProfilePicture src={user?.profilePicture} />
           </div>
@@ -106,7 +112,6 @@ export function ManageAccount() {
             {user?.profilePicture ? "Change " : "Upload "}Profile Picture
           </Link>
 
-          {/* UPDATE BUTTONS */}
           <Link to="change-username" className={styles.changePageBtn}>
             Change Username
           </Link>
@@ -146,92 +151,144 @@ export function ManageAccount() {
             )}
           </article>
 
-          {/* DELETE ACCOUNT  */}
+          {/* DELETE ACCOUNT */}
           <article>
-            <p className={`${styles.deleteAccountTitle}`}>
-              {confirmDelete
-                ? "Are you sure? No takesies backsies!"
-                : "Wanna break up? :-("}
+            <p className={styles.deleteAccountTitle}>
+              Wanna break up? :-(
             </p>
 
-            {!confirmDelete ? (
-              <button
-                onClick={() => setConfirmDelete(true)}
-                className={styles.deleteAccount}
-              >
-                Delete Account
-              </button>
-            ) : (
-              <section className={styles.confirmDeleteContainer}>
-                <div className={`${mixins.fieldGroup} ${styles.space2}`}>
-                  <label
-                    htmlFor="confirm-delete"
-                    className={mixins.labelForInput}
-                  >
-                    Type DELETE to confirm
-                  </label>
+            <button
+              onClick={() => setConfirmDelete(true)}
+              className={styles.deleteAccount}
+            >
+              Delete Account
+            </button>
 
-                  <div className={mixins.inputFieldContainer}>
-                    <input
-                      id="confirm-delete"
-                      className={mixins.inputField}
-                      type="text"
-                      placeholder="Type DELETE to confirm"
-                      value={deleteCheck}
-                      onChange={(e) => setDeleteCheck(e.target.value)}
-                    />
-                  </div>
-                </div>
+            {confirmDelete && (
+              <div className={styles.modalOverlay}>
+                <div className={styles.modal}>
+                  {!finalWarning ? (
+                    <>
+                      <p className={styles.deleteTitle}>
+                        TERMINATION OF USER: 
+                        {user ? ` ${user.username.toUpperCase()}` : "USER"}
+                      </p>
 
-                <div className={mixins.fieldGroup}>
-                  <label htmlFor="password" className={mixins.labelForInput}>
-                    Current password
-                  </label>
+                      <div className={mixins.fieldGroup}>
+                        <label
+                          htmlFor="confirm-delete"
+                          className={mixins.labelForInput}
+                        >
+                          Type DELETE to confirm
+                        </label>
 
-                  <div className={mixins.inputFieldContainer}>
-                    <input
-                      id="password"
-                      className={mixins.inputField}
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Current Password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <button
-                      className={mixins.displayPasswordBtn}
-                      type="button"
-                      onClick={() => setShowPassword((prev) => !prev)}
-                    >
-                      <img
-                        className={mixins.displayPasswordBtnIcon}
-                        src={showPassword ? "/eye-off.svg" : "/eye.svg"}
-                        alt={
-                          showPassword
-                            ? "icon for displaying password"
-                            : "icon for hideing password"
+                        <div className={mixins.inputFieldContainer}>
+                          <input
+                            id="confirm-delete"
+                            className={mixins.inputField}
+                            type="text"
+                            placeholder="Type DELETE to confirm"
+                            value={deleteCheck}
+                            onChange={(e) =>
+                              setDeleteCheck(e.target.value)
+                            }
+                          />
+                        </div>
+                      </div>
+
+                      <div className={mixins.fieldGroup}>
+                        <label
+                          htmlFor="password"
+                          className={mixins.labelForInput}
+                        >
+                          Current password
+                        </label>
+
+                        <div className={mixins.inputFieldContainer}>
+                          <input
+                            id="password"
+                            className={mixins.inputField}
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Current Password"
+                            value={password}
+                            onChange={(e) =>
+                              setPassword(e.target.value)
+                            }
+                          />
+
+                          <button
+                            className={mixins.displayPasswordBtn}
+                            type="button"
+                            onClick={() =>
+                              setShowPassword((prev) => !prev)
+                            }
+                          >
+                            <img
+                              className={
+                                mixins.displayPasswordBtnIcon
+                              }
+                              src={
+                                showPassword
+                                  ? "/eye-off.svg"
+                                  : "/eye.svg"
+                              }
+                              alt="toggle password visibility"
+                            />
+                          </button>
+                        </div>
+                      </div>
+
+                      <p>{message}</p>
+
+                      <div
+                        className={
+                          styles.confirmDeleteBtnContainer
                         }
-                      />
-                    </button>
-                  </div>
-                </div>
+                      >
+                        <button
+                          onClick={() => setConfirmDelete(false)}
+                          className={styles.confirmBtnStay}
+                        >
+                          STAY
+                        </button>
 
-                <p>{message}</p>
+                        <button
+                          onClick={handleDeleteAccountValidation}
+                          className={styles.confirmBtnBye}
+                        >
+                          BYE
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <p className={styles.deleteTitle}>
+                        Are you sure? No takesies backsies :-(
+                      </p>
 
-                <div className={styles.confirmDeleteBtnContainer}>
-                  <button
-                    onClick={() => setConfirmDelete(false)}
-                    className={styles.confirmBtnStay}
-                  >
-                    STAY
-                  </button>
-                  <button
-                    onClick={handleDeleteAccount}
-                    className={styles.confirmBtnBye}
-                  >
-                    BYE
-                  </button>
+                      <div
+                        className={
+                          styles.confirmDeleteBtnContainer
+                        }
+                      >
+                        <button
+                          onClick={handleStay}
+                          className={styles.confirmBtnYes}
+                        >
+                          NO
+                        </button>
+
+                        <button
+                          onClick={handleDeleteAccount}
+                          className={styles.confirmBtnNo}
+                        >
+                          YES
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
-              </section>
+              </div>
             )}
           </article>
         </>
