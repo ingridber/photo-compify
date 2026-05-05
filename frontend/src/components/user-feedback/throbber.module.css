@@ -1,0 +1,38 @@
+.wrapper {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.throbberBackground {
+    background-color: var(--submit);
+    width: 2rem;
+    aspect-ratio: 1/1;
+    margin-bottom: 1rem;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+} 
+
+.throbberAnimation {
+    width: 2rem;
+    animation: spin 3s steps(8) infinite;
+    filter: invert(1);
+}
+
+.message {
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+@keyframes spin {
+    from {
+    transform: rotate(0deg);
+    }
+    to {
+    transform: rotate(360deg);
+    }
+}
