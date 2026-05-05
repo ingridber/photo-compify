@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router";
+
 // Definition of types from API
 type Competition = {
   _id: string;
@@ -41,6 +43,11 @@ function getCompetitionPhase(
 
 export default function CompetitionsCard({ competition }: Props) {
   const phase = getCompetitionPhase(competition);
+  const navigate = useNavigate();
+
+  function handleClick() {
+    navigate(`/competitions/${competition._id}`);
+  }
 
   return (
     <div
@@ -52,7 +59,9 @@ export default function CompetitionsCard({ competition }: Props) {
         display: "flex",
         flexDirection: "column",
         gap: 10,
+        cursor: "pointer"
       }}
+      onClick={() => handleClick()}
     >
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <div
