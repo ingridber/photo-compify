@@ -166,7 +166,7 @@ export function ManageAccount() {
 
             {confirmDelete && (
               <div className={styles.modalOverlay}>
-                <div className={styles.modal}>
+                <div className={styles.modalContent}>
                   {!finalWarning ? (
                     <>
                       <p className={styles.deleteTitle}>
