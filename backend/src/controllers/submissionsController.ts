@@ -31,7 +31,7 @@ export async function getSubmission(req: Request, res: Response) {
 export async function createSubmission(req: AuthRequest, res: Response) {
     try {
         const { description } = req.body;
-        const id = req.params.id;
+        const id = req.params.competitionId;
         const competition = await Competition.findById(id);
 
         if (!competition) {
@@ -52,7 +52,10 @@ export async function createSubmission(req: AuthRequest, res: Response) {
             })
         };
 
-        const existingSubmission = await Submission.findOne({ _id: { $in: competition.submissions }, user: req.user!.id });
+        const existingSubmission = await Submission.findOne({
+            _id: { $in: competition.submissions as Types.ObjectId[] },
+            user: req.user!.id,
+        });
         if (existingSubmission) {
             return res.status(409).json({
                 code: 'SUBMISSION_ALREADY_EXISTS',
