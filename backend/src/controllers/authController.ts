@@ -141,12 +141,13 @@ export async function login(req: Request, res: Response): Promise<Response> {
     await user.save();
 
     // ---------- HÄMTA PROFILE PICTURE ----------
-    let profilePicture = user.profilePicture;
+    let profilePicture = null;
 
-    if (profilePicture) {
-        profilePicture = await profilePicture.getSignedUrl();
-    } else {
-        profilePicture = "";
+    if (user.profilePicture) {
+        profilePicture = {
+            _id: user.profilePicture._id,
+            url: await user.profilePicture.getSignedUrl()
+        };
     }
 
     return res.status(200).json({
@@ -173,12 +174,14 @@ export async function getCurrentUser(req: Request, res: Response): Promise<Respo
                 message: "User not found"
             });
         }
-        let profilePicture = user.profilePicture;
 
-        if (profilePicture) {
-            profilePicture = await profilePicture.getSignedUrl();
-        } else {
-            profilePicture = "";
+        let profilePicture = null;
+
+        if (user.profilePicture) {
+            profilePicture = {
+                _id: user.profilePicture._id,
+                url: await user.profilePicture.getSignedUrl()
+            };
         }
 
        return res.status(200).json({
@@ -186,7 +189,7 @@ export async function getCurrentUser(req: Request, res: Response): Promise<Respo
             data: {
                 _id: user._id,
                 username: user.username,
-                profilePicture: profilePicture,
+                profilePicture,
             }
         });
 

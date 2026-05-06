@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import { useUser } from "../hooks/useUser";
-import { DisplayProfilePicture } from "../components/display-profile-picture/DisplayProfilePicture";
+// import { DisplayProfilePicture } from "../components/display-profile-picture/DisplayProfilePicture";
+import { DisplayLogo } from "../components/display-profile-picture/DisplayProfilePicture";
 
 export function Home() {
 
@@ -28,7 +29,7 @@ export function Home() {
             </nav>
 
             <div style= {{width: "12rem", margin: "auto", paddingTop: "2rem",}}>
-                <DisplayProfilePicture src={"/logo.png"} />
+                <DisplayLogo />
             </div>
 
             <h1>{`Welcome ${user?.username ? user.username.toLocaleUpperCase() : 'Stranger'} <3`}</h1>

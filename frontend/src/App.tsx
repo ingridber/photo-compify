@@ -16,6 +16,9 @@ import { getCurrentUser } from './services/api';
 import CreateCompetitionPage from './pages/CreateCompetitionPage'
 import CompetitionPage from './pages/CompetitionPage';
 import SubmitToCompetition from './pages/SubmitToCompetitionPage';
+import { SignOut } from './components/SignOut';
+import { DeleteAccount } from './pages/DeleteAccount';
+
 
 
 function App() {
@@ -40,6 +43,8 @@ function App() {
 
         <Route path="/" element={<Home/>}/>
         <Route path="/login" element={<SignIn/>}/>
+        <Route path="/logout" element={<SignOut/>}/>
+        <Route path={"/delete-account"} element={<DeleteAccount/>}/>
         <Route path="/register" element={<Register />}/>
         <Route path='/competitions' element={<CompetitionsPage />}/> 
         <Route path='/competitions/:id' element={<CompetitionPage />}/>
@@ -50,6 +55,15 @@ function App() {
             <SubmitToCompetition />
           </ProtectedRoute>
         } />
+
+        <Route 
+          path='/create-competition' 
+          element={ 
+            <ProtectedRoute>
+              <CreateCompetitionPage />
+            </ProtectedRoute>
+            }>
+        </Route>
 
         <Route path="/manage-account">
           <Route index element={

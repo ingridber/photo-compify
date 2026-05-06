@@ -8,11 +8,18 @@
     align-items: center;
     justify-content: center;
 
-    background-color: lightsalmon;
+    background-color: lightgray;
+    border: 2px solid var(--text);
 }
 
-.profileBackground img {
+.avatar {
+    width: 60%;
+    object-fit: cover; 
+}
+
+.logo,
+.picture {
     width: 100%;
     height: 100%;
-    object-fit: cover; 
+    object-fit: cover;
 }

@@ -24,7 +24,7 @@ export default function ImageUploadForm({pictureType, competitionId, onUploadSuc
   const fileSizeRules = FileSizeValidation();
   const fileFormatRules = FileFormatValidation();
 
-  const {setUser} = useUser();
+  const {user, setUser} = useUser();
 
   const navigate = useNavigate();
 
@@ -78,8 +78,13 @@ export default function ImageUploadForm({pictureType, competitionId, onUploadSuc
       }
       const data = await response.json();
 
+      // ----------------------------------------
+      // ---------- HANDLE PROFILE PIC ----------
+      // ----------------------------------------
       if(pictureType === 'profile') {
-        await updateProfilePicture(data.data._id);
+        await updateProfilePicture(
+          data.data._id,
+          user?.profilePicture?._id);
 
         const currentUser = await getCurrentUser();
 
@@ -98,8 +103,12 @@ export default function ImageUploadForm({pictureType, competitionId, onUploadSuc
             onUploadSuccess();
           }, 1000);
         }
-
       }
+      // ----------------------------------------
+      // ----------------------------------------
+      // ----------------------------------------
+
+
 
       if(pictureType === 'submission' && competitionId) {
           try {

@@ -61,7 +61,7 @@ export function ChangePassword() {
 
             {/* PROFILE PICTURE & USER NAME */}
             <div style= {{width: "7rem", margin: "auto"}}>
-                <DisplayProfilePicture src={user?.profilePicture} />
+                <DisplayProfilePicture src={user?.profilePicture?.url} />
             </div>
             <p className={mixins.username}>{user? user.username : "USER"}</p>
 

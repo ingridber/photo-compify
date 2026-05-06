@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { User } from "../models/User";
 import verifyPassword from "../utils/passwordVerifier";
-
+import { Image } from "../models/Image";
+import { supabase } from "../config/supabase";
 
 // ---------- CHANGE USERNAME ----------
 // -------------------------------------
@@ -130,13 +131,11 @@ export async function changePassword(req: Request, res: Response) {
 // ---------- CHANGE PROFILE PIC ----------
 // ----------------------------------------
 export async function changeProfilePicture(req: Request, res: Response) {
-
-    const userId = (req as any).user.id; 
-    // SKIKCA MED !!
-    const {profilePicture} = req.body;
+    const userId = (req as any).user.id;
+    const { profilePicture, oldProfilePicture } = req.body;
 
     try {
-        console.log("this is the profile pic", profilePicture);
+        // ---------- UPDATE USER ----------
         const updatedUser = await User.findByIdAndUpdate(
             userId,
             { profilePicture: profilePicture },
@@ -144,16 +143,38 @@ export async function changeProfilePicture(req: Request, res: Response) {
         );
 
         if (!updatedUser) {
-            return res.status(404).json({ message: "User not found" });
-        }
+            return res.status(404).json({
+                message: "User not found"
+            });
+        };
 
-        res.status(200).json({ 
-            message: "Profile picture updated"});
+        // ---------- DELETE OLD IMG ----------
+        if (oldProfilePicture) {
+            const oldImage = await Image.findById(oldProfilePicture);
+
+            if (oldImage) {
+                // ---------- DELETE FROM SUPABASE ----------
+                await supabase.storage
+                    .from("images")
+                    .remove([oldImage.filename]);
+                // ---------- DELETE FROM MONGODB ----------
+                await Image.findByIdAndDelete(oldProfilePicture);
+            };
+        };
+
+        res.status(200).json({
+            message: "Profile picture updated"
+        });
 
     } catch (error) {
-        res.status(500).json({ message: "Server error", error });
-    }
-}
+        console.log("CHANGE PROFILE PICTURE ERROR: usersControllers.ts", error);
+
+        res.status(500).json({
+            message: "Server error",
+            error
+        });
+    };
+};
 
 // ---------- LOGOUT SESSION ----------
 // ------------------------------------
