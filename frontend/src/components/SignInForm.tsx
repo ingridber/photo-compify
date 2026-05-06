@@ -49,8 +49,8 @@ export function SignInForm() {
 
             if (res.status === 200) {
                 setUser({
-                username: data.username,
-                profilePicture: data.profilePicture || ''
+                    username: data.username,
+                    profilePicture: data.profilePicture || null
                 });
 
                 setErrors({});
