@@ -3,7 +3,7 @@ import mixins from "../styles/mixins.module.css";
 import { useState} from "react";
 import { login } from "../services/api";
 import { useUser } from "../hooks/useUser";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { DisplayProfilePicture } from "./display-profile-picture/DisplayProfilePicture";
 import { Link } from "react-router";
 import { Throbber } from "./user-feedback/Throbber";
@@ -26,7 +26,9 @@ export function SignInForm() {
 
     const {setUser} = useUser();
     const navigate = useNavigate();
+    const location = useLocation();
 
+    const from = location.state?.from?.pathname || "/";
 
     const handleSubmit = async (e: React.SubmitEvent ) => {
         e.preventDefault();
@@ -59,7 +61,7 @@ export function SignInForm() {
                 setMessage(`${data.username} succesfully signed in.`);
                 setRedirect(true);
                 setTimeout(() => {
-                    navigate("/");
+                    navigate(from, { replace: true });
                 }, 1800);
             }
 
