@@ -47,3 +47,21 @@ export function authenticateToken(req : Request, res: Response, next: NextFuncti
         });
     };
 };
+
+export function extractUser(req: Request, _res: Response, next: NextFunction) {
+  const authHeader = req.headers["authorization"];
+  const headerToken = authHeader && authHeader.split(" ")[1];
+  const cookieToken = req.cookies?.token;
+  const token = headerToken || cookieToken;
+
+  if (!token) return next();
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as { id: string };
+    (req as any).user = decoded;
+  } catch {
+    // invalid token — continue without user
+  }
+
+  next();
+}
