@@ -184,6 +184,7 @@ export async function getCurrentUser(req: Request, res: Response): Promise<Respo
        return res.status(200).json({
             code: "USER_FETCHED",
             data: {
+                _id: user._id,
                 username: user.username,
                 profilePicture: profilePicture,
             }
