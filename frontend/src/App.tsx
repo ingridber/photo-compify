@@ -15,6 +15,7 @@ import { useUser } from './hooks/useUser';
 import { getCurrentUser } from './services/api';
 import CreateCompetitionPage from './pages/CreateCompetitionPage'
 import CompetitionPage from './pages/CompetitionPage';
+import SubmitToCompetition from './pages/SubmitToCompetitionPage';
 
 
 function App() {
@@ -44,6 +45,11 @@ function App() {
         <Route path='/competitions/:id' element={<CompetitionPage />}/>
         <Route path='/create-competition' element={<CreateCompetitionPage />}/> 
         <Route path="/image-upload" element={<ImageUpload />} />
+        <Route path='/competitions/:id/submit' element={
+          <ProtectedRoute>
+            <SubmitToCompetition />
+          </ProtectedRoute>
+        } />
 
         <Route path="/manage-account">
           <Route index element={
