@@ -215,19 +215,15 @@ export async function fetchCompetitionById(id: string,): Promise<Competition> {
 
 export async function createSubmission(
     competitionId: string,
-    image: File,
-    description?: string,
+    imageId: string,
 ): Promise<Submission> {
-    const formData = new FormData();
-    formData.append("image", image);
-    if (description) formData.append("description", description);
-
     const res = await fetch(
         `${BASE_URL}/competitions/${competitionId}/submissions`,
         {
             method: "POST",
             credentials: "include",
-            body: formData,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ imageId }),
         },
     );
 
