@@ -103,7 +103,7 @@ export default function ImageUploadForm({pictureType, competitionId, onUploadSuc
 
       if(pictureType === 'submission' && competitionId) {
           try {
-              await createSubmission(competitionId, selectedFile);
+              await createSubmission(competitionId, data.data._id );
               setMessage("submission added");
               navigate(`/competitions/${competitionId}`);
               return;
