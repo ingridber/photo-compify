@@ -86,7 +86,7 @@ export async function getAllCompetitions(req: Request, res: Response) {
 // -----------------------------------------
 // --------- GET COMPETITION BY ID ---------
 // -----------------------------------------
-export async function getCompetitionById(req: Request, res: Response) {
+export async function getCompetitionById(req: AuthRequest, res: Response) {
   const id = req.params.id;
   const competition = await Competition.findById(id).populate(
     "owner",
@@ -102,7 +102,7 @@ export async function getCompetitionById(req: Request, res: Response) {
   }
 
   const now = new Date();
-  if (competition.votingStartDate <= now) {
+  if (competition.votingStartDate > now) {
     await competition.populate({
       path: "submissions",
       populate: [
@@ -111,12 +111,14 @@ export async function getCompetitionById(req: Request, res: Response) {
       ]
     });
 
-    for (const sub of competition.submissions) {
-      const populated = sub as Document & CompetitionSubmissionInterface & { image: ImageInterface };
-      if (populated.image?.getSignedUrl) {
-        populated.set('signedImageUrl', await populated.image.getSignedUrl());
-      }
-    }
+    await Promise.all(
+        competition.submissions.map(async (sub: any) => {
+            if (sub.image?.getSignedUrl) {
+                const url = await sub.image.getSignedUrl();
+                sub._doc.signedImageUrl = url;
+            }
+        })
+    )
   }
 
   res.status(200).json(competition);
