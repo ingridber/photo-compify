@@ -30,17 +30,17 @@ export async function getSubmission(req: Request, res: Response) {
 
 export async function createSubmission(req: AuthRequest, res: Response) {
     try {
-        const { description } = req.body;
-        const id = req.params.competitionId;
-        const competition = await Competition.findById(id);
+        const { imageId } = req.body;
+        const competitionId = req.params.competitionId;
+        const competition = await Competition.findById(competitionId);
 
         if (!competition) {
             return res.status(404).json({
                 code: 'COMPETITION_NOT_FOUND',
                 message: 'The competition was not found',
                 status: 404
-            })
-        };
+            });
+        }
 
         const now = new Date();
 
@@ -49,80 +49,58 @@ export async function createSubmission(req: AuthRequest, res: Response) {
                 code: 'NO_SUBMISSIONS_ACCEPTED',
                 message: 'The competition is not accepting submissions',
                 status: 400,
-            })
-        };
+            });
+        }
 
         const existingSubmission = await Submission.findOne({
             _id: { $in: competition.submissions as Types.ObjectId[] },
             user: req.user!.id,
         });
+
         if (existingSubmission) {
             return res.status(409).json({
                 code: 'SUBMISSION_ALREADY_EXISTS',
                 message: 'You have already submitted to this competition',
                 status: 409,
-            })
-        };
+            });
+        }
 
-        const imageFile = req.file;
-
-        if (!imageFile) {
+        if (!imageId) {
             return res.status(400).json({
-                code: 'FILE_MISSING',
-                message: 'No file found to upload',
+                code: 'IMAGE_MISSING',
+                message: 'No image ID provided',
                 status: 400,
-            })
-        };
-
-        const fileName = `${Date.now()}-${imageFile.originalname}`;
-
-        const { data, error } = await supabase.storage
-            .from("images")
-            .upload(fileName, imageFile.buffer, {
-                contentType: imageFile.mimetype
             });
-        if (error) {
-            return res.status(500).json({
-                message: "Failed to upload image to Supabase",
-                error: error.message
-            });
-        };
+        }
 
-        const imageDoc = await Image.create({
-            filename: data.path,
-            uploadedAt: new Date(),
-            fileSize: imageFile.size,
-            fileFormat: imageFile.mimetype,
+        const imageDoc = await Image.findById(imageId);
+
+        if (!imageDoc) {
+            return res.status(404).json({
+                code: 'IMAGE_NOT_FOUND',
+                message: 'The referenced image was not found',
+                status: 404,
+            });
+        }
+
+        const newSubmission = await Submission.create({
+            user: req.user!.id,
+            image: imageDoc._id,
+            competition: competition._id,
         });
 
-        try {
-            const newSubmission = await Submission.create({
-                user: req.user!.id,
-                image: imageDoc._id,
-                description: description,
-                competition: competition._id,
-            });
-            competition.submissions.push(newSubmission._id);
-            await competition.save();
+        (competition.submissions as Types.ObjectId[]).push(newSubmission._id);
+        await competition.save();
 
-            return res.status(201).json(newSubmission)
-        } catch (error) {
-            await Image.findByIdAndDelete(imageDoc._id);
-            await supabase.storage.from("images").remove([fileName]);
-            return res.status(500).json({
-                code: 'SUBMISSION_FAILED',
-                message: 'Failed to create submission',
-                status: 500,
-            })
-        };
+        return res.status(201).json(newSubmission);
     } catch (error) {
         return res.status(500).json({
             code: 'INTERNAL_ERROR',
-            message: 'something went wrong, sorry.',
+            message: 'Something went wrong',
             status: 500,
-        })
-    };
-};
+        });
+    }
+}
 
 export async function voteOnSubmission(req: AuthRequest, res: Response) {
     const id = req.params.id;
