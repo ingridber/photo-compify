@@ -1,9 +1,10 @@
-import { CompetitionInterface, AuthRequest } from "../types/index";
+import { CompetitionInterface, AuthRequest, CompetitionSubmissionInterface, ImageInterface } from "../types/index";
 import { Request, Response } from "express";
 import { Competition } from "../models/Competition";
 import { getPagination } from "../utils/pagination";
 import { User } from "../models/User";
 import { getCompetitionFilter } from "../utils/competitionFilter";
+import { Document } from "mongoose";
 
 // ---------------------------------------
 // --------- GET ALL COMPETITION ---------
@@ -102,7 +103,20 @@ export async function getCompetitionById(req: Request, res: Response) {
 
   const now = new Date();
   if (competition.votingStartDate <= now) {
-    await competition.populate("submissions");
+    await competition.populate({
+      path: "submissions",
+      populate: [
+        { path: "image" },
+        { path: "user", select: "username" }
+      ]
+    });
+
+    for (const sub of competition.submissions) {
+      const populated = sub as Document & CompetitionSubmissionInterface & { image: ImageInterface };
+      if (populated.image?.getSignedUrl) {
+        populated.set('signedImageUrl', await populated.image.getSignedUrl());
+      }
+    }
   }
 
   res.status(200).json(competition);
