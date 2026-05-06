@@ -12,7 +12,13 @@
     border: 2px solid var(--text);
 }
 
-.profileBackground img {
+.avatar {
     width: 60%;
     object-fit: cover; 
+}
+
+.logo,
+.picture {
+    width: 100%;
+    object-fit: cover;
 }

@@ -4,7 +4,7 @@ import { useState} from "react";
 import { login } from "../services/api";
 import { useUser } from "../hooks/useUser";
 import { useNavigate, useLocation } from "react-router";
-import { DisplayProfilePicture } from "./display-profile-picture/DisplayProfilePicture";
+import { DisplayLogo } from "./display-profile-picture/DisplayProfilePicture";
 import { Link } from "react-router";
 import { Throbber } from "./user-feedback/Throbber";
 
@@ -108,7 +108,7 @@ export function SignInForm() {
             {/* TITLE & LOGO */}
             <p className={styles.title}>Sign in</p>
             <div style= {{width: "7rem", margin: "auto"}}>
-                <DisplayProfilePicture src={"/logo.png"} />
+                <DisplayLogo/>
             </div>
 
             {/* LOGIN FORM  */}
