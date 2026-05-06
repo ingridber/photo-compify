@@ -3,7 +3,7 @@ import styles from "../styles/register.module.css";
 import { useState, useEffect } from "react";
 import { register } from "../services/api";
 import { useNavigate } from "react-router";
-import { DisplayProfilePicture } from "./display-profile-picture/DisplayProfilePicture";
+import { DisplayLogo } from "./display-profile-picture/DisplayProfilePicture";
 
 const SITE_KEY = "6Lfr5dgsAAAAAAh2wY2jQK-Pb4QalmOyznzsEA7j";
 const usernameRegex = /^[^\u0080-\uFFFF]+$/;
@@ -139,7 +139,7 @@ export default function RegisterForm() {
 
             <p className={styles.title}>Sign up</p>
             <div style={{ width: "7rem", margin: "auto", paddingBottom: "1.5rem" }}>
-                <DisplayProfilePicture src={"/logo.png"} />
+                <DisplayLogo />
             </div>
 
             {errors.general && <p style={{ color: "red", textAlign: "center" }}>{errors.general}</p>}
