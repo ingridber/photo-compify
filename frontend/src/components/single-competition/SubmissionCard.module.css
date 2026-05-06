@@ -1,6 +1,7 @@
 .card {
   position: relative;
   aspect-ratio: 1;
+  cursor: pointer;
 }
 
 .image {
@@ -24,18 +25,7 @@
   border-radius: 50%;
 }
 
-.voted {
-  /* green — user voted for this */
-}
-
-.gold {
-  /* 1st place */
-}
-
-.silver {
-  /* 2nd place */
-}
-
-.bronze {
-  /* 3rd place */
-}
+.voted {}
+.gold {}
+.silver {}
+.bronze {}

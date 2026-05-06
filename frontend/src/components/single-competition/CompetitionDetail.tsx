@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useEffect, useState, useCallback } from "react";
+import { useParams, useNavigate } from "react-router";
 import { fetchCompetitionById } from "../../services/api";
 import { type Competition, type Phase, type Indicator, type Submission } from "../../types/competitions.ts";
 import SubmissionCard from "./SubmissionCard";
+import SubmissionExpanded from "./SubmissionExpanded.tsx";
 import styles from "./CompetitionDetail.module.css";
 import { useUser } from "../../hooks/useUser.ts";
 
@@ -73,11 +74,13 @@ function sortSubmissions(
 export default function CompetitionDetail() {
     const { id } = useParams<{ id: string }>();
     const { user } = useUser();
+    const navigate = useNavigate();
     const [competition, setCompetition] = useState<Competition | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
+    const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
 
-    useEffect(() => {
+    const loadCompetition = useCallback(() => {
         if (!id) return;
 
         setLoading(true);
@@ -87,17 +90,30 @@ export default function CompetitionDetail() {
             .finally(() => setLoading(false));
     }, [id]);
 
+    useEffect(() => {
+        loadCompetition();
+    }, [loadCompetition]);
+
     if (loading) return <p>Loading...</p>;
     if (error) return <p>{error}</p>;
     if (!competition) return <p>Competition not found</p>;
 
     const phase = getPhase(competition);
     const sorted = sortSubmissions(competition.submissions, phase, user?._id);
+    const userSubmission = competition.submissions.find((s) => {
+        const userId = typeof s.user === "string" ? s.user : s.user._id;
+        return userId === user?._id;
+    });
 
     const countdownTarget =
         phase === "submission"
             ? competition.votingStartDate
             : competition.endDate;
+
+    function handleVoteChange() {
+        setSelectedSubmission(null);
+        loadCompetition();
+    }
 
     return (
         <div className={styles.container}>
@@ -151,9 +167,13 @@ export default function CompetitionDetail() {
                 )}
             </div>
 
-            {phase === "submission" && (
+            {phase === "submission" && !userSubmission && (
                 <div className={styles.cta}>
-                    <button className={styles.ctaButton} type="button">
+                    <button
+                        className={styles.ctaButton}
+                        type="button"
+                        onClick={() => navigate(`/competitions/${id}/submit`)}
+                    >
                         +
                     </button>
                     <p className={styles.ctaTitle}>Want to participate?</p>
@@ -163,15 +183,48 @@ export default function CompetitionDetail() {
                 </div>
             )}
 
-            {(phase === "voting" || phase === "finished") && (
-                <div className={styles.grid}>
-                    {sorted.map((sub, i) => (
-                        <SubmissionCard
-                            key={sub._id}
-                            submission={sub}
-                            indicator={getIndicator(sub, phase, i, user?._id)}
+            {phase === "submission" && userSubmission && (
+                <div className={styles.cta}>
+                    {userSubmission.signedImageUrl && (
+                        <img
+                            className={styles.ctaImage}
+                            src={userSubmission.signedImageUrl}
+                            alt="Your submission"
                         />
-                    ))}
+                    )}
+                    <p className={styles.ctaTitle}>You have submitted!</p>
+                    <button
+                        className={styles.ctaButton}
+                        type="button"
+                        onClick={() => navigate(`/competitions/${id}/submit`)}
+                    >
+                        Change submission?
+                    </button>
+                </div>
+            )}
+
+            {(phase === "submission" || phase === "finished") && (
+                <div className={styles.gridWrapper}>
+                    {selectedSubmission ? (
+                        <SubmissionExpanded
+                            submission={selectedSubmission}
+                            phase={phase}
+                            userId={user?._id}
+                            onClose={() => setSelectedSubmission(null)}
+                            onVoteChange={handleVoteChange}
+                        />
+                    ) : (
+                        <div className={styles.grid}>
+                            {sorted.map((sub, i) => (
+                                <SubmissionCard
+                                    key={sub._id}
+                                    submission={sub}
+                                    indicator={getIndicator(sub, phase, i, user?._id)}
+                                    onClick={() => setSelectedSubmission(sub)}
+                                />
+                            ))}
+                        </div>
+                    )}
                 </div>
             )}
         </div>
