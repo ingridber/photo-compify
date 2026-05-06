@@ -10,7 +10,7 @@ const competitionSchema = new Schema<CompetitionInterface>({
     startDate: { type: Date },
     votingStartDate: { type: Date },
     endDate: { type: Date },
-    submissions: [{ type: Schema.Types.ObjectId, ref: "Submissions" }],
+    submissions: [{ type: Schema.Types.ObjectId, ref: "Submission" }],
     totalVoteCount: { type: Number, default: 0 },
 }, { timestamps: true }
 );

@@ -4,7 +4,7 @@ import { CompetitionSubmissionInterface } from "../types";
 const submissionSchema = new Schema<CompetitionSubmissionInterface>({
     competition: { type: Schema.Types.ObjectId, ref: "Competition", required: true },
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    image: { type: Schema.Types.ObjectId, reg: "Image", required: true },
+    image: { type: Schema.Types.ObjectId, ref: "Image", required: true },
     description: { type: String },
     votes: [{ type: Schema.Types.ObjectId, ref: "User" }]
 }, { timestamps: true })
