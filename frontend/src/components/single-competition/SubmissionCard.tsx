@@ -19,8 +19,6 @@ export default function SubmissionCard({
     indicator,
     onClick,
 }: SubmissionCardProps) {
-
-    console.log(submission);
     return (
         <div className={styles.card} onClick={onClick}>
             {submission.signedImageUrl ? (
