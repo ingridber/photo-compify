@@ -1,4 +1,6 @@
-import type { Competition } from "../types/competitions";
+import type { Competition, Submission } from "../types/competitions";
+
+const BASE_URL: string = "http://localhost:3000/api/v1";
 
 // ---------- LOG IN ----------
 // ----------------------------
@@ -199,7 +201,7 @@ export async function updateProfilePicture(pictureId: string) {
 }
 
 export async function fetchCompetitionById(id: string,): Promise<Competition> {
-    const res = await fetch(`http://localhost:3000/api/v1/competitions/${id}`);
+    const res = await fetch(`${BASE_URL}/competitions/${id}`);
 
     if (!res.ok) {
         const error = await res.json().catch(() => null);
@@ -209,4 +211,60 @@ export async function fetchCompetitionById(id: string,): Promise<Competition> {
     }
 
     return res.json();
+}
+
+export async function createSubmission(
+    competitionId: string,
+    image: File,
+    description?: string,
+): Promise<Submission> {
+    const formData = new FormData();
+    formData.append("image", image);
+    if (description) formData.append("description", description);
+
+    const res = await fetch(
+        `${BASE_URL}/competitions/${competitionId}/submissions`,
+        {
+            method: "POST",
+            credentials: "include",
+            body: formData,
+        },
+    );
+
+    if (!res.ok) {
+        const error = await res.json().catch(() => null);
+        throw new Error(error?.message ?? `Failed to create submission (${res.status})`);
+    }
+
+    return res.json();
+}
+
+export async function voteOnSubmission(submissionId: string): Promise<void> {
+    const res = await fetch(
+        `${BASE_URL}/submissions/${submissionId}/vote`,
+        {
+            method: "POST",
+            credentials: "include",
+        },
+    );
+
+    if (!res.ok) {
+        const error = await res.json().catch(() => null);
+        throw new Error(error?.message ?? `Failed to vote (${res.status})`);
+    }
+}
+
+export async function removeVote(submissionId: string): Promise<void> {
+    const res = await fetch(
+        `${BASE_URL}/submissions/${submissionId}/vote`,
+        {
+            method: "DELETE",
+            credentials: "include",
+        },
+    );
+
+    if (!res.ok) {
+        const error = await res.json().catch(() => null);
+        throw new Error(error?.message ?? `Failed to remove vote (${res.status})`);
+    }
 }
