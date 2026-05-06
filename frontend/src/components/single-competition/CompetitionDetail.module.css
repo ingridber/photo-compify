@@ -1,0 +1,67 @@
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+}
+
+.description {
+  margin: 4px 0 0;
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.statLabel {
+  /* label above value */
+}
+
+.statValue {
+  /* large value */
+}
+
+.cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 24px;
+}
+
+.ctaButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.ctaTitle {
+  margin: 12px 0 0;
+}
+
+.ctaSubtext {
+  margin: 4px 0 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  padding: 12px;
+}
