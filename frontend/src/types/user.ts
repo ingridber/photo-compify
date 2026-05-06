@@ -2,8 +2,10 @@ import type { Dispatch, SetStateAction } from "react";
 
 export type User = {
     username: string;
-    profilePicture?: string;
-    // token?: string;
+    profilePicture?: {
+        _id: string;
+        url: string;
+    } | null;
 };
 
 export type UserContextType = {

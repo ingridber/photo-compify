@@ -22,7 +22,7 @@ export default function ImageUploadForm({pictureType, onUploadSuccess}: PictureP
   const fileSizeRules = FileSizeValidation();
   const fileFormatRules = FileFormatValidation();
 
-  const {setUser} = useUser();
+  const {user, setUser} = useUser();
 
   const handleOpenFilePicker = () => {
     fileInputRef.current?.click();
@@ -74,8 +74,13 @@ export default function ImageUploadForm({pictureType, onUploadSuccess}: PictureP
       }
       const data = await response.json();
 
+      // ----------------------------------------
+      // ---------- HANDLE PROFILE PIC ----------
+      // ----------------------------------------
       if(pictureType === 'profile') {
-        await updateProfilePicture(data.data._id);
+        await updateProfilePicture(
+          data.data._id,
+          user?.profilePicture?._id);
 
         const currentUser = await getCurrentUser();
 
@@ -93,8 +98,12 @@ export default function ImageUploadForm({pictureType, onUploadSuccess}: PictureP
             onUploadSuccess();
           }, 1000);
         }
-
       }
+      // ----------------------------------------
+      // ----------------------------------------
+      // ----------------------------------------
+
+
 
       console.log("UPLOAD RESPONSE:", data);
 

@@ -13,7 +13,7 @@ export function ManageAccount() {
   return (
     <div className={mixins.sectionContainer}>
       {/* BACK BUTTON */}
-      <button onClick={() => navigate(-1)} className={mixins.backBtn}>
+      <button onClick={() => navigate("/")} className={mixins.backBtn}>
         <img
           src="/arrow-left.svg"
           alt="icon of arrow pointing left"
@@ -24,7 +24,7 @@ export function ManageAccount() {
       <p className={styles.username}>{user ? user.username : "USER"}</p>
 
       <div style={{ width: "7rem", margin: "auto" }}>
-        <DisplayProfilePicture src={user?.profilePicture} />
+        <DisplayProfilePicture src={user?.profilePicture?.url} />
       </div>
 
       <Link to="change-picture" className={styles.changeProfilePicLink}>

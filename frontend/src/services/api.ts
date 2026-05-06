@@ -178,14 +178,17 @@ export async function deleteAccount(
 
 // ---------- UPDATE PROFILE PIC ----------
 // ----------------------------------------
-export async function updateProfilePicture(pictureId: string) {
+export async function updateProfilePicture(
+    profilePicture: string,
+    oldProfilePicture?: string) {
 
     const res = await fetch("http://localhost:3000/api/v1/user/profilePicture", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
-            profilePicture: pictureId
+            profilePicture,
+            oldProfilePicture
         }),
     });
     

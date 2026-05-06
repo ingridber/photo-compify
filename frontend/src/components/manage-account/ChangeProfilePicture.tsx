@@ -24,7 +24,7 @@ export function ChangeProfilePicture(){
         {/* USER NAME & PROFILE PICTURE */}
             <p className={styles.username}>{user ? user.username : "USER"}</p>
             <div style={{ width: "7rem", margin: "auto" }}>
-                <DisplayProfilePicture src={user?.profilePicture} />
+                <DisplayProfilePicture src={user?.profilePicture?.url} />
             </div>
 
             <button 
