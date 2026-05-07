@@ -57,30 +57,30 @@ export function DeleteAccount() {
     };
 
     return (
-        <div className={mixins.sectionContainer}>
-            {redirect ? (
-                <Throbber message={message} action="Redirecting..." />
-            ) : (
-            <>
+        <>
+        {redirect ? (
+            <Throbber message={message} action="Redirecting..." />
+        ) : (
+
+        <>
+         <section className={mixins.headerContainer}>
             {/* BACK BUTTON */}
-            <button onClick={() => navigate("/manage-account")} className={mixins.backBtn}>
-                <img
-                src="/arrow-left.svg"
-                alt="icon of arrow pointing left"
-                className={mixins.backBtnIcon}
-                />
+            <button 
+                onClick={()=> navigate(-1)}
+                className={mixins.backBtn}>
+                <img src="/arrow-left.svg" alt="icon of arrow pointing left" className={mixins.backBtnIcon} />
             </button>
 
-            {/* USER */}
-            <p className={styles.username}>{user ? user.username : "USER"}</p>
-
-            <div style={{ width: "7rem", margin: "auto" }}>
+            {/* PROFILE PICTURE & USER NAME */}
+            <p className={mixins.username}>{user? user.username : "USER"}</p>
+            <div style= {{width: "7rem", margin: "auto"}}>
                 <DisplayProfilePicture src={user?.profilePicture?.url} />
             </div>
+        </section>
 
-        
+        <div className={mixins.contentContainer}>
             <div className={styles.confirmContainer}>
-            <p className={styles.deleteTitle}>Are you sure? No takesies backsies :-(</p>
+            <p className={styles.deleteTitle}><span>Are you sure?</span> No takesies backsies :-(</p>
               
               
             {/* TYPE DELTE TO CONFIRM  */}
@@ -134,7 +134,6 @@ export function DeleteAccount() {
                 </div>
             </div>
 
-            <p>{message}</p>
 
             <div className={styles.confirmDeleteBtnContainer}>
                 <button
@@ -151,8 +150,13 @@ export function DeleteAccount() {
                         BYE
                 </button>
             </div>
+
+            <p style={{marginTop: "0.8rem"}}>{message}</p>
+
+            </div>
             </div>
             </>)}
-        </div>
+        
+        </>
     )
 }

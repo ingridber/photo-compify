@@ -50,8 +50,8 @@ export function ChangePassword() {
     }
 
     return (
-        <section className={mixins.sectionContainer}>
-
+        <>
+        <section className={mixins.headerContainer}>
             {/* BACK BUTTON */}
             <button 
                 onClick={()=> navigate(-1)}
@@ -60,16 +60,20 @@ export function ChangePassword() {
             </button>
 
             {/* PROFILE PICTURE & USER NAME */}
+            <p className={mixins.username}>{user? user.username : "USER"}</p>
             <div style= {{width: "7rem", margin: "auto"}}>
                 <DisplayProfilePicture src={user?.profilePicture?.url} />
             </div>
-            <p className={mixins.username}>{user? user.username : "USER"}</p>
+        </section>
+
+        <section className={mixins.contentContainer}>
 
             {/* CHANGE PASSWORD FORM  */}
             <form onSubmit={handleUpdatePassword}>
 
             {/* FIELD GROUP: CURRENT PASSWORD */}
-            <div className={mixins.fieldGroup}>
+            <div className={mixins.fieldGroup} style={{paddingTop: '2.5rem'}}>
+
 
                 <label 
                     htmlFor="password" 
@@ -167,5 +171,6 @@ export function ChangePassword() {
 
             </form>
         </section>
+        </>
     );
 };

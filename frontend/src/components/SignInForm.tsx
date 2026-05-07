@@ -87,17 +87,12 @@ export function SignInForm() {
     };
 
     return (
-        <section className={mixins.sectionContainer}>
-
-            {redirect 
-            ? (
-                <Throbber 
-                    message={message}
-                    action="Redirecting..."
-                />
-                )
-            : <>
-
+        <>
+        {redirect ? (
+            <Throbber message={message} action="Redirecting..." />
+        ) : (
+        <>
+        <section className={mixins.headerContainer}>
             {/* BACK BUTTON */}
             <button 
                 onClick={()=> navigate(-1)}
@@ -106,11 +101,13 @@ export function SignInForm() {
             </button>
 
             {/* TITLE & LOGO */}
-            <p className={styles.title}>Sign in</p>
+            <p className={mixins.title}>Sign in</p>
             <div style= {{width: "7rem", margin: "auto"}}>
-                <DisplayLogo/>
+                <DisplayLogo text={true}/>
             </div>
+        </section>
 
+        <section className={mixins.contentContainer}>
             {/* LOGIN FORM  */}
             <form onSubmit={handleSubmit}>
 
@@ -186,8 +183,8 @@ export function SignInForm() {
             <Link to="/register" className={styles.register}>
                 Create an account
             </Link>
-            </>
-            }
         </section>
-    )
+        </>)}
+    </>
+    );
 };

@@ -22,10 +22,24 @@ export function DisplayProfilePicture({src}: DisplayProfilePictureProps) {
 };
 
 
-export function DisplayLogo() {
+type DisplayLogoPictureProps = {
+    text? : boolean | null;
+};
+
+export function DisplayLogo({text}: DisplayLogoPictureProps) {
+
+    if(text){
     return (
-            <div className={styles.profileBackground}>
+            <div className={styles.logoBackground}>
                 <img src="/logo.png" alt="Profile picture" className={styles.logo}/>
             </div>
         );
+    }
+
+    return (
+            <div className={styles.logoBackground}>
+                <img src="/logo_no_text.png" alt="Profile picture" className={styles.logo} />
+            </div>
+    );
+
 };

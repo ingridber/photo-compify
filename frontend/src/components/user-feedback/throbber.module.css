@@ -7,7 +7,7 @@
 }
 
 .throbberBackground {
-    background-color: var(--submit);
+    background-color: #B0CBC1;
     width: 2rem;
     aspect-ratio: 1/1;
     margin-bottom: 1rem;
