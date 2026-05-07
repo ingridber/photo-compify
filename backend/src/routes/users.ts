@@ -4,7 +4,8 @@ import {
     changePassword, 
     logout, 
     deleteUser, 
-    changeProfilePicture 
+    changeProfilePicture,
+    deleteProfilePicture
 } from "../controllers/usersControllers";
 import { authenticateToken } from "../middleware/auth";
 
@@ -20,7 +21,10 @@ routerUser.get("/profile", authenticateToken, (req: Request, res: Response) => {
 
 routerUser.patch('/username', authenticateToken, changeUsername);
 routerUser.patch('/password', authenticateToken, changePassword);
+
 routerUser.patch('/profilepicture', authenticateToken, changeProfilePicture);
+routerUser.delete('/profilepicture', authenticateToken, deleteProfilePicture);
+
 routerUser.post('/logout', logout);
 routerUser.delete('/', authenticateToken, deleteUser);
 
