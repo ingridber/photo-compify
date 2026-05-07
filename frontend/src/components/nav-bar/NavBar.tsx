@@ -1,31 +1,31 @@
 import styles from "./navBar.module.css";
-import { Link } from "react-router";
+import { NavLink } from "react-router";
 
 export function NavBar() {
 
     return(
-        <>
+        <div className={styles.navbarBackground}>
         
         <div className={styles.navbarContainer}>
 
-            <Link to="/" className={styles.navLink}>
+            <NavLink to="/" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}`: styles.navLink}>
                 <img src="/home.svg" alt="icon: Home" className={styles.navIcon}/>
                 <p className={styles.navTitle}>Home</p>
-            </Link>
+            </NavLink>
 
-            <Link to="/create-competition" className={styles.navLink}>
+            <NavLink to="/create-competition" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}`: styles.navLink}>
                 <img src="/create-comp.svg" alt="icon: Create Competition" className={styles.navIcon}/>
                 <p className={styles.navTitle}>Create</p>
-            </Link>
+            </NavLink>
 
-            <Link to="/competitions" className={styles.navLink}>
+            <NavLink to="/competitions" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}`: styles.navLink}>
                 <img src="/competitions.svg" alt="icon: Create Competition" className={styles.navIcon}/>
                 <p className={styles.navTitle}>Comps</p>
-            </Link>
+            </NavLink>
 
 
         </div>
         
-        </>
+        </div>
     )
 }
