@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { register } from "../services/api";
 import { useNavigate } from "react-router";
 import { DisplayLogo } from "./display-profile-picture/DisplayProfilePicture";
+import { Throbber } from "./user-feedback/Throbber";
 
 const SITE_KEY = "6Lfr5dgsAAAAAAh2wY2jQK-Pb4QalmOyznzsEA7j";
 const usernameRegex = /^[^\u0080-\uFFFF]+$/;
@@ -35,6 +36,7 @@ export default function RegisterForm() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [errors, setErrors] = useState<FormErrors>({});
     const [isLoading, setIsLoading] = useState(false);
+    const [redirect, setRedirect] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -109,7 +111,11 @@ export default function RegisterForm() {
             const res = await register(email, username, password, token);
 
             if (res.status === 201) {
-                navigate("/login", { replace: true });
+                setRedirect(true);
+                setTimeout(() => {
+                    navigate("/login", { replace: true });
+                }, 1800);
+                
             } else if (res.status === 409) {
                 const data = await res.json();
                 if (data.code === "USER_ALREADY_REGISTERED") {
@@ -132,15 +138,27 @@ export default function RegisterForm() {
     }
 
     return (
-        <section className={mixins.sectionContainer}>
-            <button onClick={() => navigate(-1)} className={mixins.backBtn}>
-                <img src="/arrow-left.svg" alt="Back" className={mixins.backBtnIcon} />
+        <>
+        {redirect ? (
+            <Throbber message="Account created" action="Redirecting to Sign In" />
+        ) : (
+        <>
+        <section className={mixins.headerContainer}>
+            {/* BACK BUTTON */}
+            <button 
+                onClick={()=> navigate(-1)}
+                className={mixins.backBtn}>
+                <img src="/arrow-left.svg" alt="icon of arrow pointing left" className={mixins.backBtnIcon} />
             </button>
 
-            <p className={styles.title}>Sign up</p>
-            <div style={{ width: "7rem", margin: "auto", paddingBottom: "1.5rem" }}>
-                <DisplayLogo />
+            {/* TITLE & LOGO */}
+            <p className={mixins.title}>Sign up</p>
+            <div style= {{width: "7rem", margin: "auto"}}>
+                <DisplayLogo text={true}/>
             </div>
+        </section>
+
+        <section className={mixins.contentContainer}>
 
             {errors.general && <p style={{ color: "red", textAlign: "center" }}>{errors.general}</p>}
 
@@ -260,6 +278,11 @@ export default function RegisterForm() {
                     {isLoading ? "Processing..." : "Register"}
                 </button>
             </form>
+
         </section>
+        
+        </>
+        )}
+        </>
     );
-}
+};

@@ -1,0 +1,44 @@
+.navbarContainer {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 400px;
+    height: 60px;
+    background: var(--navigate-menu);
+    border: 1px solid black;
+    border-radius: 1rem;
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+
+    z-index: 9999;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    padding: 0.2rem;
+}
+
+
+.navLink {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    cursor: pointer;
+    margin-top: 0.3rem;
+}
+
+.navIcon{
+    width: 1.6rem;
+    aspect-ratio: 1/1;
+    filter: var(--navigate-icon); 
+}
+
+.navTitle {
+    text-transform: uppercase;
+    color: var(--navigate-text);
+    font-weight: 300;
+    font-size: 0.7rem;
+}

@@ -11,31 +11,29 @@ export function ManageAccount() {
   const [confirmSignOut, setConfirmSignOut] = useState(false);
 
   return (
-    <div className={mixins.sectionContainer}>
-      {/* BACK BUTTON */}
-      <button onClick={() => navigate("/")} className={mixins.backBtn}>
-        <img
-          src="/arrow-left.svg"
-          alt="icon of arrow pointing left"
-          className={mixins.backBtnIcon}/>
-      </button>
+    <>
+      {/* HEADER CONTAINER */}
+      <section className={mixins.headerContainer}>
+        {/* USERNAME & PROFILE PICTURE */}
+        <p className={mixins.username}>{user ? user.username : "USER"}</p>
+        <div style={{ width: "7rem", margin: "auto" }}>
+          <DisplayProfilePicture src={user?.profilePicture?.url} />
+        </div>
+      </section>
 
-      {/* USER */}
-      <p className={styles.username}>{user ? user.username : "USER"}</p>
+      {/* CONTENT CONTAINER */}
+      <div className={mixins.contentContainer}>
 
-      <div style={{ width: "7rem", margin: "auto" }}>
-        <DisplayProfilePicture src={user?.profilePicture?.url} />
-      </div>
 
       <Link to="change-picture" className={styles.changeProfilePicLink}>
         {user?.profilePicture ? "Change " : "Upload "}Profile Picture
       </Link>
 
-      <Link to="change-username" className={styles.changePageBtn}>
+      <Link to="change-username" className={styles.changePageLink}>
         Change Username
       </Link>
 
-      <Link to="change-password" className={styles.changePageBtn}>
+      <Link to="change-password" className={styles.changePageLink}>
         Change Password
       </Link>
 
@@ -80,5 +78,7 @@ export function ManageAccount() {
         </button>
       </article>
     </div>
+
+    </>
   );
 };

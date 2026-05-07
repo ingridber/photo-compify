@@ -31,8 +31,8 @@ export function ChangeUsername() {
     }
 
     return (
-        <section className={mixins.sectionContainer}>
-
+        <>
+        <section className={mixins.headerContainer}>
             {/* BACK BUTTON */}
             <button 
                 onClick={()=> navigate(-1)}
@@ -41,16 +41,19 @@ export function ChangeUsername() {
             </button>
 
             {/* PROFILE PICTURE & USER NAME */}
+            <p className={mixins.username}>{user? user.username : "USER"}</p>
             <div style= {{width: "7rem", margin: "auto"}}>
                 <DisplayProfilePicture src={user?.profilePicture?.url} />
             </div>
-            <p className={mixins.username}>{user? user.username : "USER"}</p>
+        </section>
+
+        <section className={mixins.contentContainer}>
 
             {/* CHANGE PASSWORD FORM  */}
             <form onSubmit={handleUpdateUsername}>
 
             {/* FIELD GROUP: NEW USERNAME */}
-            <div className={mixins.fieldGroup}>
+            <div className={mixins.fieldGroup} style={{paddingTop: '2.5rem'}}>
 
                 <label htmlFor="username" className={mixins.labelForInput}>
                     New username</label>
@@ -85,5 +88,6 @@ export function ChangeUsername() {
 
             </form>
         </section>
+    </>
     );
 };

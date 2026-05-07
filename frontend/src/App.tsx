@@ -17,6 +17,7 @@ import CreateCompetitionPage from './pages/CreateCompetitionPage'
 import Competition from './pages/Competition';
 import { SignOut } from './components/SignOut';
 import { DeleteAccount } from './pages/DeleteAccount';
+import { NavBar } from './components/nav-bar/NavBar';
 
 
 function App() {
@@ -76,6 +77,9 @@ function App() {
             </ProtectedRoute>} />
           </Route>
         </Routes>
+
+
+        <NavBar/>
     </>
   )
 }

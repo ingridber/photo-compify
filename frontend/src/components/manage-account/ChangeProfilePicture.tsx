@@ -37,26 +37,32 @@ export function ChangeProfilePicture(){
     };
 
     return (
-        <div className={mixins.sectionContainer}>
-        {/* BACK BUTTON */}
-            <button onClick={() => navigate(-1)} className={mixins.backBtn}>
-                <img
-                src="/arrow-left.svg"
-                alt="icon of arrow pointing left"
-                className={mixins.backBtnIcon}/>
+        <>
+        <section className={mixins.headerContainer}>
+            {/* BACK BUTTON */}
+            <button 
+                onClick={()=> navigate(-1)}
+                className={mixins.backBtn}>
+                <img src="/arrow-left.svg" alt="icon of arrow pointing left" className={mixins.backBtnIcon} />
             </button>
 
-        {/* USER NAME & PROFILE PICTURE */}
-            <p className={styles.username}>{user ? user.username : "USER"}</p>
-            <div style={{ width: "7rem", margin: "auto" }}>
+            {/* PROFILE PICTURE & USER NAME */}
+            <p className={mixins.username}>{user? user.username : "USER"}</p>
+            <div style= {{width: "7rem", margin: "auto"}}>
                 <DisplayProfilePicture src={user?.profilePicture?.url} />
             </div>
+        </section>
 
-            <button 
+        <section className={mixins.contentContainer}>
+
+
+            <button
+                style={{marginTop: '3.7rem'}}
                 className={styles.changePageBtn}
                 onClick={() => setOpenModal(true)}>
                     {user?.profilePicture ? "Change " : "Upload "} Picture
             </button>
+
 
             {user?.profilePicture && (
                 <>
@@ -108,6 +114,7 @@ export function ChangeProfilePicture(){
                     </div>
                 </div>
             )}
-        </div>
+        </section>
+        </>
     );
 };

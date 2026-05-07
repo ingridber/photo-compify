@@ -8,14 +8,32 @@
     align-items: center;
     justify-content: center;
 
-    background-color: lightgray;
+    background-color: #B0CBC1;
     border: 2px solid var(--text);
+}
+
+.logoBackground {
+
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: var(--text);
+    border: 2px solid var(--text);
+
 }
 
 .avatar {
     width: 60%;
     object-fit: cover; 
 }
+
+
 
 .logo,
 .picture {
