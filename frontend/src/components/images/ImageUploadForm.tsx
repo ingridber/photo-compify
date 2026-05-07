@@ -140,7 +140,7 @@ export default function ImageUploadForm({pictureType, onUploadSuccess}: PictureP
             className="preview-image"
           />
         ) : (
-          <div>
+          <div className="upload">
             <p className="upload-plus">+</p>
             <h2 className="upload-title">Upload Image</h2>
             <p className="upload-text">or drag & drop image here</p>
@@ -150,11 +150,7 @@ export default function ImageUploadForm({pictureType, onUploadSuccess}: PictureP
 
       <p className="upload-info">Max 1MB, JPG, PNG, WEBP</p>
 
-      {message && (
-        <p style={{ color: message.includes("success") ? "green" : "red" }}>
-          {message}
-        </p>
-      )}
+
 
       <button
         className={`upload-button ${selectedFile ? "active" : ""}`}
@@ -162,6 +158,12 @@ export default function ImageUploadForm({pictureType, onUploadSuccess}: PictureP
       >
         Upload
       </button>
+
+      {message && (
+        <p style={{ color: message.includes("success") ? "green" : "red" }} className="message">
+          {message}
+        </p>
+      )}
     </div>
   );
 }
