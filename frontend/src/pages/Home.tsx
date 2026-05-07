@@ -8,7 +8,7 @@ export function Home() {
     const {user} = useUser();
 
     return (
-        <div>
+        <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
             <nav>
                 {!user ? (
                     <Link to="/login">
@@ -19,17 +19,10 @@ export function Home() {
                         <button>Manage Account</button>
                     </Link>
                 )}
-
-                <Link to="/competitions">
-                    <button>Competitions</button>
-                </Link>
-                <Link to="/create-competition">
-                     <button>New competition</button>
-               </Link>
             </nav>
 
             <div style= {{width: "12rem", margin: "auto", paddingTop: "2rem",}}>
-                <DisplayLogo />
+                <DisplayLogo text={true} />
             </div>
 
             <h1>{`Welcome ${user?.username ? user.username.toLocaleUpperCase() : 'Stranger'} <3`}</h1>
