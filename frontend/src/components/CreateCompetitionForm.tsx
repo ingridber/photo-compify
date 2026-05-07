@@ -1,5 +1,6 @@
 import { useState, useRef, type SubmitEvent } from 'react';
 import styles from './createCompetitionForm.module.css';
+import mixins from "../styles/mixins.module.css";
 
 const AVAILABLE_THEMES: string[] = [
     'Portrait',
@@ -10,14 +11,14 @@ const AVAILABLE_THEMES: string[] = [
     'Architecture',
     'Nature',
     'Travel',
+    'Minimalist',
     'Black & White',
     'Long Exposure',
-    'Minimalist',
     'Abstract',
-    'Documentary',
-    'Astrophotography',
     'Aerial',
     'Night',
+    'Astrophotography',
+    'Documentary',
 ];
 
 const TITLE_MAX = 50;
@@ -142,13 +143,18 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
         <form className={styles.form} onSubmit={handleSubmit} noValidate>
             <label>
                 <span>Title</span>
+                <div className={mixins.inputFieldContainer}>
+
                 <input
                     type="text"
                     value={title}
                     maxLength={TITLE_MAX}
                     onChange={(e) => setTitle(e.target.value)}
                     required
+                    className={mixins.inputField}
+                    placeholder='Title'
                 />
+                </div>
                 <small className={styles.counter}>
                     {title.length}/{TITLE_MAX}
                 </small>
@@ -156,20 +162,28 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
 
             <label>
                 <span>Description</span>
+                <div className={mixins.inputFieldContainer}>
                 <textarea
                     value={description}
                     maxLength={DESC_MAX}
                     rows={4}
                     onChange={(e) => setDescription(e.target.value)}
                     required
+                    className={mixins.inputField}
+                    placeholder='Description'
+
                 />
+                </div>
                 <small className={styles.counter}>
                     {description.length}/{DESC_MAX}
                 </small>
             </label>
 
             <fieldset className={styles.fieldset}>
-                <legend>Themes</legend>
+                <div className={styles.themesTitleContainer}>
+                <legend className={styles.themesTitle}>Themes</legend>
+                <small className= {themes.length === 0 ? `${styles.counterTheme}` : ` ${styles.counterTheme} ${styles.counterThemeHide}`}>Pick at least one</small>
+                </div>
                 <div className={styles.themesGrid}>
                     {AVAILABLE_THEMES.map((theme) => (
                         <label key={theme} className={styles.themeOption}>
@@ -182,11 +196,12 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
                         </label>
                     ))}
                 </div>
-                {themes.length === 0 && <small className={styles.counter}>Pick at least one.</small>}
             </fieldset>
 
             <label>
-                <span>Logo / Banner (optional)</span>
+                <div className={styles.logoTitleContainer}>
+                <span className={styles.logoTitle}>Logo / Banner (optional)</span>
+                </div>
                 <input
                     ref={fileInputRef}
                     type="file"
@@ -203,7 +218,7 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
                     <div className={styles.preview}>
                         <img src={previewUrl} alt="Preview" />
                         <button type="button" onClick={clearFile} className={styles.clearBtn}>
-                            Remove
+                            ✕
                         </button>
                     </div>
                 )}
@@ -221,7 +236,7 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
                 </div>
             )}
 
-            <button type="submit" className={styles.submit} disabled={!isValid || submitting}>
+            <button type="submit" className={`${mixins.submitBtn} ${styles.submit}`} disabled={!isValid || submitting}>
                 {submitting ? 'Creating...' : 'Create'}
             </button>
         </form>
