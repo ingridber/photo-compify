@@ -5,7 +5,10 @@
   /* ----- COLORS ----- */
   --text: #001F45;
   --text-light: #F2F1EB;
+  --text-dark: #001F45;
   --bg: #F2F1EB;
+  --bg-dark: #001F45;
+  --bg-light: #F2F1EB;
   
 /* ----- FORMS ----- */
   --input-field: #B0CBC1;
@@ -26,7 +29,7 @@
   /* ----- NAVIGATION -----  */
   --navigate-menu: #064686;
   /* --navigate-icon: brightness(0) saturate(100%) invert(56%) sepia(15%) saturate(634%) hue-rotate(146deg) brightness(92%) contrast(89%); */
-  --navigate-icon: brightness(0) saturate(100%) invert(96%) sepia(7%) saturate(188%) hue-rotate(15deg) brightness(104%) contrast(90%) opacity(90%);
+  --navigate-icon: brightness(0) saturate(100%) invert(96%) sepia(7%) saturate(188%) hue-rotate(15deg) brightness(104%) contrast(90%) opacity(60%);
   --navigate-text: #B0CBC1;
 
   /* ----- FONTS ----- */
@@ -44,26 +47,16 @@
 }
 
 [data-theme="dark"] {
-
   --bg: #001F45;
   --text: #F2F1EB;
   --shadow: none;
   --input-placeholder: #B0CBC1;
   --input-field: #5D8996;
-
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-
-  }
-
-
+  --bg-dark: #001229;
 }
 
 body {
   margin: 0;
-
 }
 
 p {

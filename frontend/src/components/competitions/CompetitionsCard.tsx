@@ -67,7 +67,7 @@ export default function CompetitionsCard({ competition }: Props) {
         <div
           style={{
             width: 62,
-            height: 55,
+            aspectRatio: "1/1",
             borderRadius: "50%",
             background: "#ddd",
             overflow: "hidden",
