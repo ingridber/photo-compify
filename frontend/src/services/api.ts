@@ -198,3 +198,13 @@ export async function updateProfilePicture(
 
     return;
 }
+
+// ---------- DELETE PROFILE PIC ----------
+// ----------------------------------------
+export async function deleteProfilePicture() {
+
+    return fetch("http://localhost:3000/api/v1/user/profilePicture", {
+        method: "DELETE",
+        credentials: "include"
+    });
+};
