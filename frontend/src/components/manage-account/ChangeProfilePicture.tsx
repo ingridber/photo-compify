@@ -5,11 +5,36 @@ import { DisplayProfilePicture } from "../display-profile-picture/DisplayProfile
 import { useUser } from "../../hooks/useUser";
 import { useNavigate } from "react-router";
 import { useState } from "react";
+import { deleteProfilePicture } from "../../services/api";
 
 export function ChangeProfilePicture(){
     const navigate = useNavigate();
-    const { user} = useUser();
+    const { user, setUser} = useUser();
     const [openModal, setOpenModal] = useState(false);
+    const [confirmDelete, setConfirmDelete] = useState(false);
+
+    const handleDeleteProfilePicture= async () => {
+        try {
+            const res = await deleteProfilePicture();
+
+            if(!res.ok) {
+                throw new Error("Failed to delete profile picture");
+            };
+
+            setUser(prev => {
+                if(!prev) return null;
+
+                return {
+                    ...prev,
+                    profilePicture: null
+                };
+            });
+        } catch (err){
+            console.log('delete profile pic, changeProfilePicture.tsx : ', err);
+        };
+
+        setConfirmDelete(false);
+    };
 
     return (
         <div className={mixins.sectionContainer}>
@@ -33,10 +58,38 @@ export function ChangeProfilePicture(){
                     {user?.profilePicture ? "Change " : "Upload "} Picture
             </button>
 
-            <button 
-                className={styles.changePageBtn}>
-                    (fix) Delete Picture
-            </button>
+            {user?.profilePicture && (
+                <>
+                <article>
+                    {!confirmDelete ? (
+                    <button 
+                        className={styles.changePageBtn}
+                        onClick={() => setConfirmDelete(true)}>
+                            Delete Picture
+                    </button>
+                    ) : (
+                    <>
+                    <p className={`${styles.signOutTitle} ${styles.space}`}>
+                    {confirmDelete ? "Are you sure?" : "Need a break?"}
+                    </p>
+                    <div className={styles.confirmBtnContainer}>
+                        <button
+                        onClick={handleDeleteProfilePicture}
+                        className={styles.confirmBtnYes}>
+                            Yes
+                        </button>
+                        <button
+                        onClick={() => setConfirmDelete(false)}
+                        className={styles.confirmBtnNo}
+                        >
+                        No
+                        </button>
+                    </div>
+                    </>
+                    )}
+                </article>
+            </>
+            )}
 
             {openModal && (
                 <div className={styles.modalOverlay} onClick={() => setOpenModal(false)}>
