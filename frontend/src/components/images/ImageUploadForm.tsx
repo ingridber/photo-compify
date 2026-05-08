@@ -3,16 +3,18 @@ import "./ImageUploadForm.css";
 import { uploadImage } from "../../services/imageApi";
 import FileSizeValidation from "./FileSizeValidation";
 import FileFormatValidation from "./FileFormatValidation";
-import { updateProfilePicture } from "../../services/api";
+import { updateProfilePicture, createSubmission } from "../../services/api";
 import { getCurrentUser } from "../../services/api";
 import { useUser } from "../../hooks/useUser";
+import { useNavigate } from "react-router";
 
 type PictureProps = {
     pictureType? : string | null;
+    competitionId?: string;
     onUploadSuccess?: () => void;
 };
 
-export default function ImageUploadForm({pictureType, onUploadSuccess}: PictureProps) {
+export default function ImageUploadForm({pictureType, competitionId, onUploadSuccess}: PictureProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -23,6 +25,8 @@ export default function ImageUploadForm({pictureType, onUploadSuccess}: PictureP
   const fileFormatRules = FileFormatValidation();
 
   const {user, setUser} = useUser();
+
+  const navigate = useNavigate();
 
   const handleOpenFilePicker = () => {
     fileInputRef.current?.click();
@@ -89,6 +93,7 @@ export default function ImageUploadForm({pictureType, onUploadSuccess}: PictureP
         }
 
         setUser({
+          _id: currentUser.data._id,
           username: currentUser.data.username,
           profilePicture: currentUser.data.profilePicture
         })
@@ -104,6 +109,18 @@ export default function ImageUploadForm({pictureType, onUploadSuccess}: PictureP
       // ----------------------------------------
 
 
+
+      if(pictureType === 'submission' && competitionId) {
+          try {
+              await createSubmission(competitionId, data.data._id );
+              setMessage("submission added");
+              navigate(`/competitions/${competitionId}`);
+              return;
+          } catch (err) {
+              setMessage(`submission failed: ${err}`);
+              return;
+          }
+      }
 
       console.log("UPLOAD RESPONSE:", data);
 

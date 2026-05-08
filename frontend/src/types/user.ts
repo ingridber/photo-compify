@@ -1,6 +1,7 @@
 import type { Dispatch, SetStateAction } from "react";
 
 export type User = {
+    _id: string;
     username: string;
     profilePicture?: {
         _id: string;

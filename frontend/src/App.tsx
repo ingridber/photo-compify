@@ -14,10 +14,12 @@ import { useEffect } from 'react';
 import { useUser } from './hooks/useUser';
 import { getCurrentUser } from './services/api';
 import CreateCompetitionPage from './pages/CreateCompetitionPage'
-import Competition from './pages/Competition';
+import CompetitionPage from './pages/CompetitionPage';
+import SubmitToCompetition from './pages/SubmitToCompetitionPage';
 import { SignOut } from './components/SignOut';
 import { DeleteAccount } from './pages/DeleteAccount';
 import { NavBar } from './components/nav-bar/NavBar';
+
 
 
 function App() {
@@ -46,8 +48,14 @@ function App() {
         <Route path={"/delete-account"} element={<DeleteAccount/>}/>
         <Route path="/register" element={<Register />}/>
         <Route path='/competitions' element={<CompetitionsPage />}/> 
-        <Route path='/competitions/:id' element={<Competition />}/>
+        <Route path='/competitions/:id' element={<CompetitionPage />}/>
+        <Route path='/create-competition' element={<CreateCompetitionPage />}/> 
         <Route path="/image-upload" element={<ImageUpload />} />
+        <Route path='/competitions/:id/submit' element={
+          <ProtectedRoute>
+            <SubmitToCompetition />
+          </ProtectedRoute>
+        } />
 
         <Route 
           path='/create-competition' 

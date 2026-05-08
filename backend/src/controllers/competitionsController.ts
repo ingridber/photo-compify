@@ -1,9 +1,10 @@
-import { CompetitionInterface, AuthRequest } from "../types/index";
+import { CompetitionInterface, AuthRequest, CompetitionSubmissionInterface, ImageInterface } from "../types/index";
 import { Request, Response } from "express";
 import { Competition } from "../models/Competition";
 import { getPagination } from "../utils/pagination";
 import { User } from "../models/User";
 import { getCompetitionFilter } from "../utils/competitionFilter";
+import { Document } from "mongoose";
 
 // ---------------------------------------
 // --------- GET ALL COMPETITION ---------
@@ -85,7 +86,7 @@ export async function getAllCompetitions(req: Request, res: Response) {
 // -----------------------------------------
 // --------- GET COMPETITION BY ID ---------
 // -----------------------------------------
-export async function getCompetitionById(req: Request, res: Response) {
+export async function getCompetitionById(req: AuthRequest, res: Response) {
   const id = req.params.id;
   const competition = await Competition.findById(id).populate(
     "owner",
@@ -101,8 +102,23 @@ export async function getCompetitionById(req: Request, res: Response) {
   }
 
   const now = new Date();
-  if (competition.votingStartDate <= now) {
-    await competition.populate("submissions");
+  if (competition.votingStartDate > now) {
+    await competition.populate({
+      path: "submissions",
+      populate: [
+        { path: "image" },
+        { path: "user", select: "username" }
+      ]
+    });
+
+    await Promise.all(
+        competition.submissions.map(async (sub: any) => {
+            if (sub.image?.getSignedUrl) {
+                const url = await sub.image.getSignedUrl();
+                sub._doc.signedImageUrl = url;
+            }
+        })
+    )
   }
 
   res.status(200).json(competition);

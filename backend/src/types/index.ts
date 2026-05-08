@@ -21,23 +21,17 @@ export interface CompetitionInterface extends Document {
     startDate: Date;
     votingStartDate: Date;
     endDate: Date;
-    submissions: Types.ObjectId[];
+    submissions: Types.ObjectId[] | CompetitionSubmissionInterface[];
     totalVoteCount: number;
 };
 
-export interface CompetitionSubmissionInterface {
+export interface CompetitionSubmissionInterface extends Document {
     competition: Types.ObjectId;
     user: Types.ObjectId;
     image: Types.ObjectId;
     description?: string;
     votes: Types.ObjectId[];
 };
-
-// export interface ImageInterface {
-//     url: string;
-//     uploadedBy: string;
-//     uploadedAt: string;
-// };
 
 export interface ImageInterface {
     filename: string;
