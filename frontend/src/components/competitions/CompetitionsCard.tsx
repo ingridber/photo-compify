@@ -1,3 +1,4 @@
+import styles from "./competitions-card.module.css"
 import { useNavigate } from "react-router";
 
 // Definition of types from API
@@ -50,94 +51,76 @@ export default function CompetitionsCard({ competition }: Props) {
   }
 
   return (
-    <div
-      style={{
-        border: "2px solid #ccc",
-        borderRadius: 10,
-        padding: 16,
-        marginBottom: 12,
-        display: "flex",
-        flexDirection: "column",
-        gap: 10,
-        cursor: "pointer"
-      }}
-      onClick={() => handleClick()}
-    >
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <div
-          style={{
-            width: 62,
-            aspectRatio: "1/1",
-            borderRadius: "50%",
-            background: "#ddd",
-            overflow: "hidden",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          {competition.logoBanner ? (
-            <img
-              src={competition.logoBanner}
-              alt={`${competition.title} logo`}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-              }}
-            />
-          ) : (
-            <span style={{ fontSize: 12 }}>No logo</span>
-          )}
-        </div>
+    // ----- CARD CONTAINER -----
+    <div onClick={() => handleClick()}
+        className={styles.cardContainer}>
 
-        <div style={{ display: "flex", gap: 8, }}>
+      {/* ----- CARD HEADER: themes ----- */}
+      <div className={styles.cardHeader}>
+        {/* THEMES CONTAINER  */}
+        <div className={styles.themeContainer}>
           {(competition.themes ?? []).map((theme) => (
-            <span
-              key={theme}
-              style={{
-                padding: "1px 3px",
-                borderRadius: 16,
-                background: "#e5e5e5",
-                fontSize: 10,
-                width: "58px",
-                height: "16px",
-              
-                
-              }}
-            >
-              {theme}
+            // THEME 
+            <span className={styles.theme}
+              key={theme}>
+                {theme}
             </span>
           ))}
         </div>
       </div>
 
-      <div>
-        <h2 style={{ margin: 0 }}>{competition.title}</h2>
-
-        <p style={{ margin: 0, color: "#555" }}>{competition.description}</p>
-
-        <p>
-          Status: <strong>{phase.toUpperCase()}</strong>
-        </p>
+      {/* ----- CARD MAIN: Logo, title, description ----- */}
+      <div className={styles.cardMain}>
+        {/* LOGO */}
+        <div className={styles.logoContainer}
+            style={{
+              borderColor: phase === "ended" ? "red" : phase === "submission" ? "green" : "yellow"}}>
+          {competition.logoBanner ? (
+            // LOGO PIC
+            <img
+              src={competition.logoBanner}
+              alt={`${competition.title} logo`}
+              className={styles.logoPic}/>
+          ) : (
+            // NO LOGO TEXT
+            <img
+              src="/competitions.svg"
+              alt={`Competition icon`}
+              className={styles.noLogo}/>
+          )}
+        </div>
+        {/* TITLE & DESSCRIPTION */}
+        <div className={styles.titleDescriptionContainer}>
+          {/* COMPETITION TITLE  */}
+          <h2 className={styles.title}>{competition.title}</h2>
+          {/* COMPETITION DESCRIPTION  */}
+          <p className={styles.description}>{competition.description}</p>
+        </div>
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginTop: 10,
-          fontSize: 14,
-          color: "#444",
-        }}
-      >
-        <span>
-          Ends on: {new Date(competition.endDate).toLocaleDateString()}
-        </span>
-        <span>Created by: {competition.owner?.username} </span>
-        <span>Participants: {competition.participantCount}</span>
-        
+      {/* ----- CARD FOOTER: Status, End, Creator, Participants ----- */}
+        <div className={styles.cardFooter}>
+          <div>
+            <p className={styles.specsTitle}>Status</p>
+            <p className={styles.phase}
+            style={{
+            color: phase === "ended" ? "red" : phase === "submission" ? "green" : "yellow"}}>
+            {phase}
+            </p>
+          </div>
+          <div className={styles.hideEnd}>
+            <p className={styles.specsTitle}>Ends on</p>
+            <p className={styles.endDate}>{new Date(competition.endDate).toLocaleDateString()}</p>
+          </div>
+          <div className={styles.hideOwner}>
+            <p className={styles.specsTitle}>Created by</p>
+            <p className={styles.owner}>{competition.owner?.username}_user</p>
+          </div>
+          <div>
+            <p className={styles.specsTitle}>Participants</p>
+            <p className={styles.participants}>{competition.participantCount} 139</p>
+          </div>
+        </div>
       </div>
-    </div>
   );
 }

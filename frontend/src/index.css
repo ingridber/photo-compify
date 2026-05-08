@@ -9,6 +9,7 @@
   --bg: #F2F1EB;
   --bg-dark: #001F45;
   --bg-light: #F2F1EB;
+  --comp-card-bg: #F2F1EB;
   
 /* ----- FORMS ----- */
   --input-field: #B0CBC1;
@@ -53,6 +54,7 @@
   --input-placeholder: #B0CBC1;
   --input-field: #5D8996;
   --bg-dark: #001229;
+  --comp-card-bg: rgba(6, 70, 134, 0.3);
 }
 
 body {
