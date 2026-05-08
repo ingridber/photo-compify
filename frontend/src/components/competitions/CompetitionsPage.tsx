@@ -1,3 +1,4 @@
+import styles from "./competitions-page.module.css";
 import { useEffect, useState, useRef } from "react";
 import { fetchCompetitions } from "../../services/api";
 import CompetitionsCard from "./CompetitionsCard";
@@ -58,21 +59,15 @@ export default function CompetitionsPage() {
     }
   }, [showSearch]);
 
+
   return (
-    <div>
+    <div className={styles.competitionsPage}>
       <h1>Competitions</h1>
 
-      <div
-        style={{
-          display: "flex",
-          gap: 10,
-          marginBottom: 20,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+      {/* BUTTON CONTAINER  */}
+      <div>
+
         <button
-          style={{ borderRadius: 10, height: "39px", width: "65px" }}
           onClick={() => {
             setView("active");
             setPage(1);
@@ -84,7 +79,6 @@ export default function CompetitionsPage() {
         </button>
 
         <button
-          style={{ borderRadius: 10, height: "39px", width: "65px" }}
           onClick={() => {
             setView("finished");
             setPage(1);
@@ -96,7 +90,6 @@ export default function CompetitionsPage() {
         </button>
 
         <button
-          style={{ borderRadius: 10, height: "39px", width: "65px" }}
           onClick={() => setShowSearch((prev) => !prev)}
         >
           Search
@@ -104,16 +97,13 @@ export default function CompetitionsPage() {
       </div>
 
       {showSearch && (
-        <div
-          style={{
-            marginBottom: 20,
-            display: "flex",
-            gap: 10,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <div style={{ position: "relative" }}>
+
+        // SEARCH FIELD CONTAINER 
+        <div>
+
+          <div>
+
+            {/* SEARCH FIELD  */}
             <input
               ref={inputRef}
               type="text"
@@ -123,32 +113,13 @@ export default function CompetitionsPage() {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              style={{
-                width: "348px",
-                height: "39px",
-                borderRadius: "10px",
-                padding: "0 10px",
-              }}
             />
 
+            {/* CLEAR BUTTON  */}
             <button
               onClick={() => {
                 setSearch("");
                 setPage(1);
-              }}
-              style={{
-                position: "absolute",
-                right: "20px",
-                width: "10px",
-                height: "18px",
-                top: "40%",
-                transform: "translateY(-50%)",
-                border: "none",
-                background: "transparent",
-                fontSize: "16px",
-                cursor: "pointer",
-                color: search ? "#fff" : "#666",
-                opacity: 1,
               }}
             >
               ✕
