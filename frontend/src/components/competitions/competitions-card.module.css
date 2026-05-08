@@ -1,0 +1,179 @@
+
+.cardContainer {
+    border: 1px solid var(--text);
+    width: 100%;
+    cursor: pointer;
+    border-radius: 1rem;
+    margin: 0.5rem;
+    box-shadow: var(--shadow);
+    background-color: var(--comp-card-bg);
+}
+
+/* ------------------- */
+/* CARD HEADER: Themes */
+/* ------------------- */
+.cardHeader {
+    margin: 0.5rem 0.5rem 0.3rem 0.5rem;
+    display: flex;
+    justify-content: flex-end;
+    border-bottom: 1px dotted var(--text);
+    padding-bottom: 0.3rem;
+}
+
+.theme {
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0;
+    font-weight: 600;
+    margin-left: 0.3rem;
+    background-color: #B0CBC1;
+    padding: 0.3rem 0.4rem;
+    border-radius: 0.8rem;
+    color: var(--text-dark);
+}
+
+/* ------------------------------------ */
+/* CARD MAIN: Logo, Title & Description */
+/* ------------------------------------ */
+.cardMain {
+    display: flex;
+    align-items: center;
+}
+
+/* ----- LOGO ----- */
+.logoContainer {
+    background-color: #B0CBC1;
+    width: 80px;
+    aspect-ratio: 1 / 1;
+    flex-shrink: 0;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--text);
+    margin-left: 0.3rem;
+}
+
+.noLogo {
+    width: 60%;
+}
+
+.logoPic {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ----- TITLE & DESCRIPTION ----- */
+.titleDescriptionContainer {
+    flex: 1;
+    min-width: 0;
+    margin-left: 0.5rem;
+}
+
+.titleDescriptionContainer .title {
+    margin: 0 0 0.2rem 0;
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+.titleDescriptionContainer .description {
+    margin: 0;
+    font-size: 0.9rem;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+    line-height: 1.2;
+}
+
+/* ----------------------------------------------- */
+/* CARD FOOTER: Status, End, Creator, Participants */
+/* ----------------------------------------------- */
+
+.cardFooter {
+    margin: 0.5rem 0.5rem 0.5rem 0.5rem;
+    padding-top: 0.2rem;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px dotted var(--text);
+}
+
+.cardFooter .specsTitle {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    margin-top: 0.5rem;
+    line-height: 0.6;
+
+}
+
+.endDate,
+.owner,
+.participants,
+.phase {
+    font-weight: 700;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.phase {
+    text-transform: uppercase;
+}
+
+
+
+
+
+/* ----------------------------------- */
+/* ---------- MOBILE LAYOUT ---------- */
+/* ----------------------------------- */
+@media (max-width: 600px) { 
+
+    .cardContainer {
+        width: 95%;
+    }
+
+    .cardHeader {
+        margin-bottom: 0.5rem;
+    }
+    .logoContainer { 
+        width: 50px;
+    }
+
+.titleDescriptionContainer {
+    margin-left: 0.3rem;
+
+}
+
+    .titleDescriptionContainer .title {
+        font-size: 1rem;
+        line-height: 0.5;
+        margin-bottom: 0.3rem;
+     }
+
+    .titleDescriptionContainer .description {
+        line-height: 1;
+    } 
+
+
+    .cardFooter {
+    grid-template-columns: repeat(2, 1fr);
+
+    }
+
+    .endDate,
+    .owner,
+    .participants,
+    .phase {
+        font-size: 0.9rem;
+    }
+
+    .hideEnd,
+    .hideOwner {
+        display: none;
+    }
+}
