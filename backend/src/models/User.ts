@@ -6,7 +6,7 @@ const userSchema = new Schema<InterfaceUser>({
     username: { type: String, required: true, unique: true, lowercase: true, minlength: 3, maxlength: 80 },
     email: { type: String, required: false, lowercase: true, maxlength: 80 },
     password: { type: String, required: true, minlength: 8, maxlength: 128 },
-    profilePicture: { type: Schema.Types.ObjectId, ref: "Image"},
+    profilePicture: { type: Schema.Types.ObjectId, ref: "Image", default: null},
     warnings: { type: Number, default: 0 },
     loginAttempts: { type: Number, default: 0 },
     lockUntil: { type: Date },

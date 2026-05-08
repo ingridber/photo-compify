@@ -176,6 +176,59 @@ export async function changeProfilePicture(req: Request, res: Response) {
     };
 };
 
+// ---------- DELETE PROFILE PICTURE ----------
+// --------------------------------------------
+export async function deleteProfilePicture(req: Request, res: Response) {
+    const userId = (req as any).user.id;
+
+    try {
+        // ---------- GET USER ----------
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        };
+
+        // ---------- CHECK PROFILE PICTURE ----------
+        if (!user.profilePicture) {
+            return res.status(404).json({
+                message: "No profile picture found"
+            });
+        };
+
+        // ---------- GET IMAGE ----------
+        const image = await Image.findById(user.profilePicture);
+
+        if (image) {
+            // ---------- DELETE FROM SUPABASE ----------
+            await supabase.storage
+                .from("images")
+                .remove([image.filename]);
+
+            // ---------- DELETE FROM MONGODB ----------
+            await Image.findByIdAndDelete(image._id);
+        };
+
+        // ---------- REMOVE PROFILE PICTURE FROM USER ----------
+        user.profilePicture = null;
+
+        await user.save();
+
+        return res.status(200).json({
+            message: "Profile picture deleted"
+        });
+
+    } catch (err) {
+        console.log("DELETE PROFILE PICTURE ERROR: usersControllers.ts", err);
+        return res.status(500).json({
+            message: "Server error",
+            err
+        });
+    }
+}
+
 // ---------- LOGOUT SESSION ----------
 // ------------------------------------
 export function logout(req: Request, res: Response) {

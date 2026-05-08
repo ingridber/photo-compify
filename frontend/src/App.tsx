@@ -18,6 +18,7 @@ import CompetitionPage from './pages/CompetitionPage';
 import SubmitToCompetition from './pages/SubmitToCompetitionPage';
 import { SignOut } from './components/SignOut';
 import { DeleteAccount } from './pages/DeleteAccount';
+import { NavBar } from './components/nav-bar/NavBar';
 
 
 
@@ -84,6 +85,9 @@ function App() {
             </ProtectedRoute>} />
           </Route>
         </Routes>
+
+
+        <NavBar/>
     </>
   )
 }

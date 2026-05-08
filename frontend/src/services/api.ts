@@ -267,3 +267,12 @@ export async function removeVote(submissionId: string): Promise<void> {
         throw new Error(error?.message ?? `Failed to remove vote (${res.status})`);
     }
 }
+// ---------- DELETE PROFILE PIC ----------
+// ----------------------------------------
+export async function deleteProfilePicture() {
+
+    return fetch("http://localhost:3000/api/v1/user/profilePicture", {
+        method: "DELETE",
+        credentials: "include"
+    });
+};

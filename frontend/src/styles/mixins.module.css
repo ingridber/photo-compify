@@ -1,12 +1,21 @@
-/* ----------------------------- */
-/* ---------- SECTION ---------- */
-/* ----------------------------- */
-.sectionContainer {
+/* ---------------------------------------- */
+/* ---------- CONTENT CONTAINERS ---------- */
+/* ---------------------------------------- */
+.headerContainer {
+    text-align: center;
+    width: 400px;
+    height: 200px;
+    margin: 2rem auto 0 auto;
+}
+
+.contentContainer {
     display: flex;
     flex-direction: column;
     width: 400px;
-    margin: auto;
+    text-align: center;
+    margin: 1rem auto;
 }
+
 
 /* --------------------------------- */
 /* ---------- BACK BUTTON ---------- */
@@ -14,32 +23,33 @@
 .backBtn {
     width: 3.5rem;
     padding: 0.4rem 0;
-    margin-bottom: 2rem;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
-    background-color: var(--backBtn);
+    background-color: var(--back-btn);
     border: none;
     border-radius: 0.8rem 0.8rem 0 0.8rem;
     cursor: pointer;
+    box-shadow: var(--shadow);
+    position: fixed;
 }
 
 .backBtnIcon {
     width: 1.5rem;
+    filter: var(--back-btn-icon);
 }
 
 /* ------------------------------ */
 /* ---------- USERNAME ---------- */
 /* ------------------------------ */
-.username {
+.username,
+.title {
     text-transform: uppercase;
     font-weight: 800;
     font-size: 1.3rem;
-    color: var(--text-h);
+    color: var(--text);
     letter-spacing: 0.05rem;
-    margin-top: 0.8rem;
+    padding-top: 1.8rem;
     margin-bottom: 1.8rem;
 }
 
@@ -56,23 +66,22 @@
 */
 .fieldGroup{
     text-align: left;
-    margin: auto;
+    margin-bottom: 3%;
 }
 
 .labelForInput {
     font-size: 0.9rem;
     font-weight: 500;
-    color: var(--text-h);
+    color: var(--text);
 }
 
 .inputFieldContainer {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: var(--inputField);
+    background-color: var(--input-field);
     border-radius: 0 0.8rem 0.8rem;
     padding: 2%;
-    margin-bottom: 3%;
 }
 
 .inputField {
@@ -80,11 +89,13 @@
     border: none;
     background: none;
     padding: 2%;
+    color: var(--text);
 }
 
 .inputField::placeholder {
-    color: var(--text-h);
+    color: var( --input-placeholder);
     font-size: 0.9rem;
+    padding: 0;
 }
 
 .displayPasswordBtn {
@@ -98,21 +109,24 @@
 
 .displayPasswordBtnIcon {
     width: 1.5rem;
+    filter: var(--display-pw-icon);
 }
 
 /* ----------------------------------- */
 /* ---------- SUBMIT BUTTON ---------- */
 /* ----------------------------------- */
 .submitBtn {
-    background-color: var(--submit);
+    background-color: var(--submit-btn);
     padding: 0.4rem 1.1rem;
     border: none;
     border-radius: 0.8rem;
     margin-top: 2rem;
     cursor: pointer;
-    color: white;
+    color: var(--text-light);
     font-size: 1rem;
     text-transform: uppercase;
+    box-shadow: var(--shadow);
+
 }
 
 .submitBtn:disabled {
@@ -134,7 +148,7 @@
     margin-top: 1.5rem;
     font-weight: 500;
     font-size: 1.1rem;
-    color: var(--text-h);
+    color: var(--text);
 }
 
 .errorMessage {
@@ -152,9 +166,11 @@
 /* ----------------------------------- */
 @media (max-width: 600px) { 
 
-    .sectionContainer{
+    .headerContainer {
+        width: 90vw;
+    }
+    .contentContainer{
         width: 90vw;
     }
 
-
-}
+} 

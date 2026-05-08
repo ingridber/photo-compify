@@ -6,7 +6,7 @@ export interface InterfaceUser extends Document {
     email?: string;
     username: string;
     password: string;
-    profilePicture?: Types.ObjectId;
+    profilePicture?: Types.ObjectId | null;
     warnings: number;
     loginAttempts: number;
     lockUntil: Date | undefined;
