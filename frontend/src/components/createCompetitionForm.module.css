@@ -3,8 +3,6 @@
     flex-direction: column;
     max-width: 560px;
     margin: 0 auto;
-    border-radius: 6px;
-    font-family: system-ui, sans-serif;
 }
 
 .form label {
