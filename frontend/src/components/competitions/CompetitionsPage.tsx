@@ -1,4 +1,5 @@
 import styles from "./competitions-page.module.css";
+import mixins from "../../styles/mixins.module.css";
 import { useEffect, useState, useRef } from "react";
 import { fetchCompetitions } from "../../services/api";
 import CompetitionsCard from "./CompetitionsCard";
@@ -65,7 +66,7 @@ export default function CompetitionsPage() {
       <h1>Competitions</h1>
 
       {/* BUTTON CONTAINER  */}
-      <div>
+      <div className={styles.buttonContainer}>
 
         <button
           onClick={() => {
@@ -99,13 +100,14 @@ export default function CompetitionsPage() {
       {showSearch && (
 
         // SEARCH FIELD CONTAINER 
-        <div>
+        <div className={styles.searchFieldContainer}>
 
-          <div>
+          <div className={`${mixins.inputFieldContainer} ${styles.inputFieldContainer} `}>
 
             {/* SEARCH FIELD  */}
             <input
               ref={inputRef}
+              className={mixins.inputField}
               type="text"
               placeholder="Search competition title or username"
               value={search}
@@ -117,6 +119,7 @@ export default function CompetitionsPage() {
 
             {/* CLEAR BUTTON  */}
             <button
+              className={styles.clearInput}
               onClick={() => {
                 setSearch("");
                 setPage(1);
@@ -129,7 +132,7 @@ export default function CompetitionsPage() {
       )}
 
       {competitions.length === 0 ? (
-        <p>No competitions found.</p>
+        <p className={styles.noContent}>No competitions found</p>
       ) : (
         competitions.map((comp) => (
           <CompetitionsCard key={comp._id} competition={comp} />

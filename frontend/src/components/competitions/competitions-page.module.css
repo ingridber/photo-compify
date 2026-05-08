@@ -1,72 +1,71 @@
+/* ----- PAGE LAYOUT ----- */
 .competitionsPage {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     max-width: 560px;
-    margin: auto;
+    margin: auto auto 100px auto;
 }
 
-/* BUTTON CONTAINER  
+/* ----- BUTTONS ----- */
+.buttonContainer,
+.searchFieldContainer {
+  margin: auto auto 1rem auto;
+  width: 60%;
+  display: flex;
+  justify-content: space-between;
+}
 
-        style={{
-          display: "flex",
-          gap: 10,
-          marginBottom: 20,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: 'red'
-        }}
+.buttonContainer button {
+  width: 5.5rem;
+  color: var(--text-light);
+  background-color: var(--btn);
+  border: 1px solid var(--btn);
+  border-radius: 0.7rem;
+  padding: 0.5rem;
+  text-transform: uppercase;
+  font-weight: 550;
+  letter-spacing: 8%;
+}
+
+.buttonContainer button:hover {
+    background-color: var(--bg);
+    border: 1px solid var(--text);
+    color: var(--text);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* ----- INPUT FIELD ----- */
+.inputFieldContainer {
+  width: 100%;
+}
+
+.clearInput {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  color: var( --input-placeholder);
+}
+
+/* ----- NO CONTENT ----- */
+.noContent {
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-top: 1rem;
+}
 
 
-BUTTON STYLING
 
-          style={{ borderRadius: 10, height: "39px", width: "65px" }}
+/* ----------------------------------- */
+/* ---------- MOBILE LAYOUT ---------- */
+/* ----------------------------------- */
+@media (max-width: 600px) { 
 
+  .buttonContainer,
+  .searchFieldContainer { 
+    width: 75%
+  }
 
-
-SEARCH FIELD CONTAINER 
-          style={{
-            marginBottom: 20,
-            display: "flex",
-            gap: 10,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: 'red'
-          }}
-
-    DIV ?? style={{ position: "relative", background: 'red' }}
-       
-
-
-
-SEARCHFIELD
-              style={{
-                width: "348px",
-                height: "39px",
-                borderRadius: "10px",
-                padding: "0 10px",
-              }}
-
-        
-        
-BUTTON CLEAR
-              style={{
-                position: "absolute",
-                right: "20px",
-                width: "10px",
-                height: "18px",
-                top: "40%",
-                transform: "translateY(-50%)",
-                border: "none",
-                background: "transparent",
-                fontSize: "16px",
-                cursor: "pointer",
-                color: search ? "#fff" : "#666",
-                opacity: 1,
-              }}
-        
-        
-        
-        
-*/
+} 

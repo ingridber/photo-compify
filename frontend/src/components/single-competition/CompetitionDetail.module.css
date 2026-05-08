@@ -1,26 +1,147 @@
 .container {
+  max-width: 700px;
+  margin: 50px auto 100px auto;
   display: flex;
   flex-direction: column;
+  border: 1px solid var(--text);
+  border-radius: 1rem;
+  box-shadow: var(--shadow);
+  padding: 1rem;
 }
 
+/* HEADER: Navigate btn, Logo, Title */
+/* --------------------------------- */
 .header {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
+
+/* NAVIGATE BTN  */
+.backBtn {
+    width: 3.5rem;
+    padding: 0.4rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--back-btn);
+    border: none;
+    border-radius: 0.8rem 0.8rem 0 0.8rem;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    align-self: flex-start;
+}
+
+.backBtnIcon {
+    width: 1.5rem;
+    filter: var(--back-btn-icon);
+}
+
+/* ----- LOGO ----- */
+.logoContainer {
+    background-color: #B0CBC1;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--text);
+    flex: 0 0 80px;
+}
+
+.noLogo {
+    width: 60%;
+}
+
+.logoPic {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ----- TITLE ----- */
+.title {
+  text-transform: uppercase;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.1rem;
+}
+
+
+
+/* INFORMATIVE: Themes & Description */
+/* --------------------------------- */
+.themesContainer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+}
+
+.theme {
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0;
+    font-weight: 600;
+    padding: 0 0.5rem;
+    background-color: #B0CBC1;
+    border-radius: 0.8rem;
+    color: var(--text-dark);
+    white-space: nowrap;
+}
+
+.descriptionTitle,
+.description {
+  width: 80%;
+  margin: auto;
+}
+
+.descriptionTitle {
+  margin-top: 1rem;
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+.description {
+  padding-bottom: 0.5rem;
+  border-bottom: 1px dotted var(--text);
+}
+
+
+/* STATS */
+/* --------------------------------- */
 
 .stats {
+  width: 80%;
+  margin: auto;
   display: flex;
   align-items: center;
   gap: 20px;
+  padding-bottom: 1rem;
+  border-bottom: 1px dotted var(--text);
 }
 
 .stat {
+  margin-top: 1rem;
   display: flex;
   flex-direction: column;
 }
 
-.statLabel {}
+.statLabel {
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  /* font-weight: 700; */
+}
 
-.statValue {}
+.statValue {
+
+  font-size: 1.2rem;
+  font-weight: 700;
+}
 
 .cta {
   display: flex;
@@ -58,4 +179,22 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 6px;
   padding: 12px;
+}
+
+
+
+/* ---------- MOBILE LAYOUT ---------- */
+/* ----------------------------------- */
+@media (max-width: 600px) { 
+    .container {
+        border: none;
+        box-shadow: none;
+        margin-top: 0;
+    }
+
+    .descriptionTitle,
+    .description,
+    .stats {
+      width: 95%;
+}
 }

@@ -55,22 +55,9 @@ export default function CompetitionsCard({ competition }: Props) {
     <div onClick={() => handleClick()}
         className={styles.cardContainer}>
 
-      {/* ----- CARD HEADER: themes ----- */}
+      {/* ----- CARD HEADER: Logo & Themes----- */}
       <div className={styles.cardHeader}>
-        {/* THEMES CONTAINER  */}
-        <div className={styles.themeContainer}>
-          {(competition.themes ?? []).map((theme) => (
-            // THEME 
-            <span className={styles.theme}
-              key={theme}>
-                {theme}
-            </span>
-          ))}
-        </div>
-      </div>
 
-      {/* ----- CARD MAIN: Logo, title, description ----- */}
-      <div className={styles.cardMain}>
         {/* LOGO */}
         <div className={styles.logoContainer}
             style={{
@@ -89,6 +76,22 @@ export default function CompetitionsCard({ competition }: Props) {
               className={styles.noLogo}/>
           )}
         </div>
+        <div className={styles.themesContainer}>
+        {/* THEMES CONTAINER  */}
+          {(competition.themes ?? []).map((theme) => (
+            // THEME 
+            <span className={styles.theme}
+              key={theme}>
+                {theme}
+            </span>
+          ))}
+        </div>
+      </div>
+
+
+      {/* ----- CARD MAIN: Title & description ----- */}
+      <div className={styles.cardMain}>
+        
         {/* TITLE & DESSCRIPTION */}
         <div className={styles.titleDescriptionContainer}>
           {/* COMPETITION TITLE  */}
@@ -114,11 +117,11 @@ export default function CompetitionsCard({ competition }: Props) {
           </div>
           <div className={styles.hideOwner}>
             <p className={styles.specsTitle}>Created by</p>
-            <p className={styles.owner}>{competition.owner?.username}_user</p>
+            <p className={styles.owner}>{competition.owner?.username}</p>
           </div>
           <div>
             <p className={styles.specsTitle}>Participants</p>
-            <p className={styles.participants}>{competition.participantCount} 139</p>
+            <p className={styles.participants}>{competition.participantCount}</p>
           </div>
         </div>
       </div>

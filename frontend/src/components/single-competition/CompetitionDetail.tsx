@@ -6,6 +6,8 @@ import SubmissionCard from "./SubmissionCard";
 import SubmissionExpanded from "./SubmissionExpanded.tsx";
 import styles from "./CompetitionDetail.module.css";
 import { useUser } from "../../hooks/useUser.ts";
+import { DisplayProfilePicture } from "../display-profile-picture/DisplayProfilePicture.tsx";
+import mixins from "../../styles/mixins.module.css";
 
 function getPhase(comp: Competition): Phase {
     const now = Date.now();
@@ -98,7 +100,9 @@ export default function CompetitionDetail() {
     if (error) return <p>{error}</p>;
     if (!competition) return <p>Competition not found</p>;
 
-    const phase = getPhase(competition);
+    // const phase = getPhase(competition);
+    let phase = getPhase(competition);
+
     const sorted = sortSubmissions(competition.submissions, phase, user?._id);
     const userSubmission = competition.submissions.find((s) => {
         const userId = typeof s.user === "string" ? s.user : s.user._id;
@@ -115,14 +119,88 @@ export default function CompetitionDetail() {
         loadCompetition();
     }
 
+/* "finished""submission""voting" */
+
+
+
+
     return (
-        <div className={styles.container}>
-            <div className={styles.header}>
+
+
+    <div className={styles.container}>
+
+        {/* ----- HEADER: Navigate btn, Logo, Title----- */}
+        <div className={styles.header}> 
+
+            {/* NAVIGATE BACK BTN */}
+            <button 
+                onClick={()=> navigate("/competitions")}
+                className={styles.backBtn}>
+                <img src="/arrow-left.svg" alt="icon of arrow pointing left" className={mixins.backBtnIcon} />
+            </button>
+
+            {/* LOGO */}
+                <div className={styles.logoContainer}>
+                {competition.logoBanner ? (
+                    // LOGO PIC
+                    <img
+                    src={competition.logoBanner}
+                    alt={`${competition.title} logo`}
+                    className={styles.logoPic}/>
+                ) : (
+                    // NO LOGO TEXT
+                    <img
+                    src="/competitions.svg"
+                    alt={`Competition icon`}
+                    className={styles.noLogo}/>
+                )}
+                </div>
+                <p>Upload Logo?</p>
+
+
+                {/* TITLE */}
                 <h1 className={styles.title}>{competition.title}</h1>
-                <p className={styles.description}>{competition.description}</p>
+
+                {/* OWNER */}
+                {/* <p className={styles.owner}>By: {competition.owner?.username}</p> */}
+
+        </div>
+            
+            {/* PROFILE PICTURE & USER NAME */}
+            {/* <p className={mixins.username}>{user? user.username : "USER"}</p> */}
+            {/* <div style= {{width: "7rem", margin: "auto"}}>
+                <DisplayProfilePicture src={user?.profilePicture?.url} />
+            </div> */}
+
+
+
+
+
+
+        {/* ----- INFORMATIVE: Themes & Description ----- */}
+        <div className={styles.informative}> 
+
+            {/* THEMES CONTAINER  */}
+            <div className={styles.themesContainer}>
+                {(competition.themes ?? []).map((theme) => (
+                    // THEME 
+                    <span className={styles.theme}
+                    key={theme}>
+                        {theme}
+                    </span>
+                ))}
             </div>
 
-            <div className={styles.stats}>
+            {/* DESCRIPTION */}
+            <p className={styles.descriptionTitle}>Description</p>
+            <p className={styles.description}>{competition.description}</p>
+        </div>
+
+
+
+
+
+        <div className={styles.stats}>
                 {phase === "finished" && (
                     <div className={styles.stat}>
                         <span className={styles.statLabel}>Host</span>
