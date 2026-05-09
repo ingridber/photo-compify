@@ -10,6 +10,13 @@
   --bg-dark: #001F45;
   --bg-light: #F2F1EB;
   --comp-card-bg: #F2F1EB;
+  --border: #5D8996;
+
+  /* ----- MODAL ----- */
+
+  --modal-overlay: rgba(6, 70, 134, 0.3);
+  --modal-bg: #5D8996;
+  --modal-border: #064686;
   
 /* ----- FORMS ----- */
   --input-field: #B0CBC1;
@@ -55,6 +62,16 @@
   --input-field: #5D8996;
   --bg-dark: #001229;
   --comp-card-bg: rgba(6, 70, 134, 0.3);
+  --border: #5D8996;
+
+
+
+  /* ----- MODAL ----- */
+  --modal-overlay: rgba(0, 31, 69, 0.8);
+  --modal-bg: #001229;
+  --modal-border: #5D8996;
+
+
 }
 
 body {

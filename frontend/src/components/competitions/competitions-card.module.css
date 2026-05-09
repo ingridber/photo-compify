@@ -150,6 +150,13 @@
 @media (max-width: 600px) { 
     .cardContainer {
         width: 95%;
+        border: none;
+        border-top: 1px solid var(--text);
+        border-bottom: 1px solid var(--text);
+        border-radius: 0;
+        margin: 1rem;
+
+
     }
 
     .logoContainer { 

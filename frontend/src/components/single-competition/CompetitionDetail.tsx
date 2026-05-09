@@ -6,8 +6,8 @@ import SubmissionCard from "./SubmissionCard";
 import SubmissionExpanded from "./SubmissionExpanded.tsx";
 import styles from "./CompetitionDetail.module.css";
 import { useUser } from "../../hooks/useUser.ts";
-import { DisplayProfilePicture } from "../display-profile-picture/DisplayProfilePicture.tsx";
 import mixins from "../../styles/mixins.module.css";
+import { Throbber } from "../user-feedback/Throbber.tsx";
 
 function getPhase(comp: Competition): Phase {
     const now = Date.now();
@@ -96,12 +96,11 @@ export default function CompetitionDetail() {
         loadCompetition();
     }, [loadCompetition]);
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <p><Throbber/></p>;
     if (error) return <p>{error}</p>;
     if (!competition) return <p>Competition not found</p>;
 
-    // const phase = getPhase(competition);
-    let phase = getPhase(competition);
+    const phase = getPhase(competition);
 
     const sorted = sortSubmissions(competition.submissions, phase, user?._id);
     const userSubmission = competition.submissions.find((s) => {
@@ -119,14 +118,7 @@ export default function CompetitionDetail() {
         loadCompetition();
     }
 
-/* "finished""submission""voting" */
-
-
-
-
     return (
-
-
     <div className={styles.container}>
 
         {/* ----- HEADER: Navigate btn, Logo, Title----- */}
@@ -165,17 +157,6 @@ export default function CompetitionDetail() {
                 {/* <p className={styles.owner}>By: {competition.owner?.username}</p> */}
 
         </div>
-            
-            {/* PROFILE PICTURE & USER NAME */}
-            {/* <p className={mixins.username}>{user? user.username : "USER"}</p> */}
-            {/* <div style= {{width: "7rem", margin: "auto"}}>
-                <DisplayProfilePicture src={user?.profilePicture?.url} />
-            </div> */}
-
-
-
-
-
 
         {/* ----- INFORMATIVE: Themes & Description ----- */}
         <div className={styles.informative}> 
@@ -196,9 +177,7 @@ export default function CompetitionDetail() {
             <p className={styles.description}>{competition.description}</p>
         </div>
 
-
-
-
+        {/* ----- STATS ----- */}
 
         <div className={styles.stats}>
                 {phase === "finished" && (
@@ -245,16 +224,19 @@ export default function CompetitionDetail() {
                 )}
             </div>
 
+            {/* ----- SUBMIT & SUBMISSIONS ----- */}
+
             {phase === "submission" && !userSubmission && (
                 <div className={styles.cta}>
+                    <p className={styles.ctaTitle}>Want to participate?</p>
+                    
                     <button
-                        className={styles.ctaButton}
+                        className={mixins.uploadSubmit}
                         type="button"
                         onClick={() => navigate(`/competitions/${id}/submit`)}
                     >
-                        +
+                        <img src="/submit-upload.svg" alt="icon upload image" className={mixins.uploadSubmitIcon}/>
                     </button>
-                    <p className={styles.ctaTitle}>Want to participate?</p>
                     <p className={styles.ctaSubtext}>
                         Submit your entry before voting begins
                     </p>
@@ -271,13 +253,17 @@ export default function CompetitionDetail() {
                         />
                     )}
                     <p className={styles.ctaTitle}>You have submitted!</p>
+                    
                     <button
-                        className={styles.ctaButton}
+                        className={mixins.editSubmit}
                         type="button"
                         onClick={() => navigate(`/competitions/${id}/submit`)}
                     >
-                        Change submission?
+                        <img src="/submit-edit.svg" alt="icon upload image" className={mixins.editSubmitIcon}/>
                     </button>
+                    <p className={styles.ctaSubtext}>
+                        Edit your submission?
+                    </p>
                 </div>
             )}
 

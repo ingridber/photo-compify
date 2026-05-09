@@ -98,12 +98,12 @@ export function ChangeProfilePicture(){
             )}
 
             {openModal && (
-                <div className={styles.modalOverlay} onClick={() => setOpenModal(false)}>
+                <div className={mixins.modalOverlay} onClick={() => setOpenModal(false)}>
                     <div 
-                    className={styles.modalContent} 
+                    className={mixins.modalContent} 
                     onClick={(e) => e.stopPropagation()}>
                         <button 
-                            className={styles.closeBtn}
+                            className={mixins.closeBtn}
                             onClick={() => setOpenModal(false)}>
                                 ✕
                         </button>

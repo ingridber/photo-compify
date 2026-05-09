@@ -165,7 +165,7 @@ article {
 /* ---------- CHANGE PICTURE MODAL ---------- */
 /* ---------- DELETE ACCOUNT MODAL ---------- */
 /* ------------------------------------------ */
-
+/* 
 .modalOverlay {
   position: fixed;
   top: 0;
@@ -200,7 +200,7 @@ article {
   font-size: 1.5rem;
   cursor: pointer;
   filter:   var(--back-btn-icon);
-}
+} */
 
 
 

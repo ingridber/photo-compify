@@ -19,8 +19,12 @@
 
 /* --------------------------------- */
 /* ---------- BACK BUTTON ---------- */
+/* ---------- UPLOAD SUBMIT BTN ---------- */
+/* ---------- EDIT SUBMIT BTN  ---------- */
 /* --------------------------------- */
-.backBtn {
+.backBtn,
+.uploadSubmit,
+.editSubmit {
     width: 3.5rem;
     padding: 0.4rem 0;
     display: flex;
@@ -34,8 +38,35 @@
     position: fixed;
 }
 
-.backBtnIcon {
+.backBtnIcon,
+.uploadSubmitIcon,
+.editSubmitIcon {
     width: 1.5rem;
+    filter: var(--back-btn-icon);
+}
+
+.uploadSubmit,
+.editSubmit {
+    margin-top: 1rem;
+    position: relative;
+    border: 1px solid var(--back-btn);
+    border-radius: 0.8rem;
+}
+
+.uploadSubmit:hover,
+.editSubmit:hover{
+    background-color: var(--bg);
+    border-color: var(--text);
+    filter: none;
+}
+
+.uploadSubmit:hover .uploadSubmitIcon,
+.editSubmit:hover .editSubmitIcon {
+    filter: none;
+}
+
+[data-theme="dark"] .uploadSubmit:hover .uploadSubmitIcon,
+[data-theme="dark"] .editSubmit:hover .editSubmitIcon {
     filter: var(--back-btn-icon);
 }
 
@@ -160,6 +191,50 @@
 
 
 
+/* ------------------------------------------ */
+/* ---------- CHANGE PICTURE MODAL ---------- */
+/* ---------- SUBMIT PICTURE MODAL ---------- */
+/* ------------------------------------------ */
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--modal-overlay);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 1000;
+}
+
+.modalContent {
+  background: var(--modal-bg);
+  padding: 0 1rem;
+  border-radius: 1rem;
+  border: 2px outset var(--modal-border);
+  position: relative;
+  max-width: 400px;
+  width: 90%;
+  color: var(--text-light);
+  box-shadow: var(--shadow);
+}
+
+.closeBtn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  border: none;
+  background: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  filter:   var(--back-btn-icon);
+}
+
+
 
 /* ----------------------------------- */
 /* ---------- MOBILE LAYOUT ---------- */
@@ -171,6 +246,10 @@
     }
     .contentContainer{
         width: 90vw;
+    }
+
+    .modalContent {
+        width: 85%;
     }
 
 } 

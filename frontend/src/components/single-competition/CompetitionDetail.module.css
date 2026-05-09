@@ -143,11 +143,18 @@
   font-weight: 700;
 }
 
+
+/* -------------------------- */
+
+
 .cta {
+  width: 80%;
+  margin: 1.3rem auto 1rem auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 32px 24px;
+  padding-bottom: 1rem;
+  border-bottom: 1px dotted var(--text);
 }
 
 .ctaButton {
@@ -158,16 +165,22 @@
 }
 
 .ctaImage {
-  max-width: 200px;
+  max-width: 150px;
   object-fit: contain;
+  border: 3px solid var(--border);
+  border-radius: 0.1rem;
 }
 
 .ctaTitle {
-  margin: 12px 0 0;
+  margin-top: 1rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  /* margin: 12px 0 0; */
 }
 
 .ctaSubtext {
-  margin: 4px 0 0;
+  font-size: 0.8rem;
+  margin-top: 0.3rem;
 }
 
 .gridWrapper {
@@ -194,7 +207,8 @@
 
     .descriptionTitle,
     .description,
-    .stats {
+    .stats,
+    .cta {
       width: 95%;
 }
 }
