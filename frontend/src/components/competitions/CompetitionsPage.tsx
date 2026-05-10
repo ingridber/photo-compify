@@ -5,7 +5,6 @@ import { fetchCompetitions } from "../../services/api";
 import CompetitionsCard from "./CompetitionsCard";
 import Pagination from "./Pagination";
 
-// Type definition for a competition object coming from the API
 type Competition = {
   _id: string;
   owner: {
@@ -29,10 +28,10 @@ export default function CompetitionsPage() {
   const [showSearch, setShowSearch] = useState(false);
   const [search, setSearch] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  // view stays the same ("active" | "finished")
   const [view, setView] = useState<"active" | "finished">("active");
 
   useEffect(() => {
@@ -40,6 +39,7 @@ export default function CompetitionsPage() {
       try {
         const result = await fetchCompetitions({
           page,
+          limit: 5,
           status: view === "finished" ? "historical" : "active",
           search,
         });
@@ -60,14 +60,12 @@ export default function CompetitionsPage() {
     }
   }, [showSearch]);
 
-
   return (
     <div className={styles.competitionsPage}>
       <h1>Competitions</h1>
 
       {/* BUTTON CONTAINER  */}
       <div className={styles.buttonContainer}>
-
         <button
           onClick={() => {
             setView("active");
@@ -90,20 +88,15 @@ export default function CompetitionsPage() {
           Finished
         </button>
 
-        <button
-          onClick={() => setShowSearch((prev) => !prev)}
-        >
-          Search
-        </button>
+        <button onClick={() => setShowSearch((prev) => !prev)}>Search</button>
       </div>
 
       {showSearch && (
-
-        // SEARCH FIELD CONTAINER 
+        // SEARCH FIELD CONTAINER
         <div className={styles.searchFieldContainer}>
-
-          <div className={`${mixins.inputFieldContainer} ${styles.inputFieldContainer} `}>
-
+          <div
+            className={`${mixins.inputFieldContainer} ${styles.inputFieldContainer} `}
+          >
             {/* SEARCH FIELD  */}
             <input
               ref={inputRef}
@@ -124,6 +117,19 @@ export default function CompetitionsPage() {
                 setSearch("");
                 setPage(1);
               }}
+              style={{
+                position: "absolute",
+                right: "20px",
+                width: "10px",
+                height: "18px",
+                top: "40%",
+                transform: "translateY(-50%)",
+                border: "none",
+                background: "transparent",
+                fontSize: "16px",
+                cursor: "pointer",
+                color: search ? "#fff" : "#666",
+              }}
             >
               ✕
             </button>
@@ -139,11 +145,7 @@ export default function CompetitionsPage() {
         ))
       )}
 
-      <Pagination
-        page={page}
-        totalPages={totalPages}
-        onPageChange={setPage}
-      />
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
     </div>
   );
 }

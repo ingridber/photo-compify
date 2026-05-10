@@ -5,83 +5,24 @@ import { getPagination } from "../utils/pagination";
 import { User } from "../models/User";
 import { getCompetitionFilter } from "../utils/competitionFilter";
 import { Document } from "mongoose";
+import { buildCompetitionQuery } from "./competitionsQuery";
 
 // ---------------------------------------
 // --------- GET ALL COMPETITION ---------
 // ---------------------------------------
 export async function getAllCompetitions(req: Request, res: Response) {
-  const search = req.query.search as string | undefined;
-  const status = req.query.status as "active" | "historical" | undefined;
-
-  const { page, limit, skip } = getPagination(req.query);
-
   try {
-    const now = new Date();
-    const query: any = {};
+    const result = await buildCompetitionQuery(req, User, Competition);
 
-    // active/historical filter via helper (single source of truth)
-    Object.assign(query, getCompetitionFilter(status, now));
-
-    // 🔎 Search (title + username)
-    if (search) {
-      const matchingUsers = await User.find({
-        username: { $regex: search, $options: "i" },
-      }).select("_id");
-
-      const userIds = matchingUsers.map((user) => user._id);
-
-      query.$or = [
-        { title: { $regex: search, $options: "i" } },
-        { owner: { $in: userIds } },
-      ];
-    }
-
-    // Total count (used for pagination metadata)
-    const totalCompetitions = await Competition.countDocuments(query);
-    const totalPages = Math.ceil(totalCompetitions / limit);
-
-    // If requested page does not exist, return empty result set
-    if (page > totalPages && totalCompetitions > 0) {
-      return res.status(200).json({
-        competitions: [],
-        pagination: {
-          currentPage: page,
-          totalPages,
-          totalCompetitions,
-          pageSize: limit,
-        },
-      });
-    }
-
-    // Determine sort order based on competition type
-    const sortOrder = status === "active" ? 1 : -1;
-
-    // Fetch competitions with filters, pagination and sorting
-    const competitions = await Competition.find(query)
-      .populate("owner", "username")
-      .sort({ endDate: sortOrder })
-      .skip(skip)
-      .limit(limit);
-
-    // Response
-    res.status(200).json({
-      competitions,
-      pagination: {
-        currentPage: page,
-        totalPages,
-        totalCompetitions,
-        pageSize: limit,
-      },
-    });
+    return res.json(result);
   } catch (e) {
     console.error(e);
-    res.status(500).json({
-      code: "INTERNAL_SERVER_ERROR",
+    return res.status(500).json({
       message: "Something went wrong",
-      status: 500,
     });
   }
 }
+
 
 // -----------------------------------------
 // --------- GET COMPETITION BY ID ---------
