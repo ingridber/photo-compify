@@ -82,9 +82,12 @@ export async function register(email: string, username: string, password: string
 // ----------------------------------------
 type FetchCompetitionsParams = {
     page?: number;
+    limit?: number;
     status?: "active" | "historical";
     search?: string;
 };
+
+// const BASE_URL = "http://localhost:3000/api/v1";
 
 export async function fetchCompetitions(params?: FetchCompetitionsParams) {
     const query = new URLSearchParams();
@@ -101,8 +104,12 @@ export async function fetchCompetitions(params?: FetchCompetitionsParams) {
         query.append("search", params.search);
     }
 
+    if (params?.limit) {
+        query.append("limit", params.limit.toString());
+    }
+
     const res = await fetch(
-        `http://localhost:3000/api/v1/competitions?${query.toString()}`
+        `${BASE_URL}/competitions?${query.toString()}`
     );
 
     if (!res.ok) {
@@ -112,6 +119,7 @@ export async function fetchCompetitions(params?: FetchCompetitionsParams) {
     }
     return await res.json()
 }
+
 
 // ---------- UPDATE USERNAME ----------
 // -------------------------------------
