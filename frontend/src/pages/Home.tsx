@@ -3,6 +3,7 @@ import { useUser } from "../hooks/useUser";
 // import { DisplayProfilePicture } from "../components/display-profile-picture/DisplayProfilePicture";
 import { DisplayLogo } from "../components/display-profile-picture/DisplayProfilePicture";
 import { useTheme } from "../hooks/useTheme";
+import LandingPage from "../components/Landingpage/landingpage";
 
 export function Home() {
 
@@ -32,6 +33,8 @@ export function Home() {
             </div>
 
             <h1>{`Welcome ${user?.username ? user.username.toLocaleUpperCase() : 'Stranger'} <3`}</h1>
+
+            <LandingPage/>
         </div>
     )
 }

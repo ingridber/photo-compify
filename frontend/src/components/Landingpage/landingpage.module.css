@@ -1,0 +1,84 @@
+.container {
+  text-align: center;
+}
+
+.box {
+  width: 300px;
+  height: 200px;
+  margin: 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid;
+  border-color: white;
+  position: relative;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.title {
+  color: white;
+}
+
+.dots {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: gray;
+  cursor: pointer;
+}
+
+.activeDot {
+  background: white;
+}
+
+ .competitionButton {
+   width: 10.5rem;
+  color: var(--text-light);
+  background-color: var(--btn);
+  border: 1px solid var(--btn);
+  border-radius: 0.7rem;
+  padding: 0.5rem;
+  text-transform: uppercase;
+  font-weight: 550;
+  letter-spacing: 8%;
+  margin-top: 10px;
+}
+
+.competitionButton:hover {
+  background-color: var(--bg);
+    border: 1px solid var(--text);
+    color: var(--text);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.content {
+  width: 100%;
+  height: 100%;
+  transition: opacity 300ms ease, transform 300ms ease;
+}
+
+.fadeIn {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.fadeOut {
+  opacity: 0;
+  transform: translateX(-10px);
+}
