@@ -151,7 +151,7 @@ export default function CompetitionDetail() {
                     className={styles.noLogo}/>
                 )}
                 </div>
-                {competition.owner && user!.username === competition.owner.username ? <p>Upload Logo?</p> : ""}
+                {competition.owner && user?.username === competition.owner.username ? <p>Upload Logo?</p> : ""}
 
 
                 {/* TITLE */}
