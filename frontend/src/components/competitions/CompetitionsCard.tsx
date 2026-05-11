@@ -121,7 +121,7 @@ export default function CompetitionsCard({ competition }: Props) {
           </div>
           <div>
             <p className={styles.specsTitle}>Participants</p>
-            <p className={styles.participants}>{competition.participantCount}</p>
+            <p className={styles.participants}>{competition.submissions.length}</p>
           </div>
         </div>
       </div>

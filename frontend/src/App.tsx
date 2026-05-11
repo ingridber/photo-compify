@@ -49,7 +49,6 @@ function App() {
         <Route path="/register" element={<Register />}/>
         <Route path='/competitions' element={<CompetitionsPage />}/> 
         <Route path='/competitions/:id' element={<CompetitionPage />}/>
-        <Route path='/create-competition' element={<CreateCompetitionPage />}/> 
         <Route path="/image-upload" element={<ImageUpload />} />
         <Route path='/competitions/:id/submit' element={
           <ProtectedRoute>

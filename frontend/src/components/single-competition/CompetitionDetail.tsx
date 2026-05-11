@@ -38,6 +38,7 @@ function getIndicator(
     rank: number,
     userId?: string,
 ): Indicator {
+    if (!submission) return "none";
     if (phase === "voting" && userId) {
         return submission.votes.includes(userId) ? "voted" : "none";
     }
@@ -56,6 +57,7 @@ function sortSubmissions(
     phase: Phase,
     userId?: string,
 ): Submission[] {
+    if (submissions.length > 1) return submissions;
     if (phase === "voting" && userId) {
         return [...submissions].sort(
             (a, b) =>
@@ -96,14 +98,15 @@ export default function CompetitionDetail() {
         loadCompetition();
     }, [loadCompetition]);
 
-    if (loading) return <p><Throbber/></p>;
+
+    if (loading) return <Throbber/>;
     if (error) return <p>{error}</p>;
     if (!competition) return <p>Competition not found</p>;
-
     const phase = getPhase(competition);
 
     const sorted = sortSubmissions(competition.submissions, phase, user?._id);
     const userSubmission = competition.submissions.find((s) => {
+        if (!s.user) return;
         const userId = typeof s.user === "string" ? s.user : s.user._id;
         return userId === user?._id;
     });
