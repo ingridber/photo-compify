@@ -15,6 +15,7 @@
   border: 1px solid;
   border-color: white;
   position: relative;
+  margin-top: 10px;
 }
 
 .image {
@@ -40,10 +41,11 @@
   border-radius: 50%;
   background: gray;
   cursor: pointer;
+  margin-top: 20px;
 }
 
 .activeDot {
-  background: white;
+  background: var(--text);
 }
 
  .competitionButton {
@@ -56,7 +58,7 @@
   text-transform: uppercase;
   font-weight: 550;
   letter-spacing: 8%;
-  margin-top: 10px;
+  margin-top: 20px;
 }
 
 .competitionButton:hover {
@@ -81,4 +83,25 @@
 .fadeOut {
   opacity: 0;
   transform: translateX(-10px);
+}
+
+.signupButton {
+width: 10.5rem;
+  color: var(--text-light);
+  background-color: var(--btn);
+  border: 1px solid var(--btn);
+  border-radius: 0.7rem;
+  padding: 0.5rem;
+  text-transform: uppercase;
+  font-weight: 550;
+  letter-spacing: 8%;
+  margin-top: 10px;
+}
+
+.signupButton:hover {
+    background-color: var(--bg);
+    border: 1px solid var(--text);
+    color: var(--text);
+    font-weight: 600;
+    cursor: pointer;
 }
