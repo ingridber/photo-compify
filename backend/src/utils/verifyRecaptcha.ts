@@ -13,7 +13,7 @@ export async function verifyRecaptcha(token: string): Promise<boolean> {
         });
 
         const data = await res.json();
-        console.log("reCAPTCHA response from Google:", data);
+        
 
         return data.success && data.score >= 0.5;
     } catch (error) {
