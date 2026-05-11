@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, useMemo } from "react";
 import { fetchCompetitions } from "../../services/api";
 import styles from "./landingpage.module.css";
 import { useNavigate } from "react-router";
+import { useUser } from "../../hooks/useUser";
 
 // Type definition for a competition object
 type Competition = {
@@ -19,6 +20,10 @@ export default function LandingPage() {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null); // Stores autoplay interval reference
 
   const navigate = useNavigate();
+  const {user} = useUser();
+   const goTo = (path: string) => {
+    navigate(path);
+  };
 
   // Fetching data from backend, 5st competitions that are active
   useEffect(() => {
@@ -128,6 +133,27 @@ export default function LandingPage() {
       >
         Explore all competitions
       </button>
-    </div>
+
+        
+  {!user ? (
+    <>
+      <h2 className={styles.hostComp}>
+        Want to HOST or JOIN a competition?
+      </h2>
+      <button onClick={() => goTo("/login")} className={styles.signupButton}>
+        Sign up
+      </button>
+    </>
+  ) : (
+    <>
+      <h2 className={styles.hostComp}>
+        Create competition here!
+      </h2>
+      <button onClick={() => goTo("/create-competition")} className={styles.signupButton}>
+        Create
+      </button>
+    </>
+  )}
+</div>
   );
 }
