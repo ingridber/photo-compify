@@ -106,7 +106,6 @@ export default function RegisterForm() {
                 });
             });
 
-            console.log("reCAPTCHA token generated successfully");
 
             const res = await register(email, username, password, token);
 

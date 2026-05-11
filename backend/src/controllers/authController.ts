@@ -18,7 +18,6 @@ export async function register(req: Request, res: Response): Promise<Response> {
 
     const isHuman = await verifyRecaptcha(recaptchaToken);
     
-    console.log("isHuman:", isHuman);
 
     if (!isHuman) {
         return res.status(400).json({
