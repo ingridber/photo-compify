@@ -63,6 +63,7 @@
   --bg-dark: #001229;
   --comp-card-bg: rgba(6, 70, 134, 0.3);
   --border: #5D8996;
+  
 
 
 
@@ -71,7 +72,7 @@
   --modal-bg: #001229;
   --modal-border: #5D8996;
 
-
+  --display-pw-icon: brightness(0) saturate(100%) invert(96%) sepia(7%) saturate(188%) hue-rotate(15deg) brightness(104%) contrast(90%);
 }
 
 body {
