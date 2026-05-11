@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { User } from "../models/User";
+import { Submission } from "../models/Submission";
+import { Competition } from "../models/Competition";
 import verifyPassword from "../utils/passwordVerifier";
 import { Image } from "../models/Image";
 import { supabase } from "../config/supabase";
@@ -8,7 +10,7 @@ import { supabase } from "../config/supabase";
 // ---------- CHANGE USERNAME ----------
 // -------------------------------------
 export async function changeUsername(req: Request, res: Response) {
-    const userId = (req as any).user.id; 
+    const userId = (req as any).user.id;
     const { newUsername } = req.body;
 
     if (!newUsername) {
@@ -16,14 +18,14 @@ export async function changeUsername(req: Request, res: Response) {
     }
 
     if (newUsername.length < 3 || newUsername.length > 80) {
-        return res.status(400).json({ 
-            message: "Username must be between 3 and 80 characters" 
+        return res.status(400).json({
+            message: "Username must be between 3 and 80 characters"
         });
     }
 
     try {
 
-        const existingUser = await User.findOne({username: newUsername})
+        const existingUser = await User.findOne({ username: newUsername })
 
         if (existingUser) {
             return res.status(409).json({
@@ -45,7 +47,8 @@ export async function changeUsername(req: Request, res: Response) {
 
         res.status(200).json({
             message: "Username updated",
-            username: updatedUser.username});
+            username: updatedUser.username
+        });
 
     } catch (error) {
         res.status(500).json({ message: "Server error", error });
@@ -55,10 +58,10 @@ export async function changeUsername(req: Request, res: Response) {
 // ---------- CHANGE PASSWORD ----------
 // -------------------------------------
 export async function changePassword(req: Request, res: Response) {
-    const userId = (req as any).user.id; 
+    const userId = (req as any).user.id;
     const { password, newPassword, confirmPassword } = req.body;
 
-    if(password === newPassword) {
+    if (password === newPassword) {
         return res.status(400).json({
             code: "BAD_DATA",
             message: "New password must be different from the old password",
@@ -66,35 +69,35 @@ export async function changePassword(req: Request, res: Response) {
         });
     };
 
-    if(!password) {
+    if (!password) {
         return res.status(400).json({
             code: "MISSING_PASSWORD",
             message: "Please provide current password for validation",
-            status: 400, 
+            status: 400,
         });
     };
 
     try {
         const user = await User.findById(userId);
 
-        if(!user) {
+        if (!user) {
             return res.status(404).json({
                 code: "USER_NOT_FOUND",
                 message: "User not found",
                 status: 404
             });
         };
-        
+
         const valid = await bcrypt.compare(password, user.password);
 
-        if(!valid) {
+        if (!valid) {
             return res.status(400).json({
                 code: "NOT_VALID",
                 message: "Old password doesn't match",
                 status: 400
             });
         };
-  
+
         if (!newPassword || !confirmPassword) {
             return res.status(400).json({ message: "Need to fill both fields" });
         }
@@ -104,14 +107,14 @@ export async function changePassword(req: Request, res: Response) {
         }
 
         if (newPassword.length < 8 || newPassword.length > 120) {
-            return res.status(400).json({ 
-                message: "Password must be between 8 and 120 characters" 
+            return res.status(400).json({
+                message: "Password must be between 8 and 120 characters"
             });
         }
 
         if (!verifyPassword(newPassword)) {
-            return res.status(400).json({ 
-                message: "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character." 
+            return res.status(400).json({
+                message: "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character."
             });
         }
 
@@ -120,7 +123,7 @@ export async function changePassword(req: Request, res: Response) {
         user.password = hashedPassword;
         await user.save();
 
-        return res.status(200).json({message: "Password updated"});
+        return res.status(200).json({ message: "Password updated" });
 
     } catch (err) {
         return res.status(500).json({ message: "Server error", err });
@@ -232,7 +235,7 @@ export async function deleteProfilePicture(req: Request, res: Response) {
 // ---------- LOGOUT SESSION ----------
 // ------------------------------------
 export function logout(req: Request, res: Response) {
-    res.clearCookie("token"); 
+    res.clearCookie("token");
     res.status(200).json({ message: "Logged out" });
 }
 
@@ -240,13 +243,13 @@ export function logout(req: Request, res: Response) {
 // ------------------------------------
 export async function deleteUser(req: Request, res: Response) {
     const userId = (req as any).user.id;
-    const {password} = req.body;
+    const { password } = req.body;
 
-    if(!password) {
+    if (!password) {
         return res.status(400).json({
             code: "MISSING_PASSWORD",
             message: "Please provide current password for validation",
-            status: 400, 
+            status: 400,
         });
     };
 
@@ -270,6 +273,50 @@ export async function deleteUser(req: Request, res: Response) {
                 status: 400
             });
         }
+        const profileImage = await Image.findById(user.profilePicture);
+
+        if (profileImage) {
+            // ---------- DELETE FROM SUPABASE ----------
+            await supabase.storage
+                .from("images")
+                .remove([profileImage.filename]);
+
+            // ---------- DELETE FROM MONGODB ----------
+            await Image.findByIdAndDelete(profileImage._id);
+        };
+
+        const submissions = await Submission.find({ user: userId });
+        const submissionIds = submissions.map(s => s._id);
+        const submissionImageIds = submissions.map(s => s.image);
+
+        const submissionImages = await Image.find({ _id: { $in: submissionImageIds } });
+        const filenames = submissionImages.map(img => img.filename);
+
+        if (filenames.length > 0) {
+            const { error } = await supabase.storage
+                .from("images")
+                .remove(filenames);
+            if (error) throw new Error(`Supabase deletion failed: ${error.message}`);
+        }
+
+        await Image.deleteMany({ _id: { $in: submissionImageIds } });
+
+        await Competition.updateMany(
+            { submissions: { $in: submissionIds } },
+            { $pull: { submissions: { $in: submissionIds } } }
+        );
+
+        await Submission.updateMany(
+            { votes: userId },
+            { $pull: { votes: userId } }
+        );
+
+        await Submission.deleteMany({ user: userId });
+
+        await Competition.updateMany(
+            { owner: userId },
+            { $set: { owner: null } }
+        );
 
         await User.findByIdAndDelete(userId);
         res.clearCookie("token");
@@ -283,5 +330,4 @@ export async function deleteUser(req: Request, res: Response) {
             err
         });
     };
-
 };

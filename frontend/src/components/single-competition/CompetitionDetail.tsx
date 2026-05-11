@@ -58,6 +58,7 @@ function sortSubmissions(
     userId?: string,
 ): Submission[] {
     if (submissions.length > 1) return submissions;
+    if (phase === "submission" && userId) return [...submissions].filter(s => s.user._id === userId);
     if (phase === "voting" && userId) {
         return [...submissions].sort(
             (a, b) =>
@@ -150,14 +151,14 @@ export default function CompetitionDetail() {
                     className={styles.noLogo}/>
                 )}
                 </div>
-                <p>Upload Logo?</p>
+                {competition.owner && user!.username === competition.owner.username ? <p>Upload Logo?</p> : ""}
 
 
                 {/* TITLE */}
                 <h1 className={styles.title}>{competition.title}</h1>
 
                 {/* OWNER */}
-                {/* <p className={styles.owner}>By: {competition.owner?.username}</p> */}
+                {<p className={styles.owner}>By: {competition.owner?.username}</p>}
 
         </div>
 
