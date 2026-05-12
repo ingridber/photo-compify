@@ -73,10 +73,10 @@ export default function ImageUploadForm({pictureType, competitionId, onUploadSuc
 
       const response = await uploadImage(formData);
 
-      if (!response.ok) {
-        throw new Error("Upload failed");
-      }
       const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Upload failed");
+      }
 
       // ----------------------------------------
       // ---------- HANDLE PROFILE PIC ----------
@@ -136,7 +136,7 @@ export default function ImageUploadForm({pictureType, competitionId, onUploadSuc
 
     } catch (err: any) {
       console.log("UPLOAD ERROR:", err);
-      setMessage("Upload failed ❌");
+      setMessage(err.message || "Upload failed ❌");
     }
   };
 
