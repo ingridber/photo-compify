@@ -42,16 +42,16 @@ export async function getCompetitionById(req: AuthRequest, res: Response) {
     });
   }
 
-  const now = new Date();
-  if (competition.votingStartDate > now) {
-    await competition.populate({
-      path: "submissions",
-      populate: [
-        { path: "image" },
-        { path: "user", select: "username" }
-      ]
-    });
+  await competition.populate({
+    path: "submissions",
+    populate: [
+      { path: "image" },
+      { path: "user", select: "username" }
+    ]
+  });
 
+  const now = new Date();
+  if (competition.votingStartDate <= now) {
     await Promise.all(
         competition.submissions.map(async (sub: any) => {
             if (sub.image?.getSignedUrl) {
@@ -60,6 +60,13 @@ export async function getCompetitionById(req: AuthRequest, res: Response) {
             }
         })
     )
+  } else if (req.user) {
+      const ownSubmission = competition.submissions.find(
+          (sub: any) => sub.user?._id.toString() === req.user?.id.toString()
+      );
+      if (ownSubmission.image.getSignedUrl) {
+          ownSubmission._doc.signedImageUrl = await ownSubmission.image.getSignedUrl();
+      };
   }
 
   res.status(200).json(competition);

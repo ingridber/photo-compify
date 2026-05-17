@@ -40,7 +40,7 @@ function getIndicator(
 ): Indicator {
     if (!submission) return "none";
     if (phase === "voting" && userId) {
-        return submission.votes.includes(userId) ? "voted" : "none";
+        return submission.votes?.includes(userId) ? "voted" : "none";
     }
 
     if (phase === "finished") {
@@ -57,19 +57,18 @@ function sortSubmissions(
     phase: Phase,
     userId?: string,
 ): Submission[] {
-    if (submissions.length > 1) return submissions;
     if (phase === "submission" && userId) return [...submissions].filter(s => s.user._id === userId);
     if (phase === "voting" && userId) {
         return [...submissions].sort(
             (a, b) =>
-                (b.votes.includes(userId) ? 1 : 0) -
-                (a.votes.includes(userId) ? 1 : 0),
+                (b.votes?.includes(userId) ? 1 : 0) -
+                (a.votes?.includes(userId) ? 1 : 0),
         );
     }
 
     if (phase === "finished") {
         return [...submissions].sort(
-            (a, b) => b.votes.length - a.votes.length,
+            (a, b) => (b.votes.length ?? 0) - (a.votes.length ?? 0),
         );
     }
 
@@ -271,7 +270,7 @@ export default function CompetitionDetail() {
                 </div>
             )}
 
-            {(phase === "submission" || phase === "finished") && (
+            {(phase === "voting" || phase === "finished") && (
                 <div className={styles.gridWrapper}>
                     {selectedSubmission ? (
                         <SubmissionExpanded
@@ -285,7 +284,7 @@ export default function CompetitionDetail() {
                         <div className={styles.grid}>
                             {sorted.map((sub, i) => (
                                 <SubmissionCard
-                                    key={sub._id}
+                                    key={sub._id ?? i}
                                     submission={sub}
                                     indicator={getIndicator(sub, phase, i, user?._id)}
                                     onClick={() => setSelectedSubmission(sub)}

@@ -112,7 +112,15 @@ export async function voteOnSubmission(req: AuthRequest, res: Response) {
             message: 'could not find submission',
             status: 404,
         })
+
     };
+
+    if (submission.user.toString() === req.user!.id) {
+        return res.status(403).json({
+            code: 'SELF_VOTE',
+            message: 'You cannot vote on your own submission',
+        });
+    }
 
     if (submission.votes.some(v => v.toString() === req.user!.id)) {
         return res.status(409).json({
