@@ -212,7 +212,7 @@ export async function updateProfilePicture(
 }
 
 export async function fetchCompetitionById(id: string,): Promise<Competition> {
-    const res = await fetch(`${BASE_URL}/competitions/${id}`);
+    const res = await fetch(`${BASE_URL}/competitions/${id}`, {credentials: "include"});
 
     if (!res.ok) {
         const error = await res.json().catch(() => null);
