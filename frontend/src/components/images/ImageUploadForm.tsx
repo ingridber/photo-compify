@@ -122,6 +122,28 @@ export default function ImageUploadForm({pictureType, competitionId, onUploadSuc
           }
       }
 
+      if (pictureType === 'logo' && competitionId) {
+          try {
+              const res = await fetch(`http://localhost:3000/api/v1/competitions/${competitionId}`, {
+                  method: 'PATCH',
+                  credentials: 'include',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ logoBanner: data.data._id }),
+              });
+              if (!res.ok) throw new Error('Failed to update logo');
+              setMessage("Logo updated");
+              if (onUploadSuccess) {
+                  setTimeout(() => {
+                      onUploadSuccess();
+                  }, 1000);
+              }
+              return;
+          } catch (err) {
+              setMessage(`Logo update failed: ${err}`);
+              return;
+          }
+      }
+
       console.log("UPLOAD RESPONSE:", data);
 
       setMessage("Image uploaded successfully ✅");
