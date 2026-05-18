@@ -8,6 +8,7 @@ import styles from "./CompetitionDetail.module.css";
 import { useUser } from "../../hooks/useUser.ts";
 import mixins from "../../styles/mixins.module.css";
 import { Throbber } from "../user-feedback/Throbber.tsx";
+import ImageUploadForm from "../images/ImageUploadForm.tsx";
 
 function getPhase(comp: Competition): Phase {
     const now = Date.now();
@@ -83,6 +84,7 @@ export default function CompetitionDetail() {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
+    const [showLogoModal, setShowLogoModal] = useState(false);
 
     const loadCompetition = useCallback(() => {
         if (!id) return;
@@ -99,7 +101,7 @@ export default function CompetitionDetail() {
     }, [loadCompetition]);
 
 
-    if (loading) return <Throbber/>;
+    if (loading) return <Throbber />;
     if (error) return <p>{error}</p>;
     if (!competition) return <p>Competition not found</p>;
     const phase = getPhase(competition);
@@ -121,36 +123,49 @@ export default function CompetitionDetail() {
         loadCompetition();
     }
 
+    function handleLogoUploadSuccess() {
+        setShowLogoModal(false);
+        loadCompetition();
+    }
+
     return (
-    <div className={styles.container}>
+        <div className={styles.container}>
 
-        {/* ----- HEADER: Navigate btn, Logo, Title----- */}
-        <div className={styles.header}> 
+            {/* ----- HEADER: Navigate btn, Logo, Title----- */}
+            <div className={styles.header}>
 
-            {/* NAVIGATE BACK BTN */}
-            <button 
-                onClick={()=> navigate("/competitions")}
-                className={styles.backBtn}>
-                <img src="/arrow-left.svg" alt="icon of arrow pointing left" className={mixins.backBtnIcon} />
-            </button>
+                {/* NAVIGATE BACK BTN */}
+                <button
+                    onClick={() => navigate("/competitions")}
+                    className={styles.backBtn}>
+                    <img src="/arrow-left.svg" alt="icon of arrow pointing left" className={mixins.backBtnIcon} />
+                </button>
 
-            {/* LOGO */}
+                {/* LOGO */}
                 <div className={styles.logoContainer}>
-                {competition.logoBanner ? (
-                    // LOGO PIC
-                    <img
-                    src={competition.logoBanner}
-                    alt={`${competition.title} logo`}
-                    className={styles.logoPic}/>
-                ) : (
-                    // NO LOGO TEXT
-                    <img
-                    src="/competitions.svg"
-                    alt={`Competition icon`}
-                    className={styles.noLogo}/>
-                )}
+                    {competition.signedLogoUrl ? (
+                        // LOGO PIC
+                        <img
+                            src={competition.signedLogoUrl}
+                            alt={`${competition.title} logo`}
+                            className={styles.logoPic} />
+                    ) : (
+                        // NO LOGO TEXT
+                        <img
+                            src="/competitions.svg"
+                            alt={`Competition icon`}
+                            className={styles.noLogo} />
+                    )}
                 </div>
-                {competition.owner && user?.username === competition.owner.username ? <p>Upload Logo?</p> : ""}
+                {competition.owner && user?.username === competition.owner.username ? (
+                    <button
+                        type="button"
+                        className={styles.uploadLogoBtn}
+                        onClick={() => setShowLogoModal(true)}
+                    >
+                        {competition.signedLogoUrl ? 'Update Logo' : 'Upload Logo'}
+                    </button>
+                ) : null}
 
 
                 {/* TITLE */}
@@ -159,30 +174,30 @@ export default function CompetitionDetail() {
                 {/* OWNER */}
                 {<p className={styles.owner}>By: {competition.owner?.username}</p>}
 
-        </div>
-
-        {/* ----- INFORMATIVE: Themes & Description ----- */}
-        <div className={styles.informative}> 
-
-            {/* THEMES CONTAINER  */}
-            <div className={styles.themesContainer}>
-                {(competition.themes ?? []).map((theme) => (
-                    // THEME 
-                    <span className={styles.theme}
-                    key={theme}>
-                        {theme}
-                    </span>
-                ))}
             </div>
 
-            {/* DESCRIPTION */}
-            <p className={styles.descriptionTitle}>Description</p>
-            <p className={styles.description}>{competition.description}</p>
-        </div>
+            {/* ----- INFORMATIVE: Themes & Description ----- */}
+            <div className={styles.informative}>
 
-        {/* ----- STATS ----- */}
+                {/* THEMES CONTAINER  */}
+                <div className={styles.themesContainer}>
+                    {(competition.themes ?? []).map((theme) => (
+                        // THEME 
+                        <span className={styles.theme}
+                            key={theme}>
+                            {theme}
+                        </span>
+                    ))}
+                </div>
 
-        <div className={styles.stats}>
+                {/* DESCRIPTION */}
+                <p className={styles.descriptionTitle}>Description</p>
+                <p className={styles.description}>{competition.description}</p>
+            </div>
+
+            {/* ----- STATS ----- */}
+
+            <div className={styles.stats}>
                 {phase === "finished" && (
                     <div className={styles.stat}>
                         <span className={styles.statLabel}>Host</span>
@@ -232,13 +247,13 @@ export default function CompetitionDetail() {
             {phase === "submission" && !userSubmission && (
                 <div className={styles.cta}>
                     <p className={styles.ctaTitle}>Want to participate?</p>
-                    
+
                     <button
                         className={mixins.uploadSubmit}
                         type="button"
                         onClick={() => navigate(`/competitions/${id}/submit`)}
                     >
-                        <img src="/submit-upload.svg" alt="icon upload image" className={mixins.uploadSubmitIcon}/>
+                        <img src="/submit-upload.svg" alt="icon upload image" className={mixins.uploadSubmitIcon} />
                     </button>
                     <p className={styles.ctaSubtext}>
                         Submit your entry before voting begins
@@ -256,13 +271,13 @@ export default function CompetitionDetail() {
                         />
                     )}
                     <p className={styles.ctaTitle}>You have submitted!</p>
-                    
+
                     <button
                         className={mixins.editSubmit}
                         type="button"
                         onClick={() => navigate(`/competitions/${id}/submit`)}
                     >
-                        <img src="/submit-edit.svg" alt="icon upload image" className={mixins.editSubmitIcon}/>
+                        <img src="/submit-edit.svg" alt="icon upload image" className={mixins.editSubmitIcon} />
                     </button>
                     <p className={styles.ctaSubtext}>
                         Edit your submission?
@@ -292,6 +307,23 @@ export default function CompetitionDetail() {
                             ))}
                         </div>
                     )}
+                </div>
+            )}
+            {showLogoModal && (
+                <div className={mixins.modalOverlay} onClick={() => setShowLogoModal(false)}>
+                    <div className={mixins.modalContent} onClick={(e) => e.stopPropagation()}>
+                        <button
+                            className={mixins.closeBtn}
+                            onClick={() => setShowLogoModal(false)}
+                        >
+                            ✕
+                        </button>
+                        <ImageUploadForm
+                            pictureType="logo"
+                            competitionId={id}
+                            onUploadSuccess={handleLogoUploadSuccess}
+                        />
+                    </div>
                 </div>
             )}
         </div>

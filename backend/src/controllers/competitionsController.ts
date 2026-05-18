@@ -32,7 +32,7 @@ export async function getCompetitionById(req: AuthRequest, res: Response) {
   const competition = await Competition.findById(id).populate(
     "owner",
     "username",
-  );
+  ).populate("logoBanner");
 
   if (!competition) {
     return res.status(404).json({
@@ -49,6 +49,11 @@ export async function getCompetitionById(req: AuthRequest, res: Response) {
       { path: "user", select: "username" }
     ]
   });
+  if (competition.logoBanner?.getSignedUrl) {
+     const url = await competition.logoBanner.getSignedUrl();
+     competition._doc.signedLogoUrl = url;
+  }
+
 
   const now = new Date();
   if (competition.votingStartDate <= now) {
@@ -64,7 +69,7 @@ export async function getCompetitionById(req: AuthRequest, res: Response) {
       const ownSubmission = competition.submissions.find(
           (sub: any) => sub.user?._id.toString() === req.user?.id.toString()
       );
-      if (ownSubmission.image.getSignedUrl) {
+      if (ownSubmission?.image?.getSignedUrl) {
           ownSubmission._doc.signedImageUrl = await ownSubmission.image.getSignedUrl();
       };
   }
@@ -76,7 +81,7 @@ export async function getCompetitionById(req: AuthRequest, res: Response) {
 // --------- CREATE COMPETITION ---------
 // --------------------------------------
 export async function createCompetition(req: AuthRequest, res: Response) {
-  const { title, description, themes } = req.body;
+  const { title, description, themes, logoBanner } = req.body;
 
   if (!title || !description || !themes) {
     return res.status(400).json({
@@ -102,6 +107,7 @@ export async function createCompetition(req: AuthRequest, res: Response) {
     title: title,
     description: description,
     themes: themes,
+    logoBanner: logoBanner ? logoBanner : null,
   });
 
   res.status(201).json(competition);
@@ -111,7 +117,7 @@ export async function createCompetition(req: AuthRequest, res: Response) {
 // --------- UPDATE COMPETITION ---------
 // --------------------------------------
 export async function updateCompetition(req: AuthRequest, res: Response) {
-  const { title, description, themes } = req.body;
+  const { title, description, themes, logoBanner } = req.body;
 
   // ----- INPUT VALIDATION -----
   if (title && title.length > 50) {
@@ -155,6 +161,7 @@ export async function updateCompetition(req: AuthRequest, res: Response) {
     if (title) updates.title = title;
     if (description) updates.description = description;
     if (themes) updates.themes = themes;
+    if (logoBanner) updates.logoBanner = logoBanner;
     const updated = await Competition.findByIdAndUpdate(
       req.params.id,
       { $set: updates },
