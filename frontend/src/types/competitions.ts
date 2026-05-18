@@ -6,6 +6,7 @@ export interface Competition {
   };
   title: string;
   logoBanner?: string;
+  signedLogoUrl?: string;
   description: string;
   themes: string[];
   startDate: string;

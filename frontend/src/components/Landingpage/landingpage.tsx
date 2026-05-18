@@ -3,14 +3,7 @@ import { fetchCompetitions } from "../../services/api";
 import styles from "./landingpage.module.css";
 import { useNavigate } from "react-router";
 import { useUser } from "../../hooks/useUser";
-
-// Type definition for a competition object
-type Competition = {
-  _id: string;
-  title: string;
-  logoBanner?: string;
-  participantCount: number;
-};
+import type {Competition} from "../../types/competitions";
 
 export default function LandingPage() {
   const [competitions, setCompetitions] = useState<Competition[]>([]); // Stores fetched competitions
@@ -96,7 +89,7 @@ export default function LandingPage() {
         >
           {current.logoBanner ? (
             <img
-              src={current.logoBanner}
+              src={current.signedLogoUrl}
               alt={current.title}
               className={styles.image}
             />
