@@ -20,12 +20,20 @@
   position: absolute;
   bottom: 4px;
   right: 4px;
-  width: 10px;
-  height: 10px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
 }
 
-.voted {}
-.gold {}
-.silver {}
-.bronze {}
+.voted {
+    background: green;
+}
+.gold {
+    background: gold;
+}
+.silver {
+    background: silver;
+}
+.bronze {
+    background: brown;
+}
