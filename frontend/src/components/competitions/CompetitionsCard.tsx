@@ -1,5 +1,12 @@
-import styles from "./competitions-card.module.css"
+import styles from "./competitions-card.module.css";
+// import colors from "../../index.css";
 import { useNavigate } from "react-router";
+
+
+// themeColor = {
+
+// }
+
 
 // Definition of types from API
 type Competition = {
@@ -50,6 +57,8 @@ export default function CompetitionsCard({ competition }: Props) {
     navigate(`/competitions/${competition._id}`);
   }
 
+
+
   return (
     // ----- CARD CONTAINER -----
     <div onClick={() => handleClick()}
@@ -76,16 +85,29 @@ export default function CompetitionsCard({ competition }: Props) {
               className={styles.noLogo}/>
           )}
         </div>
-        <div className={styles.themesContainer}>
-        {/* THEMES CONTAINER  */}
-          {(competition.themes ?? []).map((theme) => (
-            // THEME 
-            <span className={styles.theme}
-              key={theme}>
-                {theme}
+
+        {/* THEMES */}
+       <div className={styles.themesContainer}>
+        {(competition.themes ?? []).map((theme) => {
+          
+          const safeTheme = theme ?? "Default";
+          const themeClass = `${safeTheme
+            .replace(/\s+/g, "")
+            .replace(/&/g, "")}Color`;
+
+          return (
+            <span
+              className={`${styles.theme} ${styles[themeClass]}`}
+              key={safeTheme}
+            >
+              {safeTheme}
             </span>
-          ))}
-        </div>
+          );
+        })}
+      </div>
+
+
+
       </div>
 
 
