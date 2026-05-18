@@ -24,16 +24,23 @@ import { NavBar } from './components/nav-bar/NavBar';
 
 function App() {
 
-  const{setUser} = useUser();
+  const{setUser, setLoading} = useUser();
 
   useEffect(() => {
     async function fetchUser() {
-      const res = await getCurrentUser();
 
-      if (res?.data) {
-        setUser(res.data);
-      };
-    };
+      try {
+        setLoading(true);
+
+        const res = await getCurrentUser();
+
+        if (res?.data) {
+          setUser(res.data);
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
 
     fetchUser();
   }, []);
