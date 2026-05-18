@@ -12,4 +12,7 @@ export type User = {
 export type UserContextType = {
     user: User | null;
     setUser: Dispatch<SetStateAction<User | null>>;
+    
+    loading: boolean;
+    setLoading: Dispatch<SetStateAction<boolean>>;
 };
