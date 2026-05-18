@@ -5,10 +5,11 @@ import type { User } from "../types/user";
 
 export function UserProvider({children}: {children: ReactNode}) {
     const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
 
     return (
         <UserContext.Provider 
-            value={{user, setUser}}>
+            value={{user, setUser, loading, setLoading}}>
             {children}
         </UserContext.Provider>
     );
