@@ -65,7 +65,7 @@ export default function CompetitionsCard({ competition }: Props) {
           {competition.logoBanner ? (
             // LOGO PIC
             <img
-              src={competition.logoBanner}
+              src={competition.signedLogoUrl}
               alt={`${competition.title} logo`}
               className={styles.logoPic}/>
           ) : (

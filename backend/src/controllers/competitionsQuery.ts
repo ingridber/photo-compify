@@ -58,9 +58,18 @@ export const buildCompetitionQuery = async (
   // - pagination (skip + limit)
   const competitions = await Competition.find(query)
     .populate("owner", "username")
+    .populate("logoBanner")
     .sort(getCompetitionSort(status))
     .skip(skip)
     .limit(limit);
+
+  await Promise.all(
+      competitions.map(async (comp: any) => {
+          if (comp.logoBanner?.getSignedUrl) {
+              comp._doc.signedLogoUrl = await comp.logoBanner.getSignedUrl();
+          }
+      })
+  );
 
   // Return final result object with data + pagination info
   return {
