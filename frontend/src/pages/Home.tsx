@@ -4,7 +4,7 @@ import { useUser } from "../hooks/useUser";
 import { DisplayLogo } from "../components/display-profile-picture/DisplayProfilePicture";
 
 import LandingPage from "../components/Landingpage/landingpage";
-import HamburgerMenu from "../components/nav-bar/HamburgerMenu";
+
 
 export function Home() {
 
@@ -13,7 +13,7 @@ export function Home() {
 
     return (
         <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
-            <HamburgerMenu/>
+            
             <nav>
                 
             </nav>

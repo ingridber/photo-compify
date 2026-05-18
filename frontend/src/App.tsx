@@ -19,6 +19,7 @@ import SubmitToCompetition from './pages/SubmitToCompetitionPage';
 import { SignOut } from './components/SignOut';
 import { DeleteAccount } from './pages/DeleteAccount';
 import { NavBar } from './components/nav-bar/NavBar';
+import HamburgerMenu from './components/nav-bar/HamburgerMenu';
 
 
 
@@ -47,6 +48,7 @@ function App() {
 
   return (
     <>
+    <HamburgerMenu />
       <Routes>
 
         <Route path="/" element={<Home/>}/>
