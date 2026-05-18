@@ -179,15 +179,24 @@ export default function CompetitionDetail() {
             {/* ----- INFORMATIVE: Themes & Description ----- */}
             <div className={styles.informative}>
 
-                {/* THEMES CONTAINER  */}
+                {/* THEMES */}
                 <div className={styles.themesContainer}>
-                    {(competition.themes ?? []).map((theme) => (
-                        // THEME 
-                        <span className={styles.theme}
-                            key={theme}>
-                            {theme}
+                    {(competition.themes ?? []).map((theme) => {
+                    
+                    const safeTheme = theme ?? "Default";
+                    const themeClass = `${safeTheme
+                        .replace(/\s+/g, "")
+                        .replace(/&/g, "")}Color`;
+
+                    return (
+                        <span
+                        className={`${styles.theme} ${styles[themeClass]}`}
+                        key={safeTheme}
+                        >
+                        {safeTheme}
                         </span>
-                    ))}
+                    );
+                    })}
                 </div>
 
                 {/* DESCRIPTION */}
