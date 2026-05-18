@@ -58,7 +58,7 @@ function sortSubmissions(
     phase: Phase,
     userId?: string,
 ): Submission[] {
-    if (phase === "submission" && userId) return [...submissions].filter(s => s.user._id === userId);
+    if (phase === "submission" && userId) return [...submissions].filter(s => s.user?._id === userId);
     if (phase === "voting" && userId) {
         return [...submissions].sort(
             (a, b) =>
@@ -172,7 +172,7 @@ export default function CompetitionDetail() {
                 <h1 className={styles.title}>{competition.title}</h1>
 
                 {/* OWNER */}
-                {<p className={styles.owner}>By: {competition.owner?.username}</p>}
+                {<p className={styles.owner}>By: {competition.owner?.username ?? "Deleted User"}</p>}
 
             </div>
 
@@ -202,7 +202,7 @@ export default function CompetitionDetail() {
                     <div className={styles.stat}>
                         <span className={styles.statLabel}>Host</span>
                         <span className={styles.statValue}>
-                            {competition.owner.username}
+                            {competition.owner?.username ?? "Deleted User"}
                         </span>
                     </div>
                 )}
