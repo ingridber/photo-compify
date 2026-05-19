@@ -2,6 +2,15 @@ import { getCompetitionFilter } from "../utils/competitions/competitionFilter";
 import { getCompetitionSort } from "../utils/competitions/competitionsSort";
 import { getPagination } from "../utils/competitions/pagination";
 import { buildActiveCompetitionAggregation } from "../utils/competitions/competitionAggregation";
+import { supabase } from "../config/supabase";
+
+async function getSignedImageUrl(filename: string) {
+  const { data, error } = await supabase.storage
+    .from("images")
+    .createSignedUrl(filename, 60 * 60);
+  if (error) return null;
+  return data?.signedUrl;
+}
 
 export const buildCompetitionQuery = async (
   req: any,
@@ -131,8 +140,8 @@ export const buildCompetitionQuery = async (
   // Generate signed image URLs if image exists
   await Promise.all(
     competitions.map(async (comp: any) => {
-      if (comp.logoBanner?.getSignedUrl) {
-        comp.signedLogoUrl = await comp.logoBanner.getSignedUrl();
+      if (comp.logoBanner?.filename) {
+        comp.signedLogoUrl = await getSignedImageUrl(comp.logoBanner.filename);
       }
     })
   );
