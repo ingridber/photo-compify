@@ -14,6 +14,12 @@
   --comp-card-bg: #F2F1EB;
   --border: #5D8996;
 
+
+  /* ----- COMP STATUS ----- */
+  --ended: red;
+  --submission: blue;
+  --vote: gold;
+
   /* ----- MODAL ----- */
 
   --modal-overlay: rgba(6, 70, 134, 0.3);
@@ -66,6 +72,8 @@
   --comp-card-bg: rgba(6, 70, 134, 0.3);
   --border: #5D8996;
   
+
+  --submission: lightblue;
 
 
 

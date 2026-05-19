@@ -59,9 +59,18 @@ export default function CompetitionsCard({ competition }: Props) {
       <div className={styles.cardHeader}>
 
         {/* LOGO */}
-        <div className={styles.logoContainer}
-            style={{
-              borderColor: phase === "ended" ? "red" : phase === "submission" ? "blue" : "green"}}>
+        <div
+          className={`
+            ${styles.logoContainer}
+            ${
+              phase === "ended"
+                ? styles.endedColor
+                : phase === "submission"
+                ? styles.submissionColor
+                : styles.voteColor
+            }
+          `}
+        >
           {competition.logoBanner ? (
             // LOGO PIC
             <img
@@ -115,9 +124,21 @@ export default function CompetitionsCard({ competition }: Props) {
         <div className={styles.cardFooter}>
           <div>
             <p className={styles.specsTitle}>Status</p>
-            <p className={styles.phase}
+            {/* <p className={styles.phase}
             style={{
-            color: phase === "ended" ? "red" : phase === "submission" ? "blue" : "green"}}>
+            color: phase === "ended" ? "red" : phase === "submission" ? "blue" : "green"}}> */}
+            <p
+              className={`
+                ${styles.phase}
+                ${
+                  phase === "ended"
+                    ? styles.endedColor
+                    : phase === "submission"
+                    ? styles.submissionColor
+                    : styles.voteColor
+                }
+              `}
+            >
             {phase}
             </p>
           </div>
