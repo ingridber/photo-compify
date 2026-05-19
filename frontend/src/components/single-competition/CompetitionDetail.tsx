@@ -129,6 +129,7 @@ export default function CompetitionDetail() {
     }
 
     return (
+        <div className={mixins.main}>
         <div className={styles.container}>
 
             {/* ----- HEADER: Navigate btn, Logo, Title----- */}
@@ -335,6 +336,7 @@ export default function CompetitionDetail() {
                     </div>
                 </div>
             )}
+        </div>
         </div>
     );
 }
