@@ -1,9 +1,9 @@
 import { CompetitionInterface, AuthRequest, CompetitionSubmissionInterface, ImageInterface } from "../types/index";
 import { Request, Response } from "express";
 import { Competition } from "../models/Competition";
-import { getPagination } from "../utils/pagination";
+import { getPagination } from "../utils/competitions/pagination";
 import { User } from "../models/User";
-import { getCompetitionFilter } from "../utils/competitionFilter";
+import { getCompetitionFilter } from "../utils/competitions/competitionFilter";
 import { Document } from "mongoose";
 import { buildCompetitionQuery } from "./competitionsQuery";
 
