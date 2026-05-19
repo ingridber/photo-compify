@@ -133,7 +133,8 @@ export const buildCompetitionQuery = async (
       .populate("logoBanner")
       .sort(getCompetitionSort(status))
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .lean();
   }
 
   // SIGNED URLS (works for both active + historical)
