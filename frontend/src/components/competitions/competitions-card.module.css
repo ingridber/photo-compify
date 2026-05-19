@@ -15,6 +15,9 @@
     transform: scale(1.01);
 }
 
+
+
+
 /* CARD HEADER: Logo & Themes */
 /* -------------------------- */
 .cardHeader {
@@ -160,6 +163,26 @@
 }
 
 
+/* COLORS  */
+.endedColor {
+    border-color: var(--ended);
+    color: var(--ended);
+}
+
+.endedColor {
+    border-color: var(--ended);
+    color: var(--ended);
+}
+
+.submissionColor {
+    border-color: var(--submission);
+    color: var(--submission);
+}
+
+.voteColor {
+    border-color: var(--vote);
+    color: var(--vote);
+}
 
 /* ---------- MOBILE LAYOUT ---------- */
 /* ----------------------------------- */
