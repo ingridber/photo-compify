@@ -11,7 +11,7 @@ export function ManageAccount() {
   const [confirmSignOut, setConfirmSignOut] = useState(false);
 
   return (
-    <>
+    <div>
       {/* HEADER CONTAINER */}
       <section className={mixins.headerContainer}>
         {/* USERNAME & PROFILE PICTURE */}
@@ -79,6 +79,6 @@ export function ManageAccount() {
       </article>
     </div>
 
-    </>
+    </div>
   );
 };
