@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { fetchCompetitions } from "../../services/api";
 import CompetitionsCard from "./CompetitionsCard";
 import Pagination from "./Pagination";
+import { useSearchParams } from "react-router";
 
 type Competition = {
   _id: string;
@@ -25,14 +26,19 @@ type Competition = {
 
 export default function CompetitionsPage() {
   const [competitions, setCompetitions] = useState<Competition[]>([]);
-  const [showSearch, setShowSearch] = useState(false);
-  const [search, setSearch] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
   const [view, setView] = useState<"active" | "finished">("active");
+  const [searchParams] = useSearchParams();
+  const [search, setSearch] = useState(
+    searchParams.get("search") || ""
+  );
+  const [showSearch, setShowSearch] = useState(
+  !!searchParams.get("search")
+);
 
   useEffect(() => {
     async function load() {
@@ -61,7 +67,7 @@ export default function CompetitionsPage() {
   }, [showSearch]);
 
   return (
-    <div className={styles.competitionsPage}>
+    <div className={`${styles.competitionsPage} ${mixins.main}`} >
       <h1>Competitions</h1>
 
       {/* BUTTON CONTAINER  */}
@@ -116,19 +122,6 @@ export default function CompetitionsPage() {
               onClick={() => {
                 setSearch("");
                 setPage(1);
-              }}
-              style={{
-                position: "absolute",
-                right: "20px",
-                width: "10px",
-                height: "18px",
-                top: "40%",
-                transform: "translateY(-50%)",
-                border: "none",
-                background: "transparent",
-                fontSize: "16px",
-                cursor: "pointer",
-                color: search ? "#fff" : "#666",
               }}
             >
               ✕
