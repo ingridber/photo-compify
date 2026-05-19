@@ -78,6 +78,9 @@ export default function LandingPage() {
       onMouseEnter={stopAutoplay} // Pause autoplay when hovering
       onMouseLeave={startAutoplay} // Resume autoplay when leaving
     >
+
+      <h1><span>Welcome</span>{`${user?.username ? user.username.toLocaleUpperCase() : 'Stranger'} <3`}</h1>
+
       {/* BOX */}
       <div className={styles.box}
       
