@@ -1,12 +1,5 @@
 import styles from "./competitions-card.module.css";
-// import colors from "../../index.css";
 import { useNavigate } from "react-router";
-
-
-// themeColor = {
-
-// }
-
 
 // Definition of types from API
 type Competition = {
@@ -57,8 +50,6 @@ export default function CompetitionsCard({ competition }: Props) {
     navigate(`/competitions/${competition._id}`);
   }
 
-
-
   return (
     // ----- CARD CONTAINER -----
     <div onClick={() => handleClick()}
@@ -70,7 +61,7 @@ export default function CompetitionsCard({ competition }: Props) {
         {/* LOGO */}
         <div className={styles.logoContainer}
             style={{
-              borderColor: phase === "ended" ? "red" : phase === "submission" ? "green" : "yellow"}}>
+              borderColor: phase === "ended" ? "red" : phase === "submission" ? "blue" : "green"}}>
           {competition.logoBanner ? (
             // LOGO PIC
             <img
@@ -105,9 +96,6 @@ export default function CompetitionsCard({ competition }: Props) {
           );
         })}
       </div>
-
-
-
       </div>
 
 
@@ -129,7 +117,7 @@ export default function CompetitionsCard({ competition }: Props) {
             <p className={styles.specsTitle}>Status</p>
             <p className={styles.phase}
             style={{
-            color: phase === "ended" ? "red" : phase === "submission" ? "green" : "yellow"}}>
+            color: phase === "ended" ? "red" : phase === "submission" ? "blue" : "green"}}>
             {phase}
             </p>
           </div>

@@ -2,6 +2,8 @@
   color: var(--text);
   background: var(--bg);
 
+  --main-margin: 100px;
+
   /* ----- COLORS ----- */
   --text: #001F45;
   --text-light: #F2F1EB;
@@ -91,3 +93,16 @@ p {
         box-shadow 0.3s ease;
 }
 
+
+
+
+/* ----------------------------------- */
+/* ---------- MOBILE LAYOUT ---------- */
+/* ----------------------------------- */
+@media (max-width: 600px) {
+  :root { 
+      --main-margin: 60px;
+  }
+
+
+} 

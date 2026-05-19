@@ -34,11 +34,12 @@ export default function SubmissionExpanded({
 
     return (
         <div className={styles.overlay}>
-            <button className={styles.close} type="button" onClick={onClose}>
-                ×
-            </button>
-
             <div className={styles.content}>
+                <button className={styles.close} type="button" onClick={onClose}>
+                    ×
+                </button>
+
+            
                 <img
                     className={styles.image}
                     src={submission.signedImageUrl}

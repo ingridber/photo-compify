@@ -1,6 +1,6 @@
 .container {
   max-width: 700px;
-  margin: 50px auto 100px auto;
+  margin: 0 auto 100px auto;
   display: flex;
   flex-direction: column;
   border: 1px solid var(--text);
@@ -52,6 +52,19 @@
     flex: 0 0 80px;
 }
 
+.uploadLogoBtn {
+    all: unset;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+    margin-top: 0.3rem;
+    cursor: pointer;
+}
+
+
 .noLogo {
     width: 60%;
 }
@@ -68,8 +81,17 @@
   font-size: 1.5rem;
   font-weight: 800;
   letter-spacing: 0.1rem;
+  text-align: center;
+  margin: 0.5rem 0 0 0;
 }
 
+
+.owner {
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  margin-top: 0.3rem;
+  margin-bottom: 1rem;
+}
 
 
 /* INFORMATIVE: Themes & Description */

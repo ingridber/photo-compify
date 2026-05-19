@@ -1,7 +1,7 @@
 .page {
   max-width: 720px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: var(--main-margin) 1rem 1rem 1rem;
   font-family: system-ui, sans-serif;
   display: flex;
   flex-direction: column;
@@ -13,7 +13,7 @@
 }
 
 .header h1 {
-  margin: 0 0 0.25rem;
+  margin: 1rem 0 0.25rem;
   font-size: 1.75rem;
   text-transform: uppercase;
   letter-spacing: 0.08rem;

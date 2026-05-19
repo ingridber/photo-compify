@@ -5,7 +5,8 @@
     text-align: center;
     width: 400px;
     height: 200px;
-    margin: 2rem auto 0 auto;
+    margin: 0 auto;
+    padding-top: var(--main-margin);
 }
 
 .contentContainer {
@@ -14,6 +15,11 @@
     width: 400px;
     text-align: center;
     margin: 1rem auto;
+}
+
+
+.main {
+    padding-top: var(--main-margin);
 }
 
 
