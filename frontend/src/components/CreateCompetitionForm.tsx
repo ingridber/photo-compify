@@ -4,6 +4,7 @@ import mixins from "../styles/mixins.module.css";
 import { uploadImage } from "../services/imageApi";
 import FileSizeValidation from "./images/FileSizeValidation";
 import FileFormatValidation from "./images/FileFormatValidation";
+import { useNavigate } from 'react-router';
 
 const AVAILABLE_THEMES: string[] = [
     'Portrait',
@@ -44,6 +45,7 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
     const [submitting, setSubmitting] = useState(false);
     const [success, setSuccess] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const navigate = useNavigate();
 
     const fileSizeRules = FileSizeValidation();
     const fileFormatRules = FileFormatValidation();
@@ -158,6 +160,14 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
             setThemes([]);
             clearFile();
             onSuccess?.();
+
+            const competitionId = data?._id;
+            if(!competitionId) {
+                setError({ code: "NO_ID", message: "Competition created but no id returned"});
+                return ;
+            }
+            navigate(`/competitions/${competitionId}`);
+
         } catch {
             setError({ code: 'NETWORK', message: 'Network error. Try again.' });
         } finally {
