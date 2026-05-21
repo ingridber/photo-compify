@@ -5,25 +5,7 @@ import { uploadImage } from "../services/imageApi";
 import FileSizeValidation from "./images/FileSizeValidation";
 import FileFormatValidation from "./images/FileFormatValidation";
 import { useNavigate } from 'react-router';
-
-const AVAILABLE_THEMES: string[] = [
-    'Portrait',
-    'Landscape',
-    'Street',
-    'Wildlife',
-    'Macro',
-    'Architecture',
-    'Nature',
-    'Travel',
-    'Minimalist',
-    'Black & White',
-    'Long Exposure',
-    'Abstract',
-    'Aerial',
-    'Night',
-    'Astrophotography',
-    'Documentary',
-];
+import AVAILABLE_THEMES from '../constants/availableThemes';
 
 const TITLE_MAX = 50;
 const DESC_MAX = 250;

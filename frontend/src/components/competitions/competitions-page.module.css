@@ -29,12 +29,13 @@
   letter-spacing: 8%;
 }
 
-.buttonContainer button:hover {
-    background-color: var(--bg);
-    border: 1px solid var(--text);
-    color: var(--text);
-    font-weight: 600;
-    cursor: pointer;
+.buttonContainer button:hover:not(:disabled),
+.buttonContainer .active {
+  background-color: var(--bg);
+  border: 1px solid var(--text);
+  color: var(--text);
+  font-weight: 600;
+  cursor: pointer;
 }
 
 /* ----- INPUT FIELD ----- */

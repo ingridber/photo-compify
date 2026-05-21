@@ -73,6 +73,7 @@ export default function CompetitionsPage() {
       {/* BUTTON CONTAINER  */}
       <div className={styles.buttonContainer}>
         <button
+        className={view === "active" ? styles.active : ""}
           onClick={() => {
             setView("active");
             setPage(1);
@@ -84,6 +85,7 @@ export default function CompetitionsPage() {
         </button>
 
         <button
+        className={view === "finished" ? styles.active : ""}
           onClick={() => {
             setView("finished");
             setPage(1);
@@ -94,7 +96,9 @@ export default function CompetitionsPage() {
           Finished
         </button>
 
-        <button onClick={() => setShowSearch((prev) => !prev)}>Search</button>
+        <button 
+        className={showSearch ? styles.active : ""}
+        onClick={() => setShowSearch((prev) => !prev)}>Search</button>
       </div>
 
       {showSearch && (
