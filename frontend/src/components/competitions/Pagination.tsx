@@ -1,3 +1,5 @@
+import "./pagination-module.css";
+
 type PaginationProps = {
   page: number;
   totalPages: number;
@@ -18,34 +20,30 @@ export default function Pagination({
 
   const pages = Array.from(
     { length: endPage - startPage + 1 },
-    (_, i) => startPage + i
+    (_, i) => startPage + i,
   );
 
   if (totalPages <= 1) return null;
 
+  const handlePageChange = (newPage: number) => {
+    onPageChange(newPage);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
-    <div
-      style={{
-        marginTop: 40,
-        display: "flex",
-        justifyContent: "center",
-        gap: 10,
-        alignItems: "center",
-      }}
-    >
+    <div className="pagination-buttons">
       {/* Jump previous block */}
-      <button
-        disabled={startPage === 1}
-        onClick={() => onPageChange(startPage - 1)}
-      >
-        <i className="bx bx-chevrons-left"></i>
-      </button>
+      {totalPages >= 5 && (
+        <button
+          disabled={startPage === 1}
+          onClick={() => handlePageChange(startPage - 1)}
+        >
+          <i className="bx bx-chevrons-left"></i>
+        </button>
+      )}
 
       {/* Prev page */}
-      <button
-        disabled={page === 1}
-        onClick={() => onPageChange(page - 1)}
-      >
+      <button disabled={page === 1} onClick={() => handlePageChange(page - 1)}>
         <i className="bx bx-chevron-left"></i>
       </button>
 
@@ -53,11 +51,8 @@ export default function Pagination({
       {pages.map((p) => (
         <button
           key={p}
-          onClick={() => onPageChange(p)}
-          style={{
-            fontWeight: p === page ? "bold" : "normal",
-            textDecoration: p === page ? "underline" : "none",
-          }}
+          onClick={() => handlePageChange(p)}
+          className={p === page ? "active" : ""}
         >
           {p}
         </button>
@@ -66,18 +61,20 @@ export default function Pagination({
       {/* Next page */}
       <button
         disabled={page === totalPages}
-        onClick={() => onPageChange(page + 1)}
+        onClick={() => handlePageChange(page + 1)}
       >
         <i className="bx bx-chevron-right"></i>
       </button>
 
       {/* Jump next block */}
-      <button
-        disabled={endPage === totalPages}
-        onClick={() => onPageChange(endPage + 1)}
-      >
-        <i className="bx bx-chevrons-right"></i>
-      </button>
+      {totalPages >= 5 && (
+        <button
+          disabled={endPage === totalPages}
+          onClick={() => handlePageChange(endPage + 1)}
+        >
+          <i className="bx bx-chevrons-right"></i>
+        </button>
+      )}
     </div>
   );
 }
