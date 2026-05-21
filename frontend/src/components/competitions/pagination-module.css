@@ -1,0 +1,27 @@
+.pagination-buttons {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.pagination-buttons button {
+  min-width: 36px;
+  height: 36px;
+  color: var(--text-light);
+  background-color: var(--btn);
+  border: 1px solid var(--btn);
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pagination-buttons button:hover:not(:disabled),
+.pagination-buttons .active {
+  background-color: var(--bg);
+  border: 1px solid var(--text);
+  color: var(--text);
+  font-weight: 600;
+  cursor: pointer;
+}
