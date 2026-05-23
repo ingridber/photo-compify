@@ -4,20 +4,67 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import verifyPassword from "../utils/passwordVerifier";
 import { verifyRecaptcha } from "../utils/verifyRecaptcha";
+import z from "zod";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
 const NODE_ENV = process.env.NODE_ENV;
 
 
+const registerSchema = z.object({
+    username: z
+        .string({ required_error: "Need to provide a username"})
+        .min(3, "Username must be between 3 and 80 characters")
+        .max(80, "Username must be between 3 and 80 characters")
+        .regex(/^[^\u0080-\uFFFF]+$/, "enter a valid username"),
+    password: z
+        .string()
+        .min(8, { message: "Password must be between 8 and 120 characters"})
+        .max(120, { message: "Password must be between 8 and 120 characters"})
+        .refine((val) => verifyPassword(val), {
+            message: "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character."
+        }),
+    confirmPassword: z
+        .string()
+        .min(1, { message: "Need to fill both fields"}),
+    email: z
+    .email({ message: "Please enter a valid email adress"})
+    .transform((email) => email.trim().toLowerCase()),
+    recaptchaToken: z.string(),
+    name: z.string().optional(),
+    profilePicture: z.string().optional()
+})
+.refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"]
+})
+
+const loginSchema = z.object({
+    username: z
+        .string({ message: "Username is required" })
+        .min(1, "Need to provide a username"),
+    password: z
+        .string({ message: "Password is required" })
+        .min(1, "need to provide a password")
+})
+
 
 export async function register(req: Request, res: Response): Promise<Response> {
-    const { name, email, profilePicture, username, password, recaptchaToken } = req.body;
+
+    const validation = registerSchema.safeParse(req.body);
+
+    if (!validation.success) {
+        const message = validation.error.issues[0]?.message ?? "Validation failed";
+        return res.status(400).json({
+            code: "MISSING CREDENTIALS",
+            message: message,
+            status: 400
+        });
+    }
 
     
-
-    const isHuman = await verifyRecaptcha(recaptchaToken);
-    
+    const { name, email, profilePicture, username, password } = validation.data;
+    const isHuman = await verifyRecaptcha(validation.data.recaptchaToken);
 
     if (!isHuman) {
         return res.status(400).json({
@@ -26,28 +73,12 @@ export async function register(req: Request, res: Response): Promise<Response> {
         });
     }
 
-    const isAsciiOnly = /^[^\u0080-\uFFFF]+$/;
-    if (!username || !isAsciiOnly.test(username)) return res.status(400).json({ message: "enter a valid username", code: "INVALID_USERNAME" });
 
     const existingUser = await User.findOne({ username });
     if (existingUser) {
         return res.status(409).json({
             message: "user already exists",
             code: "USER_ALREADY_REGISTERED"
-        });
-    };
-
-    if (!password || password.length > 128 || password.length < 8) {
-        return res.status(400).json({
-            message: "password must be between 8 and 128 charachters",
-            code: "BAD_PASSWORD"
-        });
-    };
-
-    if (!verifyPassword(password)) {
-        return res.status(400).json({
-            message: "password must include at least one capital letter, one number and one symbol",
-            code: "BAD_PASSWORD"
         });
     };
 
@@ -71,92 +102,93 @@ export async function register(req: Request, res: Response): Promise<Response> {
 // ---------- LOGIN CONTROLLER ----------
 // --------------------------------------
 export async function login(req: Request, res: Response): Promise<Response> {
-    // Get username and password
-    const { username, password } = req.body;
+    // 1. Validera indata med Zod 🧼
+    const validation = loginSchema.safeParse(req.body);
 
-    // ---------- KONTROLLERA INPUT ----------
-    // ---------------------------------------
-    if (!username || !password) {
+    if (!validation.success) {
+        const message = validation.error.issues[0]?.message ?? "Validation failed";
         return res.status(400).json({
-            code: "MISSING_CREDENTIALS",
-            message: "Username and password are required",
+            code: "MISSING CREDENTIALS",
+            message: message,
             status: 400
         });
-    };
-
-    // Get user from db
-    const user = await User.findOne({ username }).populate("profilePicture");
-
-    // ---------- KONTROLLERA KONTOT LÅST? ----------
-    // ----------------------------------------------
-    if (user?.lockUntil && user.lockUntil > new Date()) {
-        return res.status(423).json({
-            code: "ACCOUNT_LOCKED",
-            message: "Too many failed logins, try again in 1h",
-            status: 423
-        });
-    };
-
-    const dummyHash = "ijklmnopqrstuv$2b$10$abcdefgh"
-    const hashToCheck = user ? user.password : dummyHash;
-    const valid = await bcrypt.compare(password, hashToCheck);
-
-    // ---------- KONTROLLERA ANVÄNDARE FINNS OCH LÖSENORD MATCHAR ----------
-    // ---------------- LOGGA MISSLYCKADE INLOGGNINGSFÖRSÖK -----------------
-    // ----------------------------------------------------------------------
-    if (!user || !valid) {
-        // ---------- Logga misslyckade inloggningsförsök ----------
-        if (user) {
-            user.loginAttempts++;
-
-            if (user.loginAttempts >= 5) {
-                user.lockUntil = new Date(Date.now() + 60 * 60 * 1000);
-                // user.lockUntil = new Date(Date.now() + 2 * 60 * 1000)
-                user.loginAttempts = 0;
-            };
-
-            await user.save();
-        };
-
-        return res.status(401).json({
-            code: "INVALID_CREDENTIALS",
-            message: "Invalid credentials, username or password is incorrect",
-            status: 401
-        });
-    };
-
-    // ---------- SKAPA TOKEN ----------
-    // ---------------------------------
-    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN } as any);
-
-    // ---------- SPARA TOKEN ----------
-    // ---------------------------------
-    // res.cookie("token", token, { httpOnly: true, secure: NODE_ENV === "production", sameSite: "strict" })
-    res.cookie("token", token, { httpOnly: true, secure: false, sameSite: "lax" })
-
-    // ---------- RESET attempts och datum vid SUCCESS ----------
-    user.loginAttempts = 0;
-    user.lockUntil = undefined;
-    await user.save();
-
-    // ---------- HÄMTA PROFILE PICTURE ----------
-    let profilePicture = null;
-
-    if (user.profilePicture) {
-        profilePicture = {
-            _id: user.profilePicture._id,
-            url: await user.profilePicture.getSignedUrl()
-        };
     }
 
-    return res.status(200).json({
-        code: "LOGIN_SUCCESS",
-        message: "Login successful",
-        status: 200,
-        username: user.username,
-        profilePicture: profilePicture,
-    });
-};
+    // 2. Packa upp den säkra datan
+    const { username, password } = validation.data;
+
+    // 3. Starta try-catch för databasoperationer 🔌
+    try {
+        // Hämta användare från databasen
+        const user = await User.findOne({ username }).populate("profilePicture");
+
+        // ---------- KONTROLLERA KONTOT LÅST? ----------
+        if (user?.lockUntil && user.lockUntil > new Date()) {
+            return res.status(423).json({
+                code: "ACCOUNT_LOCKED",
+                message: "Too many failed logins, try again in 1h",
+                status: 423
+            });
+        }
+
+        const dummyHash = "ijklmnopqrstuv$2b$10$abcdefgh";
+        const hashToCheck = user ? user.password : dummyHash;
+        const valid = await bcrypt.compare(password, hashToCheck);
+
+        // ---------- KONTROLLERA ANVÄNDARE OCH LÖSENORD ----------
+        if (!user || !valid) {
+            if (user) {
+                user.loginAttempts++;
+
+                if (user.loginAttempts >= 5) {
+                    user.lockUntil = new Date(Date.now() + 60 * 60 * 1000);
+                    user.loginAttempts = 0;
+                }
+
+                await user.save();
+            }
+
+            return res.status(401).json({
+                code: "INVALID_CREDENTIALS",
+                message: "Invalid credentials, username or password is incorrect",
+                status: 401
+            });
+        }
+
+        // ---------- SKAPA OCH SPARA TOKEN ----------
+        const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN } as any);
+        res.cookie("token", token, { httpOnly: true, secure: false, sameSite: "lax" });
+
+        // ---------- RESET ATTEMPTS VID SUCCESS ----------
+        user.loginAttempts = 0;
+        user.lockUntil = undefined;
+        await user.save();
+
+        // ---------- HÄMTA PROFILE PICTURE ----------
+        let profilePicture = null;
+        if (user.profilePicture) {
+            profilePicture = {
+                _id: user.profilePicture._id,
+                url: await user.profilePicture.getSignedUrl()
+            };
+        }
+
+        return res.status(200).json({
+            code: "LOGIN_SUCCESS",
+            message: "Login successful",
+            status: 200,
+            username: user.username,
+            profilePicture: profilePicture,
+        });
+
+    } catch (err) {
+        console.error("Login error:", err);
+        return res.status(500).json({
+            code: "SERVER_ERROR",
+            message: "Something went wrong on the server"
+        });
+    }
+}
 
 // --------------------------------------
 // ---------- GET CURRENT USER ----------
