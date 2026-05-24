@@ -18,12 +18,12 @@ export default function LandingPage() {
     navigate(path);
   };
 
-  // Fetching data from backend, 5st competitions that are active
+  // Fetching data from backend, 5 competitions currently in voting stage
   useEffect(() => {
     async function load() {
       const res = await fetchCompetitions({
-        limit: 5, 
-        status: "active",
+        limit: 5,
+        status: "submission",
       });
 
       setCompetitions(res.competitions);
