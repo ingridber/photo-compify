@@ -1,15 +1,16 @@
 import { getCompetitionFilter } from "../utils/competitions/competitionFilter";
-import { getCompetitionSort } from "../utils/competitions/competitionsSort";
 import { getPagination } from "../utils/competitions/pagination";
 import { buildActiveCompetitionAggregation } from "../utils/competitions/competitionAggregation";
 import { supabase } from "../config/supabase";
-
+// Generates a signed URL for an image stored in Supabase
 async function getSignedImageUrl(filename: string) {
   const { data, error } = await supabase.storage
     .from("images")
     .createSignedUrl(filename, 60 * 60);
+
   if (error) return null;
-  return data?.signedUrl;
+
+  return data?.signedUrl; // Return secure temporary URL
 }
 
 export const buildCompetitionQuery = async (
@@ -17,29 +18,31 @@ export const buildCompetitionQuery = async (
   User: any,
   Competition: any
 ) => {
-
-  // Extract search query string from URL (?search=...)
+  // Extract search query string from URL (search)
   const search = req.query.search as string | undefined;
 
-  // Extract status filter (?status=active | historical)
-  const status = req.query.status as "active" | "historical" | undefined;
+  // Extract status filter (?status=submission | voting | ended)
+  const status = req.query.status as
+    | "submission"
+    | "voting"
+    | "ended"
+    | undefined;
 
   // Get pagination values (page number, limit per page, skip amount)
   const { page, limit, skip } = getPagination(req.query);
 
-  // Current date used for time-based filtering
+  // Current timestamp used for filtering time-based competition phases
   const now = new Date();
 
-  // Build base MongoDB query depending on status (active / historical)
+  // Build base MongoDB filter depending on competition status
   const query: any = {
     ...getCompetitionFilter(status, now),
   };
 
   // SEARCH LOGIC
-  // If search exists we search both competition title and owner username
+  // If search query exists, search by competition title or owner username
   if (search) {
-
-    // Find users whose username matches the search term (case-insensitive)
+    // Find users whose username matches search term (case-insensitive)
     const matchingUsers = await User.find({
       username: { $regex: search, $options: "i" },
     }).select("_id");
@@ -47,35 +50,33 @@ export const buildCompetitionQuery = async (
     // Extract matching user IDs
     const userIds = matchingUsers.map((u: any) => u._id);
 
-    // Add OR condition to query:
-    // 1) match competition title
-    // 2) match competitions owned by matching users
+    // Add OR condition: match title OR owner
     query.$or = [
       { title: { $regex: search, $options: "i" } },
       { owner: { $in: userIds } },
     ];
   }
 
-  // Variables that will hold results and total count
-  let competitions;
-  let totalCompetitions;
+  let competitions; // Final competition result array
+  let totalCompetitions; // Total count for pagination
 
   // =========================
-  // ACTIVE → AGGREGATION PIPELINE
+  // ACTIVE PIPELINE (submission, voting, ended)
   // =========================
-  if (status === "active") {
+  if (
+    status === "submission" ||
+    status === "voting" ||
+    status === "ended"
+  ) {
 
-    // Huvudpipeline som hämtar aktiva tävlingar
+    // MongoDB aggregation pipeline for active competitions
     const pipeline = [
       { $match: query },
 
-      // Här körs vår pipeline som:
-      // 1. Bestämmer fas (voting/submission)
-      // 2. Filtrerar bort avslutade tävlingar
-      // 3. Sorterar voting först → kortast tid kvar
-      ...buildActiveCompetitionAggregation(now),
+      // Inject dynamic sorting based on competition phase
+      ...buildActiveCompetitionAggregation(status),
 
-      // Hämta owner-dokument från users collection
+      // Populate owner data from users collection
       {
         $lookup: {
           from: "users",
@@ -86,7 +87,7 @@ export const buildCompetitionQuery = async (
       },
       { $unwind: "$owner" },
 
-      // Hämta logoBanner från images collection
+      // Populate image reference from images collection
       {
         $lookup: {
           from: "images",
@@ -96,61 +97,51 @@ export const buildCompetitionQuery = async (
         },
       },
 
-      // Behåll tävlingar även om de saknar bild
-      { $unwind: { path: "$logoBanner", preserveNullAndEmptyArrays: true } },
+      // Keep competitions even if they don't have an image
+      {
+        $unwind: {
+          path: "$logoBanner",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
 
-      // Pagination i pipeline
+      // Apply pagination
       { $skip: skip },
       { $limit: limit },
     ];
 
-    // Pipeline för att räkna totalt antal aktiva tävlingar (för pagination)
+    // Count pipeline (used for pagination)
     const countPipeline = [
       { $match: query },
-      ...buildActiveCompetitionAggregation(now),
       { $count: "total" },
     ];
 
-    // Execute count pipeline
+    // Execute count aggregation
     const countResult = await Competition.aggregate(countPipeline);
     totalCompetitions = countResult[0]?.total || 0;
 
-    // Execute main pipeline
-    competitions = await Competition.aggregate(pipeline);
+    // Execute main aggregation pipeline
+    competitions = await Competition.aggregate(pipeline || []);
   }
-
-  // =========================
-  // HISTORICAL → NORMAL FIND
-  // =========================
-  else {
-
-    // Count historical competitions using normal query
-    totalCompetitions = await Competition.countDocuments(query);
-
-    // Fetch historical competitions with populate + sorting
-    competitions = await Competition.find(query)
-      .populate("owner", "username")
-      .populate("logoBanner")
-      .sort(getCompetitionSort(status))
-      .skip(skip)
-      .limit(limit)
-      .lean();
-  }
-
-  // SIGNED URLS (works for both active + historical)
-  // Generate signed image URLs if image exists
+  
+  // SIGNED URL GENERATION (Supabase storage)
   await Promise.all(
     competitions.map(async (comp: any) => {
       if (comp.logoBanner?.filename) {
-        comp.signedLogoUrl = await getSignedImageUrl(comp.logoBanner.filename);
+        comp.signedLogoUrl = await getSignedImageUrl(
+          comp.logoBanner.filename
+        );
       }
     })
   );
 
-  // Calculate total number of pages
-  const totalPages = Math.max(1, Math.ceil(totalCompetitions / limit));
+  // Calculate total number of pages (minimum 1 page)
+  const totalPages = Math.max(
+    1,
+    Math.ceil(totalCompetitions / limit)
+  );
 
-  // Return final response object
+  // Return final structured response
   return {
     competitions,
     pagination: {
