@@ -177,6 +177,7 @@ export async function login(req: Request, res: Response): Promise<Response> {
             code: "LOGIN_SUCCESS",
             message: "Login successful",
             status: 200,
+            _id: user._id,
             username: user.username,
             profilePicture: profilePicture,
         });

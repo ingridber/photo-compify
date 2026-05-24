@@ -5,6 +5,7 @@ import { Competition } from "../models/Competition";
 import { supabase } from "../config/supabase";
 import { Image } from "../models/Image";
 import { Types } from "mongoose";
+import { CompetitionVote } from "../models/CompetitionVote";
 
 export async function getSubmission(req: Request, res: Response) {
     try {
@@ -104,38 +105,95 @@ export async function createSubmission(req: AuthRequest, res: Response) {
 
 export async function voteOnSubmission(req: AuthRequest, res: Response) {
     const id = req.params.id;
-    const submission = await Submission.findById(id);
-
-    if (!submission) {
-        return res.status(404).json({
-            code: 'SUBMISSION_NOT_FOUND',
-            message: 'could not find submission',
-            status: 404,
-        })
-
-    };
-
-    if (submission.user.toString() === req.user!.id) {
-        return res.status(403).json({
-            code: 'SELF_VOTE',
-            message: 'You cannot vote on your own submission',
-        });
-    }
-
-    if (submission.votes.some(v => v.toString() === req.user!.id)) {
-        return res.status(409).json({
-            code: 'ALREADY_VOTED',
-            message: 'You have already voted on this submission',
-        })
-    };
+    let submission;
 
     try {
-        submission.votes.push(new Types.ObjectId(req.user!.id));
-        await submission.save();
+        submission = await Submission.findById(id);
+
+        if (!submission) {
+            return res.status(404).json({
+                code: 'SUBMISSION_NOT_FOUND',
+                message: 'could not find submission',
+                status: 404,
+            })
+        };
+
+        if (submission.user.toString() === req.user!.id) {
+            return res.status(403).json({
+                code: 'SELF_VOTE',
+                message: 'You cannot vote on your own submission',
+            });
+        };
+
+        const competition = await Competition.findById(submission.competition);
+        if (!competition) {
+            return res.status(404).json({
+                code: 'COMPETITION_NOT_FOUND',
+                message: 'could not find competition',
+                status: 404,
+            });
+        };
+
+        const now = new Date();
+
+        if (now < competition.votingStartDate || now >= competition.endDate) {
+            return res.status(400).json({
+                code: 'VOTING_CLOSED',
+                message: 'The voting is closed',
+                status: 400,
+            });
+        };
+
+        const submissionsCount = await Submission.countDocuments({
+            competition: submission.competition,
+            user: { $ne: req.user!.id },
+        });
+
+        const maxVotesAllowed = submissionsCount < 6 ? 1 : 3; //if the amount of submissions is lower than 6 you only get one vote
+
+        await CompetitionVote.findOneAndUpdate(
+            {
+                user: req.user!.id,
+                competition: submission.competition,
+                [`submissions.${maxVotesAllowed - 1}`]: { $exists: false },
+                submissions: { $ne: submission._id }
+            },
+            { $addToSet: { submissions: submission._id } },
+            { upsert: true, new: true }
+        );
+
+        await Submission.updateOne(
+            { _id: submission._id },
+            { $addToSet: { votes: req.user!.id } }
+        );
+
+        await Competition.updateOne(
+            { _id: submission.competition },
+            { $inc: { totalVoteCount: 1 } }
+        );
+
         return res.status(200).json({
             message: 'vote successful'
         });
-    } catch (error) {
+    } catch (error: any) {
+        if (error.code === 11000 || error.codeName === 'DuplicateKey') {
+            const existing = await CompetitionVote.findOne({
+                user: req.user!.id,
+                competition: submission!.competition,
+            });
+
+            if (existing?.submissions.some(s => s.toString() === id)) {
+                return res.status(409).json({
+                    code: 'ALREADY_VOTED',
+                    message: 'You have already voted on this submission',
+                });
+            }
+
+            return res.status(403).json({
+                code: 'VOTE_LIMIT_REACHED',
+                message: 'You have reached the vote limit for this competition',
+            });
+        }
         return res.status(500).json({
             code: 'VOTE_FAILED',
             message: 'Unable to add vote to submission'
@@ -145,28 +203,39 @@ export async function voteOnSubmission(req: AuthRequest, res: Response) {
 
 export async function removeVoteFromSubmission(req: AuthRequest, res: Response) {
     const id = req.params.id;
-    const submission = await Submission.findById(id);
-
-    if (!submission) {
-        return res.status(404).json({
-            code: 'SUBMISSION_NOT_FOUND',
-            message: 'could not find submission',
-            status: 404,
-        })
-    };
-
-    if (!submission.votes.some(v => v.toString() === req.user!.id)) {
-        return res.status(404).json({
-            code: 'VOTE_NOT_FOUND',
-            message: 'No vote found',
-        })
-    };
 
     try {
+        const submission = await Submission.findById(id);
+
+        if (!submission) {
+            return res.status(404).json({
+                code: 'SUBMISSION_NOT_FOUND',
+                message: 'could not find submission',
+                status: 404,
+            })
+        };
+
+        const result = await CompetitionVote.updateOne(
+            { user: req.user!.id, competition: submission.competition },
+            { $pull: { submissions: submission._id } }
+        );
+
+        if (result.modifiedCount === 0) {
+            return res.status(404).json({
+                code: 'VOTE_NOT_FOUND',
+                message: 'no vote found'
+            })
+        };
+
         await Submission.updateOne(
             { _id: submission._id },
             { $pull: { votes: new Types.ObjectId(req.user!.id) } }
         );
+        await Competition.updateOne(
+            { _id: submission.competition },
+            { $inc: { totalVoteCount: -1 } }
+        );
+
         return res.status(200).json({
             message: 'Vote removed'
         });
@@ -176,7 +245,7 @@ export async function removeVoteFromSubmission(req: AuthRequest, res: Response) 
             message: 'Unable to remove vote from submission'
         });
     }
-}
+};
 
 export async function deleteSubmission(req: AuthRequest, res: Response) {
     try {
@@ -204,9 +273,14 @@ export async function deleteSubmission(req: AuthRequest, res: Response) {
             await supabase.storage.from("images").remove([imageDoc.filename]);
             await Image.findByIdAndDelete(imageDoc._id);
         };
+        await CompetitionVote.updateMany(
+            { submissions: submission._id },
+            { $pull: { submissions: submission._id } }
+        );
 
         await Competition.findByIdAndUpdate(submission.competition, {
-            $pull: { submissions: submission._id }
+            $pull: { submissions: submission._id },
+            $inc: { totalVoteCount: -submission.votes.length }
         });
 
         await Submission.findByIdAndDelete(submission._id);

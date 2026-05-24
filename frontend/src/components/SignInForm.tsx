@@ -1,6 +1,6 @@
 import styles from "../styles/sign-in.module.css";
 import mixins from "../styles/mixins.module.css";
-import { useState} from "react";
+import { useEffect, useState} from "react";
 import { login } from "../services/api";
 import { useUser } from "../hooks/useUser";
 import { useNavigate, useLocation } from "react-router";
@@ -49,6 +49,7 @@ export function SignInForm() {
 
             if (res.status === 200) {
                 setUser({
+                    _id: data._id,
                     username: data.username,
                     profilePicture: data.profilePicture || null
                 });
