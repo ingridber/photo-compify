@@ -1,16 +1,44 @@
+// Function that builds MongoDB filter based on competition status
 export const getCompetitionFilter = (
-  // If status is "active", return competitions that have not ended yet
-  status: "active" | "historical" | undefined,
+  status:
+    | "submission"
+    | "voting"
+    | "ended"
+    | undefined,
   now: Date
 ) => {
-  if (status === "active") {
-    return { endDate: { $gt: now } }; // endDate is greater than now = still active competitions
+
+  // SUBMISSION PHASE FILTER
+  if (status === "submission") {
+    return {
+      // Competition has started
+      startDate: { $lte: now },
+      // Voting has not started yet
+      votingStartDate: { $gt: now },
+    };
   }
 
-  // If status is "finished", return competitions that have already ended
-  if (status === "historical") {
-    return { endDate: { $lte: now } }; // endDate is less than or equal to now = finished competitions
+  // VOTING PHASE FILTER
+  if (status === "voting") {
+    return {
+      // Voting has started
+      votingStartDate: { $lte: now },
+      // Competition has not ended yet
+      endDate: { $gt: now },
+    };
   }
 
+  // ENDED PHASE FILTER
+  if (status === "ended") {
+    return {
+      // Competition has ended
+      endDate: {
+        $lte: now,
+        $ne: null, // Ensure endDate exists and is not null
+      },
+    };
+  }
+
+  // DEFAULT: no filtering applied
   return {};
 };
