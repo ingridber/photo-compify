@@ -46,3 +46,9 @@ export interface AuthRequest extends Request {
         id: string
     }
 }
+
+export interface CompetitionVoteInterface extends Document {
+    user: Types.ObjectId;
+    competition: Types.ObjectId;
+    submissions: Types.ObjectId[];
+};
