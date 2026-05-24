@@ -10,6 +10,12 @@
   z-index: 1001;
 }
 
+.navActions {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  margin-right: 1rem; 
+}
 
 .logoContainer {
   height: 70%;

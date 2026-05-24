@@ -4,6 +4,7 @@ import styles from "./HamburgerMenu.module.css";
 import { useTheme } from "../../hooks/useTheme";
 import { useUser } from "../../hooks/useUser";
 import { DisplayLogo } from "../display-profile-picture/DisplayProfilePicture";
+import { NotificationMenu } from "./NotificationMenu";
 
 
 export default function HamburgerMenu() {
@@ -23,21 +24,22 @@ export default function HamburgerMenu() {
     <div className={styles.logoContainer} onClick={() => goTo("/")}>
        <DisplayLogo text={false} />
     </div>
-   
+    <div className={styles.navActions}>
+      <NotificationMenu notifications={[]} />
 
-      {/* HAMBURGER */}
-      <button
-        className={styles.hamburger}
-        onClick={() => setOpen(prev => !prev)}
-      >
-        {open ? (
-          // <p className={styles.backBtnIcon}>✕</p>
-          <img src="/close.svg" alt="" className={styles.hamburgerIcon}/>
-        ) : (
-            <img src="/menu.svg" alt="" className={styles.hamburgerIcon}/>
-        )}
-      </button>
-
+        {/* HAMBURGER */}
+        <button
+          className={styles.hamburger}
+          onClick={() => setOpen(prev => !prev)}
+        >
+          {open ? (
+            // <p className={styles.backBtnIcon}>✕</p>
+            <img src="/close.svg" alt="" className={styles.hamburgerIcon}/>
+          ) : (
+              <img src="/menu.svg" alt="" className={styles.hamburgerIcon}/>
+          )}
+        </button>
+    </div>
       
 
       {/* DROPDOWN */}

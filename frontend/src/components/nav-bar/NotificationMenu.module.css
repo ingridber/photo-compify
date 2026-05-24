@@ -1,0 +1,92 @@
+/* 🧱 Omslutande container */
+.notificationMenu {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 70%; /* Samma höjd som hamburgarknappen i navbaren */
+}
+
+/* 🔔 Själva knappen för klockan */
+.notificationBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    position: relative;
+}
+
+/* 🖼️ Klockikonen */
+.notificationIcon {
+    height: 100%;
+}
+
+/* 🔴 Den röda badge-bubblan för antal */
+.notificationBadge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    background-color: #ff4d4d; /* Röd färg för uppmärksamhet */
+    color: white;
+    font-size: 0.7rem;
+    font-weight: bold;
+    border-radius: 50%;
+    min-width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+}
+
+/* 📜 Dropdown-menyn */
+.notificationDropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;          /* 🌟 Linjerar högerkanten med klockans högerkant */
+    width: 320px;       /* 🌟 Gjorde den lite bredare enligt önskemål */
+    margin-top: 10px;   /* Lite distans från navbaren */
+    background-color: var(--navigate-menu);
+    border: 1px solid var(--text-light);
+    border-radius: 4px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+    list-style: none;
+    padding: 0.5rem 0;
+    z-index: 1000;
+    opacity: 0.955;     /* Matchar din burgarmeny */
+}
+
+/* ✉️ Varje enskild notifiering i listan */
+.notificationItem {
+    padding: 0.75rem 1rem;
+    color: var(--text-light);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: background-color 0.2s ease;
+}
+
+.notificationItem:last-child {
+    border-bottom: none;
+}
+
+.notificationItem:hover {
+    background-color: rgba(255, 255, 255, 0.05); /* Visuell feedback vid hover */
+}
+
+/* 📌 Rubriken inuti en notis */
+.notificationItem h4 {
+    margin: 0 0 0.25rem 0;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.02rem;
+}
+
+/* 💬 Texten inuti en notis */
+.notificationItem p {
+    margin: 0;
+    font-size: 0.8rem;
+    opacity: 0.8;
+}

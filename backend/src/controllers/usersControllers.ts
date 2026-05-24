@@ -85,6 +85,10 @@ export async function changeProfilePicture(req: Request, res: Response) {
     res.status(200).json({ message: "Profile picture updated" });
 }
 
+export async function deleteProfilePicture(req: Request, res: Response) {
+    res.status(200).json({ message: "Profile picture deleted" });
+}
+
 export function logout(req: Request, res: Response) {
     res.clearCookie("token"); 
     res.status(200).json({ message: "Logged out" });

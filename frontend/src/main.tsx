@@ -4,13 +4,16 @@ import './index.css'
 import App from './App.tsx'
 import { BrowserRouter } from 'react-router'
 import { UserProvider } from './context/UserProvider.tsx'
+import { NotificationProvider } from './context/NotificationContext.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <UserProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <NotificationProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </NotificationProvider>
     </UserProvider>
   </StrictMode>,
 )
