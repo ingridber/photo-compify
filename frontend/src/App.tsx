@@ -35,7 +35,7 @@ function App() {
 
         const res = await getCurrentUser();
 
-        if (res?.data) {
+        if (res) {
           setUser(res.data);
         }
       } finally {
