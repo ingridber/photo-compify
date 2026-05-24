@@ -1,16 +1,39 @@
+// Function that returns sorting configuration based on competition status
 export const getCompetitionSort = (
-  status?: "active" | "historical"
+  status?: "submission" | "voting" | "ended"
 ) => {
+
+  // Switch based on the current competition status
   switch (status) {
-    case "active":
-      return { participantCount: -1,
-        _id:1 }; // most participants first
 
-    case "historical":
-      return { endDate: -1,
-        _id:1}; // shows recent finished competitions first
+    // When competitions are in submission phase
+    case "submission":
+      return {
+        // Sort by voting start date ascending (soonest first)
+        votingStartDate: 1,
+      };
 
+    // When competitions are in voting phase
+    case "voting":
+      return {
+        // Sort by end date ascending (ending soonest first)
+        endDate: 1,
+      };
+
+    // When competitions are ended
+    case "ended":
+      return {
+        // Sort by end date descending (most recently ended first)
+        endDate: -1,
+        // Secondary sort by id for stable ordering
+        _id: -1,
+      };
+
+    // Default sorting when no status is provided
     default:
-      return { participantCount: -1 };
+      return {
+        // Default: show most recently ended first
+        endDate: -1,
+      };
   }
 };
