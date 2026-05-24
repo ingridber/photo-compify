@@ -15,10 +15,12 @@
   width: 60%;
   display: flex;
   justify-content: space-between;
+  gap: 20px;
+  align-items: center;
 }
 
 .buttonContainer button {
-  width: 5.5rem;
+  width: 6,5rem;
   color: var(--text-light);
   background-color: var(--btn);
   border: 1px solid var(--btn);
@@ -57,7 +59,41 @@
   margin-top: 1rem;
 }
 
+/* ----- AVAILABLE THEMES ----- */
+.themeList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 0;
+}
 
+.themeChip {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--btn);
+  background: transparent;
+  background-color: var(--btn);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 13px;
+   color: var(--text-light);
+}
+
+.themeChip:hover {
+ background-color: var(--bg);
+  border: 1px solid var(--text);
+  color: var(--text);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.themeChipActive {
+  background-color: var(--bg);
+  border: 1px solid var(--text);
+  color: var(--text);
+  font-weight: 600;
+  cursor: pointer;
+}
 
 /* ----------------------------------- */
 /* ---------- MOBILE LAYOUT ---------- */

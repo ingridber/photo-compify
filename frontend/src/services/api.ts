@@ -83,7 +83,7 @@ export async function register(email: string, username: string, password: string
 type FetchCompetitionsParams = {
     page?: number;
     limit?: number;
-    status?: "active" | "historical";
+    status?: "submission" | "voting" | "ended";
     search?: string;
 };
 
