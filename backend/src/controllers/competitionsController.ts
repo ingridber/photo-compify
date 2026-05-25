@@ -6,6 +6,7 @@ import { User } from "../models/User";
 import { getCompetitionFilter } from "../utils/competitions/competitionFilter";
 import { Document } from "mongoose";
 import { buildCompetitionQuery } from "./competitionsQuery";
+import { checkPhaseAndUpdate } from "../utils/competitions/competitionPhaseChecker";
 
 // ---------------------------------------
 // --------- GET ALL COMPETITION ---------
@@ -89,7 +90,7 @@ export async function createCompetition(req: AuthRequest, res: Response) {
       message: "One or more required fields are missing",
       status: 400,
     });
-  }
+  };
 
   // ----- INPUT VALIDATION -----
   if (title.length > 50 || description.length > 250) {
@@ -99,7 +100,7 @@ export async function createCompetition(req: AuthRequest, res: Response) {
       message: "Exceeded character limit for title or description",
       status: 400,
     });
-  }
+  };
 
   // !!! NEED VALIDATION IN FUTURE !!!
   const competition = await Competition.create({
@@ -109,6 +110,11 @@ export async function createCompetition(req: AuthRequest, res: Response) {
     themes: themes,
     logoBanner: logoBanner ? logoBanner : null,
   });
+
+  const now = Date.now();
+  setTimeout(() => {
+      setNewPhase(competition);
+  }, competition.votingStartDate.getTime() - now)
 
   res.status(201).json(competition);
 }
