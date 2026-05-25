@@ -284,3 +284,97 @@ export async function deleteProfilePicture() {
         credentials: "include"
     });
 };
+
+
+// ---------- GET USER COMPS ----------
+// ------------------------------------
+
+export async function getUserComps() {
+    const res = await fetch(
+    "http://localhost:3000/api/v1/user/competitions",
+    {
+        credentials: "include",
+    }
+    );
+
+    if (!res.ok) {
+        const error = await res.json().catch(() => null);
+
+        throw new Error(
+            error?.message ?? "Failed to fetch user competitions"
+        );
+    }
+
+    return await res.json();
+}
+
+
+
+
+// ---------- GET USER SUBMITS ----------
+// --------------------------------------
+
+export async function getUserSubmits() {
+        const res = await fetch(
+        "http://localhost:3000/api/v1/user/submissions",
+        {
+            credentials: "include",
+        }
+    );
+
+    if (!res.ok) {
+        const error = await res.json().catch(() => null);
+
+        throw new Error(
+            error?.message ?? "Failed to fetch user submissions"
+        );
+    }
+
+    return await res.json();
+}
+
+
+// ---------- GET USER STATS ----------
+// ------------------------------------
+
+export async function getUserStats() {
+
+    const res = await fetch(
+        "http://localhost:3000/api/v1/user/stats",
+        {
+            credentials: "include"
+        }
+    );
+
+    if (!res.ok) {
+        throw new Error("Failed to fetch stats");
+    }
+
+    return await res.json();
+}
+
+
+
+// ---------- UPDATE USER DETAILS ----------
+// -----------------------------------------
+export async function updateUserDetails(
+    camera?: string,
+    themes?: string[]) {
+
+    const res = await fetch("http://localhost:3000/api/v1/user/edit", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+            camera,
+            themes
+        }),
+
+    });
+
+    if (!res.ok) {
+        throw new Error("Failed to update user details")
+    }
+
+    return await res.json();
+    }

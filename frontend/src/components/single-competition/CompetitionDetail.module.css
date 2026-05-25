@@ -91,6 +91,7 @@
   font-size: 0.8rem;
   margin-top: 0.3rem;
   margin-bottom: 1rem;
+  cursor: pointer;
 }
 
 
@@ -140,6 +141,7 @@
 .description {
   width: 80%;
   margin: auto;
+  text-align: center;
 }
 
 .descriptionTitle {
@@ -165,6 +167,7 @@
   gap: 20px;
   padding-bottom: 1rem;
   border-bottom: 1px dotted var(--text);
+  justify-content: space-between;
 }
 
 .stat {

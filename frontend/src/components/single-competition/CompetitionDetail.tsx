@@ -9,6 +9,7 @@ import { useUser } from "../../hooks/useUser.ts";
 import mixins from "../../styles/mixins.module.css";
 import { Throbber } from "../user-feedback/Throbber.tsx";
 import ImageUploadForm from "../images/ImageUploadForm.tsx";
+import { getIndicator, sortSubmissions } from "../../utils/submissionIndicators.ts";
 
 function getPhase(comp: Competition): Phase {
     const now = Date.now();
@@ -33,48 +34,48 @@ function formatCountdown(target: string): string {
     return `${hours}h ${minutes}m`;
 }
 
-function getIndicator(
-    submission: Submission,
-    phase: Phase,
-    rank: number,
-    userId?: string,
-): Indicator {
-    if (!submission) return "none";
-    if (phase === "voting" && userId) {
-        return submission.votes?.includes(userId) ? "voted" : "none";
-    }
+// function getIndicator(
+//     submission: Submission,
+//     phase: Phase,
+//     rank: number,
+//     userId?: string,
+// ): Indicator {
+//     if (!submission) return "none";
+//     if (phase === "voting" && userId) {
+//         return submission.votes?.includes(userId) ? "voted" : "none";
+//     }
 
-    if (phase === "finished") {
-        if (rank === 0) return "gold";
-        if (rank === 1) return "silver";
-        if (rank === 2) return "bronze";
-    }
+//     if (phase === "finished") {
+//         if (rank === 0) return "gold";
+//         if (rank === 1) return "silver";
+//         if (rank === 2) return "bronze";
+//     }
 
-    return "none";
-}
+//     return "none";
+// }
 
-function sortSubmissions(
-    submissions: Submission[],
-    phase: Phase,
-    userId?: string,
-): Submission[] {
-    if (phase === "submission" && userId) return [...submissions].filter(s => s.user?._id === userId);
-    if (phase === "voting" && userId) {
-        return [...submissions].sort(
-            (a, b) =>
-                (b.votes?.includes(userId) ? 1 : 0) -
-                (a.votes?.includes(userId) ? 1 : 0),
-        );
-    }
+// function sortSubmissions(
+//     submissions: Submission[],
+//     phase: Phase,
+//     userId?: string,
+// ): Submission[] {
+//     if (phase === "submission" && userId) return [...submissions].filter(s => s.user?._id === userId);
+//     if (phase === "voting" && userId) {
+//         return [...submissions].sort(
+//             (a, b) =>
+//                 (b.votes?.includes(userId) ? 1 : 0) -
+//                 (a.votes?.includes(userId) ? 1 : 0),
+//         );
+//     }
 
-    if (phase === "finished") {
-        return [...submissions].sort(
-            (a, b) => (b.votes.length ?? 0) - (a.votes.length ?? 0),
-        );
-    }
+//     if (phase === "finished") {
+//         return [...submissions].sort(
+//             (a, b) => (b.votes.length ?? 0) - (a.votes.length ?? 0),
+//         );
+//     }
 
-    return submissions;
-}
+//     return submissions;
+// }
 
 export default function CompetitionDetail() {
     const { id } = useParams<{ id: string }>();
@@ -137,7 +138,8 @@ export default function CompetitionDetail() {
 
                 {/* NAVIGATE BACK BTN */}
                 <button
-                    onClick={() => navigate("/competitions")}
+                    // onClick={() => navigate("/competitions")}
+                    onClick={() => navigate(-1)}
                     className={styles.backBtn}>
                     <img src="/arrow-left.svg" alt="icon of arrow pointing left" className={mixins.backBtnIcon} />
                 </button>
@@ -173,7 +175,11 @@ export default function CompetitionDetail() {
                 <h1 className={styles.title}>{competition.title}</h1>
 
                 {/* OWNER */}
-                {<p className={styles.owner}>By: {competition.owner?.username ?? "Deleted User"}</p>}
+                {<p 
+                    className={styles.owner}
+                    onClick={() => navigate(`/users/${competition.owner.username}`)}>
+                        By: {competition.owner?.username ?? "Deleted User"}
+                </p>}
 
             </div>
 
@@ -208,21 +214,16 @@ export default function CompetitionDetail() {
             {/* ----- STATS ----- */}
 
             <div className={styles.stats}>
-                {phase === "finished" && (
+                {/* {phase === "finished" && (
                     <div className={styles.stat}>
                         <span className={styles.statLabel}>Host</span>
                         <span className={styles.statValue}>
                             {competition.owner?.username ?? "Deleted User"}
                         </span>
                     </div>
-                )}
+                )} */}
 
-                <div className={styles.stat}>
-                    <span className={styles.statLabel}>Participants</span>
-                    <span className={styles.statValue}>
-                        {competition.submissions.length}
-                    </span>
-                </div>
+
 
                 {phase === "submission" && (
                     <div className={styles.stat}>
@@ -245,11 +246,21 @@ export default function CompetitionDetail() {
                 {phase === "finished" && sorted.length > 0 && (
                     <div className={styles.stat}>
                         <span className={styles.statLabel}>Winner</span>
-                        <span className={styles.statValue}>
+                        <span className={styles.statValue}
+                            onClick={() => navigate(`/users/${sorted[0].user.username}`)}
+                            style= {{cursor: "pointer"}}>
                             {sorted[0].user.username}
                         </span>
                     </div>
                 )}
+
+
+                <div className={styles.stat}>
+                    <span className={styles.statLabel}>Participants</span>
+                    <span className={styles.statValue}>
+                        {competition.submissions.length}
+                    </span>
+                </div>
             </div>
 
             {/* ----- SUBMIT & SUBMISSIONS ----- */}

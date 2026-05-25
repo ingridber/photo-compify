@@ -5,9 +5,16 @@ import {
     logout, 
     deleteUser, 
     changeProfilePicture,
-    deleteProfilePicture
+    deleteProfilePicture,
+    getUserCompetitions,
+    getUserSubmissions,
+    getUserStats,
+    getPublicProfile
 } from "../controllers/usersControllers";
+import { editProfileDetails } from "../controllers/editControllers";
 import { authenticateToken } from "../middleware/auth";
+import { get } from "http";
+import { getSubmission } from "../controllers/submissionsController";
 
 
 const routerUser = express.Router();
@@ -27,5 +34,13 @@ routerUser.delete('/profilepicture', authenticateToken, deleteProfilePicture);
 
 routerUser.post('/logout', logout);
 routerUser.delete('/', authenticateToken, deleteUser);
+
+routerUser.get('/competitions', authenticateToken, getUserCompetitions);
+routerUser.get('/submissions', authenticateToken, getUserSubmissions);
+routerUser.get('/stats', authenticateToken, getUserStats)
+
+routerUser.get('/:username', getPublicProfile)
+routerUser.patch('/edit', authenticateToken, editProfileDetails)
+
 
 export { routerUser };

@@ -180,6 +180,8 @@ export async function login(req: Request, res: Response): Promise<Response> {
             _id: user._id,
             username: user.username,
             profilePicture: profilePicture,
+            camera: user.camera,
+            themes: user.themes,
         });
 
     } catch (err) {
@@ -222,6 +224,8 @@ export async function getCurrentUser(req: Request, res: Response): Promise<Respo
                 _id: user._id,
                 username: user.username,
                 profilePicture,
+                camera: user.camera,
+                themes: user.themes,
             }
         });
 
