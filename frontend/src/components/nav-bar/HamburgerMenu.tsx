@@ -3,8 +3,6 @@ import { useNavigate } from "react-router";
 import styles from "./HamburgerMenu.module.css";
 import { useTheme } from "../../hooks/useTheme";
 import { useUser } from "../../hooks/useUser";
-import { DisplayLogo } from "../display-profile-picture/DisplayProfilePicture";
-import { NotificationMenu } from "./NotificationMenu";
 
 export default function HamburgerMenu() {
   const [open, setOpen] = useState(false);
@@ -38,16 +36,6 @@ export default function HamburgerMenu() {
 
   return (
     <nav className={styles.navbar} ref={menuRef}>
-      <div
-        className={styles.logoContainer}
-        onClick={() => goTo("/")}
-      >
-        <DisplayLogo text={false} />
-      </div>
-
-      <div className={styles.navActions}>
-        <NotificationMenu notifications={[]} />
-
         {/* HAMBURGER */}
         <button
           className={styles.hamburger}
@@ -67,7 +55,6 @@ export default function HamburgerMenu() {
             />
           )}
         </button>
-      </div>
 
       {/* DROPDOWN */}
       {open && (

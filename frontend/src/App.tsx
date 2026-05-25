@@ -19,7 +19,7 @@ import SubmitToCompetition from './pages/SubmitToCompetitionPage';
 import { SignOut } from './components/SignOut';
 import { DeleteAccount } from './pages/DeleteAccount';
 import { NavBar } from './components/nav-bar/NavBar';
-import HamburgerMenu from './components/nav-bar/HamburgerMenu';
+import Header from './header/Header';
 import { ProfilePage } from './pages/ProfilePage';
 import ProfileSubmissions from './components/profile/ProfileSubmissions';
 import ProfileCompetitions from './components/profile/ProfileCompetitions';
@@ -51,7 +51,7 @@ function App() {
 
   return (
     <>
-    <HamburgerMenu />
+    <Header />
       <Routes>
 
         <Route path="/" element={<Home/>}/>
