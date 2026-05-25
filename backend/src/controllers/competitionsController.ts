@@ -6,7 +6,7 @@ import { User } from "../models/User";
 import { getCompetitionFilter } from "../utils/competitions/competitionFilter";
 import { Document } from "mongoose";
 import { buildCompetitionQuery } from "./competitionsQuery";
-import { checkPhaseAndUpdate } from "../utils/competitions/competitionPhaseChecker";
+import { competitionPhaseHandler} from "../utils/competitions/competitionPhaseHandler";
 
 // ---------------------------------------
 // --------- GET ALL COMPETITION ---------
@@ -113,7 +113,7 @@ export async function createCompetition(req: AuthRequest, res: Response) {
 
   const now = Date.now();
   setTimeout(() => {
-      setNewPhase(competition);
+      competitionPhaseHandler(competition);
   }, competition.votingStartDate.getTime() - now)
 
   res.status(201).json(competition);
