@@ -19,8 +19,14 @@ export function NavBar() {
             </NavLink>
 
             <NavLink to="/competitions" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}`: styles.navLink}>
-                <img src="/competitions.svg" alt="icon: Create Competition" className={styles.navIcon}/>
+                <img src="/competitions.svg" alt="icon: Competitions" className={styles.navIcon}/>
                 <p className={styles.navTitle}>Comps</p>
+            </NavLink>
+
+
+            <NavLink to="/profile" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}`: styles.navLink}>
+                <img src="/user.svg" alt="icon: Competitions" className={styles.navIcon}/>
+                <p className={styles.navTitle}>Profile</p>
             </NavLink>
 
 

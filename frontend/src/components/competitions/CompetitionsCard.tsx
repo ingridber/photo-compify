@@ -1,24 +1,7 @@
 import styles from "./competitions-card.module.css";
 import { useNavigate } from "react-router";
+import type { Competition } from "../../types/competitions";
 
-// Definition of types from API
-type Competition = {
-  _id: string;
-  owner: {
-    _id: string;
-    username: string;
-  };
-  title: string;
-  logoBanner?: string;
-  description: string;
-  themes: string[];
-  startDate: string;
-  votingStartDate: string;
-  endDate: string;
-  submissions: string[];
-  totalVoteCount: number;
-  participantCount: number;
-};
 
 // Props for component
 type Props = {

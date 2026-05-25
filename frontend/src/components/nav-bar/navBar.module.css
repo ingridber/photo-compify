@@ -46,6 +46,7 @@
     color: var(--navigate-text);
     font-weight: 300;
     font-size: 0.7rem;
+    margin-top: -0.2rem;
 }
 
 .active .navIcon {

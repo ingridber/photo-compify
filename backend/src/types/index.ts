@@ -10,6 +10,8 @@ export interface InterfaceUser extends Document {
     warnings: number;
     loginAttempts: number;
     lockUntil: Date | undefined;
+    camera?: string | null;
+    themes?: string[] | null;
 };
 
 export interface CompetitionInterface extends Document {

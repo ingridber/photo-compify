@@ -16,23 +16,30 @@ export interface Competition {
   totalVoteCount: number;
   createdAt: string;
   updatedAt: string;
+  participantCount: number;
 }
 
 export interface Submission {
   _id: string;
-  competition: string;
-  user: {
-    _id: string;
-    username: string;
-  };
-  image: string;
+  competition: 
+    | string 
+    | {_id: string; title?: string};
+  user: 
+    | string 
+    | {_id: string; username: string;};
+  image: 
+    | string 
+    | {_id?: string; filename?: string};
+  imageUrl?: string;
   signedImageUrl?: string;
   description?: string;
   votes: string[];
   createdAt: string;
   updatedAt: string;
+  indicator? : | "voted" | "gold" | "silver" | "bronze" | "none";
 }
 
 export type Phase = "submission" | "voting" | "finished";
 
 export type Indicator = "voted" | "gold" | "silver" | "bronze" | "none";
+

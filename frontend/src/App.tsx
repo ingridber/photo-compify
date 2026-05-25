@@ -20,7 +20,10 @@ import { SignOut } from './components/SignOut';
 import { DeleteAccount } from './pages/DeleteAccount';
 import { NavBar } from './components/nav-bar/NavBar';
 import HamburgerMenu from './components/nav-bar/HamburgerMenu';
-
+import { ProfilePage } from './pages/ProfilePage';
+import ProfileSubmissions from './components/profile/ProfileSubmissions';
+import ProfileCompetitions from './components/profile/ProfileCompetitions';
+import PublicProfilePage from './pages/PublicProfilePage';
 
 
 function App() {
@@ -74,6 +77,8 @@ function App() {
             }>
         </Route>
 
+
+        {/* ----- MANAGE ACCOUNT ----- */}
         <Route path="/manage-account">
           <Route index element={
             <ProtectedRoute>
@@ -92,7 +97,44 @@ function App() {
               <ChangeProfilePicture/>
             </ProtectedRoute>} />
           </Route>
+
+
+          {/* ----- PROFILE ----- */}
+
+          <Route
+              path="/profile"
+              element={
+                  <ProtectedRoute>
+                      <ProfilePage />
+                  </ProtectedRoute>
+              }
+          >
+
+              {/* DEFAULT */}
+              <Route
+                  index
+                  element={<ProfileSubmissions />}
+              />
+
+              {/* COMPETITIONS */}
+              
+              <Route
+                  path="competitions"
+                  element={<ProfileCompetitions />}
+              />
+             
+
+          </Route>
+
+
+        {/* ----- USERS ----- */}
+        <Route path="/users/:username" element={<PublicProfilePage />} />
+
+
+
         </Routes>
+
+
 
 
         <NavBar/>
