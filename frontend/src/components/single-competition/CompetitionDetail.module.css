@@ -117,6 +117,7 @@
 .AstrophotographyColor {background-color: #1A1B3A; color: var(--text-light) !important;}
 .DocumentaryColor {background-color: #8C8C8C;}
 .DefaultColor {background-color: #B0CBC1;}
+.AnythingGoesColor {background-color: pink;}
 
 .themesContainer {
     display: flex;
