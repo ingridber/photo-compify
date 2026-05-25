@@ -51,7 +51,9 @@ export function SignInForm() {
                 setUser({
                     _id: data._id,
                     username: data.username,
-                    profilePicture: data.profilePicture || null
+                    profilePicture: data.profilePicture || null,
+                    camera: data.camera,
+                    themes: data.themes,
                 });
 
                 setErrors({});
