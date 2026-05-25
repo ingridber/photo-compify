@@ -43,3 +43,8 @@ export type Phase = "submission" | "voting" | "finished";
 
 export type Indicator = "voted" | "gold" | "silver" | "bronze" | "none";
 
+export type ThemeOption = {
+  value: string;
+  label: string;
+};
+
