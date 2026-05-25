@@ -4,39 +4,21 @@ import styles from "./profile.module.css";
 import Select from "react-select";
 import type { MultiValue } from "react-select";
 import { useUser } from "../../hooks/useUser";
+// import { AVAILABLE_THEMES_OBJ } from "../../constants/availableThemes";
+import type { ThemeOption } from "../../types/competitions";
+import AVAILABLE_THEMES from "../../constants/availableThemes";
 
 type EditProps = {
   handleSave: ()=>void;
 }
 
-type ThemeOption = {
-  value: string;
-  label: string;
-};
-
-const AVAILABLE_THEMES: ThemeOption[] = [
-  { value: "Portrait", label: "Portrait" },
-  { value: "Landscape", label: "Landscape" },
-  { value: "Street", label: "Street" },
-  { value: "Wildlife", label: "Wildlife" },
-  { value: "Macro", label: "Macro" },
-  { value: "Architecture", label: "Architecture" },
-  { value: "Nature", label: "Nature" },
-  { value: "Travel", label: "Travel" },
-  { value: "Minimalist", label: "Minimalist" },
-  { value: "Black & White", label: "Black & White" },
-  { value: "Long Exposure", label: "Long Exposure" },
-  { value: "Abstract", label: "Abstract" },
-  { value: "Aerial", label: "Aerial" },
-  { value: "Night", label: "Night" },
-  { value: "Astrophotography", label: "Astrophotography" },
-  { value: "Documentary", label: "Documentary" },
-];
+const AVAILABLE_THEMES_OBJ = AVAILABLE_THEMES.map((theme) => ({
+  value: theme,
+  label: theme,
+}));
 
 export default function ProfileEditDetails({handleSave}: EditProps) {
-  // const [camera, setCamera] = useState("");
-  // const [selectedThemes, setSelectedThemes] = useState<ThemeOption[]>([]);
-    const [message, setMessage] = useState("");
+  const [message, setMessage] = useState("");
   const {user, setUser} = useUser();
   const [camera, setCamera] = useState(
   user?.camera || ""
@@ -44,21 +26,16 @@ export default function ProfileEditDetails({handleSave}: EditProps) {
 
 const [selectedThemes, setSelectedThemes] =
   useState<ThemeOption[]>(
-    AVAILABLE_THEMES.filter((theme) =>
+    AVAILABLE_THEMES_OBJ.filter((theme) =>
       user?.themes?.includes(theme.value)
     )
   );
 
-
-  const handleUpdateProfileDetails = async (
-    e: React.FormEvent<HTMLFormElement>
-  ) => {
+  const handleUpdateProfileDetails = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-      const themes = selectedThemes.map(
-        (theme) => theme.value
-      );
+      const themes = selectedThemes.map((theme) => theme.value);
 
       const data = await updateUserDetails(
         camera,
@@ -131,7 +108,7 @@ const [selectedThemes, setSelectedThemes] =
         />
 
         <Select
-          options={AVAILABLE_THEMES}
+          options={AVAILABLE_THEMES_OBJ}
           value={selectedThemes}
           onChange={handleSelectThemes}
           isMulti
