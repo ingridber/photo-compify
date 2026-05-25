@@ -1,7 +1,7 @@
 .form {
     display: flex;
     flex-direction: column;
-    max-width: 560px;
+    min-width: 560px;
     margin: 0 auto 100px auto;
     box-shadow: var(--shadow);
     padding: 1rem;
@@ -37,6 +37,7 @@
     text-align: center;
     padding: 0;
     margin: 0;
+    min-width: 100%;
 }
 
 .themesTitleContainer,
@@ -75,6 +76,7 @@
     gap: 0.5rem;
     margin-top: 0.5rem;
     margin-bottom: 1rem;
+    width: 100%;
 }
 
 .themeOption {
@@ -167,5 +169,10 @@ input[type="file"]::file-selector-button:hover {
 
     .themesGrid {
         gap: 0.4rem;
+    }
+
+    .form {
+        min-width: 300px;
+        margin: 0;
     }
 }

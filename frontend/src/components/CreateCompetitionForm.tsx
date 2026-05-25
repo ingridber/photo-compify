@@ -5,7 +5,10 @@ import { uploadImage } from "../services/imageApi";
 import FileSizeValidation from "./images/FileSizeValidation";
 import FileFormatValidation from "./images/FileFormatValidation";
 import { useNavigate } from 'react-router';
-import AVAILABLE_THEMES from '../constants/availableThemes';
+import  AVAILABLE_THEMES  from '../constants/availableThemes';
+import Select from 'react-select';
+import type { MultiValue } from 'react-select';
+import type { ThemeOption } from '../types/competitions';
 
 const TITLE_MAX = 50;
 const DESC_MAX = 250;
@@ -16,10 +19,15 @@ type Props = {
     onSuccess?: () => void;
 };
 
+const AVAILABLE_THEMES_OBJ = AVAILABLE_THEMES.map((theme) => ({
+  value: theme,
+  label: theme,
+}));
+
 export default function CreateCompetitionForm({ onSuccess }: Props) {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [themes, setThemes] = useState<string[]>([]);
+    const [themes, setThemes] = useState<ThemeOption[]>([]);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [fileError, setFileError] = useState<string | null>(null);
@@ -32,11 +40,13 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
     const fileSizeRules = FileSizeValidation();
     const fileFormatRules = FileFormatValidation();
 
-    const toggleTheme = (theme: string) => {
-        setThemes((prev) =>
-            prev.includes(theme) ? prev.filter((t) => t !== theme) : [...prev, theme]
-        );
-    };
+    const handleSelectThemes = (
+        selected: MultiValue<ThemeOption>
+        ) => {
+        if (selected.length <= 5) {
+            setThemes([...selected]);
+        }
+        };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -120,7 +130,7 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
                 body: JSON.stringify({
                     title,
                     description,
-                    themes,
+                    themes: themes.map((theme) => theme.value),
                     ...(logoImageId && { logoBanner: logoImageId }),
                 }),
             });
@@ -195,22 +205,22 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
                 </small>
             </label>
 
+            {/* ----- THEMES ----- */}
             <fieldset className={styles.fieldset}>
                 <div className={styles.themesTitleContainer}>
                     <legend className={styles.themesTitle}>Themes</legend>
                     <small className={themes.length === 0 ? `${styles.counterTheme}` : `${styles.counterTheme} ${styles.counterThemeHide}`}>Pick at least one</small>
                 </div>
                 <div className={styles.themesGrid}>
-                    {AVAILABLE_THEMES.map((theme) => (
-                        <label key={theme} className={styles.themeOption}>
-                            <input
-                                type="checkbox"
-                                checked={themes.includes(theme)}
-                                onChange={() => toggleTheme(theme)}
-                            />
-                            <span>{theme}</span>
-                        </label>
-                    ))}
+                    <Select
+                        options={AVAILABLE_THEMES_OBJ}
+                        value={themes}
+                        onChange={handleSelectThemes}
+                        isMulti
+                        placeholder="Select max 5 themes"
+                        closeMenuOnSelect={false}
+                        isOptionDisabled={() => themes.length >= 5}
+                        />
                 </div>
             </fieldset>
 
