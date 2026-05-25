@@ -15,6 +15,7 @@ const AVAILABLE_THEMES: string[] = [
     'Night',
     'Astrophotography',
     'Documentary',
+    'Anything Goes'
 ];
 
 export default AVAILABLE_THEMES;
