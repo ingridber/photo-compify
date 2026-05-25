@@ -10,6 +10,8 @@ const userSchema = new Schema<InterfaceUser>({
     warnings: { type: Number, default: 0 },
     loginAttempts: { type: Number, default: 0 },
     lockUntil: { type: Date },
+    camera: {type: String},
+    themes: [{type: String}],
 });
 
 export const User = model<InterfaceUser>("User", userSchema);

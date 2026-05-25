@@ -7,7 +7,9 @@ import verifyPassword from "../utils/passwordVerifier";
 import { Image } from "../models/Image";
 import { supabase } from "../config/supabase";
 import { z } from "zod";
-
+import { CompetitionSubmissionInterface } from "../types";
+import { calculateUserStats } from "../services/userStats";
+import { submissionsIndicator } from "../services/submissionIndicator";
 
 
 
@@ -362,3 +364,293 @@ export async function deleteUser(req: Request, res: Response) {
         });
     };
 };
+
+
+
+// ---------- USER COMPS ----------
+// --------------------------------
+export async function getUserCompetitions(req: Request, res: Response) {
+    const userId = (req as any).user.id;
+
+    try {
+        // ---------- GET USER ----------
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        };
+
+        // ---------- GET COMPETITIONS ----------
+        const competitions = await Competition.find({
+            owner: user._id
+        })
+        .populate("owner", "username")
+        .populate("logoBanner");
+
+        // ---------- ADD SIGNED URL ----------
+        await Promise.all(
+
+            competitions.map(async (competition: any) => {
+
+                if (competition.logoBanner?.getSignedUrl) {
+
+                    const url =
+                        await competition.logoBanner.getSignedUrl();
+
+                    competition._doc.signedLogoUrl = url;
+                }
+            })
+        );
+
+        return res.status(200).json({
+            competitions
+        });
+
+    } catch (err) {
+        console.log("GET USER COMPETITIONS ERROR", err);
+
+        return res.status(500).json({
+            message: "Server error",
+            err
+        });
+    };
+};
+
+// ---------- USER SUBMITS ----------
+// ----------------------------------
+export async function getUserSubmissions(
+    req: Request,
+    res: Response
+) {
+
+    const userId = (req as any).user.id;
+
+    try {
+
+        const submissions = await Submission.find({
+            user: userId
+        })
+        .populate("image")
+        .populate({
+            path: "competition",
+            populate: {
+                path: "submissions"
+            }
+        });
+
+        const formattedSubmissions =
+            await submissionsIndicator(
+                submissions
+            );
+
+        return res.status(200).json({
+            submissions: formattedSubmissions
+        });
+
+    } catch (err) {
+
+        return res.status(500).json({
+            message: "Server error",
+            err
+        });
+    }
+}
+
+
+
+// ------------------------------------
+// ---------- PUBLIC PROFILE ----------
+// ------------------------------------
+
+export async function getPublicProfile(
+    req: Request,
+    res: Response
+) {
+
+    const { username } = req.params;
+
+    try {
+
+        // ---------- GET USER ----------
+        const user = await User.findOne({
+            username
+        })
+        .populate("profilePicture");
+
+        if (!user) {
+
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        // ---------- FORMAT PROFILE PIC ----------
+        let profilePicture = null;
+
+        if (
+            user.profilePicture &&
+            typeof user.profilePicture !== "string" &&
+            user.profilePicture.getSignedUrl
+        ) {
+
+            profilePicture = {
+                _id: user.profilePicture._id,
+                url:
+                    await user.profilePicture.getSignedUrl()
+            };
+        }
+
+
+        // ---------- GET USER SUBMISSIONS ----------
+        const submissions = await Submission.find({
+            user: user._id
+        })
+        .populate("image")
+        .populate({
+            path: "competition",
+            populate: {
+                path: "submissions"
+            }
+        });
+
+        // ---------- ONLY FINISHED SUBMISSIONS ----------
+        const finishedSubmissions = submissions.filter(
+            (submission: any) => {
+
+                if (!submission.competition?.endDate) {
+                    return false;
+                }
+
+                return (
+                    new Date(
+                        submission.competition.endDate
+                    ).getTime() < Date.now()
+                );
+            }
+        );
+
+        // ---------- FORMAT SUBMISSIONS ----------
+        const formattedSubmissions =
+            await submissionsIndicator(
+                finishedSubmissions
+            );
+
+        // ---------- GET USER COMPETITIONS ----------
+        const competitions = await Competition.find({
+            owner: user._id
+        })
+        .populate("owner", "username")
+        .populate("logoBanner");
+
+        // ---------- FORMAT COMPETITIONS ----------
+        const formattedCompetitions =
+            await Promise.all(
+
+                competitions.map(
+                    async (competition: any) => {
+
+                        let signedLogoUrl = "";
+
+                        if (
+                            competition.logoBanner &&
+                            competition.logoBanner.getSignedUrl
+                        ) {
+
+                            signedLogoUrl =
+                                await competition
+                                    .logoBanner
+                                    .getSignedUrl();
+                        }
+
+                        return {
+                            _id: competition._id,
+                            title: competition.title,
+                            description:
+                                competition.description,
+                            themes: competition.themes,
+                            votingStartDate:
+                                competition.votingStartDate,
+                            endDate:
+                                competition.endDate,
+                            submissions:
+                                competition.submissions,
+                            owner:
+                                competition.owner,
+
+                            logoBanner:
+                                competition.logoBanner,
+
+                            signedLogoUrl
+                        };
+                    }
+                )
+            );
+
+        // ---------- GET STATS ----------
+        const stats = await calculateUserStats(
+            user._id.toString()
+        );
+
+        // ---------- RESPONSE ----------
+        return res.status(200).json({
+
+            user: {
+                _id: user._id,
+                username: user.username,
+                profilePicture,
+                camera: user.camera,
+                themes: user.themes,
+            },
+
+            submissions: formattedSubmissions,
+
+            competitions: formattedCompetitions,
+
+            stats
+        });
+
+    } catch (err) {
+
+        console.log(
+            "GET PUBLIC PROFILE ERROR:",
+            err
+        );
+
+        return res.status(500).json({
+            message: "Server error"
+        });
+    }
+}
+
+// ---------- USER STATS ----------
+// --------------------------------
+export async function getUserStats(req: Request, res: Response) {
+
+    const userId = (req as any).user.id;
+
+    try {
+
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({
+                code: "USER_NOT_FOUND",
+                message: "User not found",
+                status: 404
+            });
+        }
+
+        const stats = await calculateUserStats(userId);
+
+        return res.status(200).json(stats);
+
+    } catch (err) {
+
+        return res.status(500).json({
+            message: "Server error",
+            err
+        });
+    }
+}
