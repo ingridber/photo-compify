@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { updateUserDetails } from "../../services/api";
-import styles from "./profile.module.css";
+import profileStyle from "./profile.module.css";
 import Select from "react-select";
 import type { MultiValue } from "react-select";
 import { useUser } from "../../hooks/useUser";
-// import { AVAILABLE_THEMES_OBJ } from "../../constants/availableThemes";
 import type { ThemeOption } from "../../types/competitions";
 import AVAILABLE_THEMES from "../../constants/availableThemes";
 
@@ -20,10 +19,7 @@ const AVAILABLE_THEMES_OBJ = AVAILABLE_THEMES.map((theme) => ({
 export default function ProfileEditDetails({handleSave}: EditProps) {
   const [message, setMessage] = useState("");
   const {user, setUser} = useUser();
-  const [camera, setCamera] = useState(
-  user?.camera || ""
-);
-
+  const [camera, setCamera] = useState(user?.camera || "");
 const [selectedThemes, setSelectedThemes] =
   useState<ThemeOption[]>(
     AVAILABLE_THEMES_OBJ.filter((theme) =>
@@ -36,7 +32,6 @@ const [selectedThemes, setSelectedThemes] =
 
     try {
       const themes = selectedThemes.map((theme) => theme.value);
-
       const data = await updateUserDetails(
         camera,
         themes
@@ -71,19 +66,12 @@ const [selectedThemes, setSelectedThemes] =
     }
   };
 
-
-
-
   return (
-    <form
-      className={styles.detailsContainer}
-      onSubmit={handleUpdateProfileDetails}
-    >
-      <div>
-        <img
-          src="/camera-detail.svg"
-          alt="camera icon"
-        />
+  <section className={profileStyle.profileDetailsContainer}>
+
+    <form onSubmit={handleUpdateProfileDetails}>
+      <div className={profileStyle.detailsContainer}>
+        <img src="/camera-detail.svg" alt="camera icon" className={profileStyle.detailsIcon}/>
 
         <input
           type="text"
@@ -94,19 +82,10 @@ const [selectedThemes, setSelectedThemes] =
             setCamera(e.target.value)
           }
         />
-
-        <p>
-          Enter the camera you use, max 50
-          characters
-        </p>
       </div>
 
-      <div>
-        <img
-          src="/theme-detail.svg"
-          alt="picture icon"
-        />
-
+      <div className={profileStyle.detailsContainer}>
+        <img src="/theme-detail.svg" alt="picture icon" className={profileStyle.detailsIcon}/>
         <Select
           options={AVAILABLE_THEMES_OBJ}
           value={selectedThemes}
@@ -123,8 +102,7 @@ const [selectedThemes, setSelectedThemes] =
       <button type="submit">
         Save profile
       </button>
-
-      {message && <p>{message}</p>}
     </form>
+  </section>
   );
 }
