@@ -5,7 +5,7 @@
 }
 
 .hamburger {
-  height: 70%;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -69,5 +69,9 @@
 @media (max-width: 600px) {
   .navbar {
     height: 50px;
+  }
+  .hamburger {
+    height: 35px;
+    width: 35px;
   }
 }
