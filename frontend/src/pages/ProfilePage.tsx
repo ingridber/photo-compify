@@ -1,6 +1,5 @@
 import { useUser } from "../hooks/useUser";
 import { DisplayProfilePicture } from "../components/display-profile-picture/DisplayProfilePicture";
-import mixins from "../styles/mixins.module.css";
 import { useEffect, useState } from "react";
 import { getUserStats } from "../services/api";
 import { Outlet, useNavigate } from "react-router";
@@ -33,29 +32,32 @@ export function ProfilePage() {
     return (
         <>
             {/* HEADER */}
-            <section className={mixins.headerContainer}>
-                <p 
-                    className={mixins.username}
-                    onClick={() => navigate("/profile")}>
-                        {user ? user.username : "USER"}
-                </p>
+            <section className={profileStyle.headerContainer}>
+
+
+            <button onClick={() => setShowEdit(!showEdit)} className={profileStyle.editBtn}>
+                <img
+                    src={!showEdit? "/edit-pencil.svg" : "/close.svg"}
+                    alt="edit profile icon" 
+                    className={profileStyle.editBtnIcon}   
+                />
+            </button>
+
                 <div
-                    className={profileStyle.pictureContainer}
+                    className={profileStyle.profilePictureContainer}
                     onClick={() => navigate("/profile")}
                 >
                     <DisplayProfilePicture src={user?.profilePicture?.url}/>
                 </div>
+                <p 
+                    className={profileStyle.username}
+                    onClick={() => navigate("/profile")}>
+                        {user ? user.username : "USER"}
+                </p>
             </section>
 
 
-            <button>
-                <img
-                    src={!showEdit? "/edit-pencil.svg" : "/close.svg"}
-                    alt="edit profile icon"
-                    style={{width:"30px"}}
-                    onClick={() => setShowEdit(!showEdit)}
-                />
-            </button>
+
 
 
         {/* ----- CAMERA AND THEMES DETAILS ----- */}
@@ -71,7 +73,7 @@ export function ProfilePage() {
                             {user?.camera? user.camera : "Not specified"}</p>
                     </div>
 
-                    <div className={profileStyle.detailsContainer}>
+                    <div className={`${profileStyle.detailsContainer} ${profileStyle.themesContainer}`}>
                         <img src="/theme-detail.svg" alt="theme icon" className={profileStyle.detailsIcon}/>
 
                         {user?.themes && user.themes.length > 0 ? (
