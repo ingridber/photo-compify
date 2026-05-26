@@ -1,10 +1,68 @@
+/* ----- HEADER ----- */
+/* ------------------ */
+.headerContainer {
+    position: relative;
+    text-align: center;
+    width: 400px;
+    height: 200px;
+    margin: 0 auto;
+    padding-top: var(--main-margin);
+}
 
-.pictureContainer {
-    width: 7rem;
-    margin: auto;
+.profilePictureContainer {
+    width: 9rem;
+    margin: 1.5rem auto auto auto;
     cursor: pointer;
 }
 
+.username {
+    text-transform: uppercase;
+    font-weight: 800;
+    font-size: 1.3rem;
+    color: var(--text);
+    letter-spacing: 0.05rem;
+    margin-top: 1rem;
+}
+
+.editBtn {
+    position: absolute;
+    top: 7.5rem;
+    right: -20rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.editBtnIcon {
+    width: 2rem;
+}
+
+
+.backBtn {
+    width: 3.5rem;
+    padding: 0.4rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--back-btn);
+    border: none;
+    border-radius: 0.8rem 0.8rem 0 0.8rem;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    position: absolute;
+    top: 7.5rem;
+    left: 11.5rem;
+}
+
+
+.backBtnIcon {
+    width: 1.5rem;
+    filter: var(--back-btn-icon);
+}
 
 /* ----- CAMERA AND THEMES ----- */
 /* ----------------------------- */
@@ -16,10 +74,12 @@
 .detailsContainer {
     display: flex;
     align-items: flex-end;
+    margin-bottom: 0.5rem;
 }
 
 .detailsIcon {
-    width: 1.6rem;
+    width: 1.7rem;
+    margin-right: 0.4rem;
 }
 
 .detailsText {
@@ -29,6 +89,10 @@
 
 .detailsThemes {
     margin-right: 0.5rem;
+}
+
+.themesContainer {
+    padding-top: 0.55rem !important;
 }
 
 .theme {
@@ -64,6 +128,51 @@
 .AnythingGoesColor {background-color: pink;}
 
 
+
+/* ----- EDIT MODE ----- */
+/* --------------------- */
+.detailsInput {
+    font-size: 1.2rem;
+    color: var(--text);
+    font-family: inherit;
+    width: 100%;
+    border: 1px solid var(--text);
+
+}
+
+.detailsInput::placeholder {
+    color: var(--text);
+    opacity: 0.5;
+}
+
+.themeSelectWrapper {
+    width: 100%;
+    border: 1px solid var(--text);
+    padding: 0;
+}
+
+
+
+
+.submitBtn {
+    aspect-ratio: 1/1;
+    background-color: var(--submit-btn);
+    border: none;
+    border-radius: 0.8rem;
+    cursor: pointer;
+    color: var(--text-light);
+    font-size: 1rem;
+    text-transform: uppercase;
+    box-shadow: var(--shadow);
+    margin-left: 96%;
+}
+
+.submitBtnIcon {
+    width: 1.5rem;
+    filter: brightness(0) invert(1);
+}
+
+
 /* ----- STATS ----- */
 /* ----------------- */
 .profileStatsContainer{
@@ -78,7 +187,6 @@
 .statContainer {
     display: flex;
     flex-direction: column;
-    /* align-items: center; */
     margin: 0.5rem 5rem;
 }
 
@@ -128,12 +236,27 @@
 /* ----- COMPETITIONS ----- */
 /* ------------------------ */
 
+.competitionsDisplayContainer {
+    width: 80%;
+    margin: auto;
+    padding-top: 1rem;
+}
+
 .ProfileCompetitions {
 
 }
 
+.competitionsDisplayContainer > * {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+}
 
 
+/* .center {
+    margin: auto;
+} */
 
 
 

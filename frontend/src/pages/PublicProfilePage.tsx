@@ -48,27 +48,25 @@ export default function PublicProfilePage() {
     return (
     <div className={mixins.main}>
 
-        {/* NAVIGATE BACK BTN */}
-        <button
-            onClick={() => navigate(-1)}
-            className={mixins.backBtn}>
-            <img src="/arrow-left.svg" alt="icon of arrow pointing left" className={mixins.backBtnIcon} />
-        </button>
-
         {/* PROFILE HEADER */}
         <section className={mixins.headerContainer}>
-            <p 
-                className={mixins.username}
-                onClick={() => setView("submissions")}>
-                    {profile.user.username}
-            </p>
-
+            {/* NAVIGATE BACK BTN */}
+            <button
+                onClick={() => navigate(-1)}
+                className={profileStyle.backBtn}>
+                <img src="/arrow-left.svg" alt="icon of arrow pointing left" className={profileStyle.backBtnIcon} />
+            </button>
             <div 
-                className={profileStyle.pictureContainer}
+                className={profileStyle.profilePictureContainer}
                 onClick={() =>setView("submissions")}
             >
                 <DisplayProfilePicture src={profile.user.profilePicture?.url}/>
             </div>
+            <p 
+                className={profileStyle.username}
+                onClick={() => setView("submissions")}>
+                    {profile.user.username}
+            </p>
         </section>
 
         {/* ----- CAMERA AND THEMES DETAILS ----- */}
@@ -107,7 +105,6 @@ export default function PublicProfilePage() {
 
         {/* STATS */}
         <section className={profileStyle.profileStatsContainer}>
-
             <div 
                 className={`${profileStyle.statContainer} ${profileStyle.competitionsContainer}`}
                 onClick={() =>setView("competitions")}>
@@ -124,8 +121,6 @@ export default function PublicProfilePage() {
                 <p className={profileStyle.statTitle}>Wins</p>
                 <p className={profileStyle.statValue}>{profile.stats.wins}</p>
             </div>
-
-
         </section>
 
         {/* ---------- SUBMISSIONS ---------- */}
@@ -163,10 +158,12 @@ export default function PublicProfilePage() {
             <div className={profileStyle.ProfileCompetitions}>
                 {profile.competitions.map(
                     (competition: Competition) => (
-                        <CompetitionsCard
-                            key={competition._id}
-                            competition={competition}
-                        />
+                        <div className={profileStyle.competitionsDisplayContainer}>
+                            <CompetitionsCard
+                                key={competition._id}
+                                competition={competition}
+                            />
+                        </div>
                     )
                 )}
             </div>

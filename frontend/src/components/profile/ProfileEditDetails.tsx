@@ -48,7 +48,6 @@ const [selectedThemes, setSelectedThemes] =
       );
   
       handleSave();
-      setMessage("Profile updated!");
     } catch (err) {
       if (err instanceof Error) {
         setMessage(err.message);
@@ -67,14 +66,13 @@ const [selectedThemes, setSelectedThemes] =
   };
 
   return (
-  <section className={profileStyle.profileDetailsContainer}>
-
     <form onSubmit={handleUpdateProfileDetails}>
       <div className={profileStyle.detailsContainer}>
         <img src="/camera-detail.svg" alt="camera icon" className={profileStyle.detailsIcon}/>
 
         <input
           type="text"
+          className={profileStyle.detailsInput}
           placeholder="Which camera are you using?"
           maxLength={50}
           value={camera}
@@ -86,23 +84,32 @@ const [selectedThemes, setSelectedThemes] =
 
       <div className={profileStyle.detailsContainer}>
         <img src="/theme-detail.svg" alt="picture icon" className={profileStyle.detailsIcon}/>
-        <Select
-          options={AVAILABLE_THEMES_OBJ}
-          value={selectedThemes}
-          onChange={handleSelectThemes}
-          isMulti
-          placeholder="Select max 3 themes"
-          closeMenuOnSelect={false}
-          isOptionDisabled={() =>
-            selectedThemes.length >= 3
-          }
-        />
+        <div className={profileStyle.themeSelectWrapper}>
+          <Select
+            classNamePrefix="react-select"
+            options={AVAILABLE_THEMES_OBJ}
+            value={selectedThemes}
+            onChange={handleSelectThemes}
+            isMulti
+            placeholder="Select max 3 themes"
+            closeMenuOnSelect={false}
+            isOptionDisabled={() =>
+              selectedThemes.length >= 3
+            }
+          />
+        </div>
       </div>
 
-      <button type="submit">
-        Save profile
+      {/* SUBMIT BUTTON */}
+      <button
+          className={profileStyle.submitBtn}
+          type="submit">
+              <img src="/check.svg" alt="icon of arrow pointing left" className={profileStyle.submitBtnIcon} />
       </button>
+
+      {message && 
+        <p>{message}</p>
+      }
     </form>
-  </section>
   );
 }
