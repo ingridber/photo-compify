@@ -25,6 +25,8 @@ export interface CompetitionInterface extends Document {
     endDate: Date;
     submissions: Types.ObjectId[] | CompetitionSubmissionInterface[];
     totalVoteCount: number;
+    phase: 'submission' | 'voting' | 'ended';
+    winners: Types.ObjectId[];
 };
 
 export interface CompetitionSubmissionInterface extends Document {
