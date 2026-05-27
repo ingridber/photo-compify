@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { DisplayProfilePicture } from "../components/display-profile-picture/DisplayProfilePicture";
 import CompetitionsCard from "../components/competitions/CompetitionsCard";
-import SubmissionCard from "../components/single-competition/SubmissionCard";
 import type {Submission, Competition } from "../types/competitions";
 import type { PublicProfile } from "../types/user";
 import { Throbber } from "../components/user-feedback/Throbber";
@@ -11,7 +10,7 @@ import profileStyle from "../components/profile/profile.module.css";
 export default function PublicProfilePage() {
     const { username } = useParams();
     const navigate = useNavigate();
-
+    const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
     const [profile, setProfile] = useState<PublicProfile | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -134,6 +133,8 @@ export default function PublicProfilePage() {
                     </div>
                 </div>
 
+                <span className={profileStyle.space}>Space</span>
+
                 {/* STATS */}
                 <div className={profileStyle.statsRow}>
                     <div
@@ -145,7 +146,7 @@ export default function PublicProfilePage() {
                         </span>
 
                         <span className={profileStyle.statLabel}>
-                            Hosted
+                            Hosted comps
                         </span>
                     </div>
 
@@ -176,42 +177,87 @@ export default function PublicProfilePage() {
 
             {/* SUBMISSIONS */}
             {view === "submissions" ? (
+            <>
                 <section className={profileStyle.submissionsGrid}>
                     {profile.submissions.length > 0 ? (
-                        profile.submissions.map((submission: Submission) => (
-                            <div
-                                key={submission._id}
-                                className={profileStyle.submissionCell}
-                            >
-                                <SubmissionCard
-                                    submission={{
-                                        ...submission,
-                                        signedImageUrl:
-                                            submission.imageUrl,
+                        profile.submissions.map(
+                            (submission: Submission, i: number) => (
+                                <div
+                                    key={submission._id}
+                                    className={profileStyle.submissionCell}
+                                    style={{
+                                        animationDelay: `${i * 60}ms`,
                                     }}
-                                    indicator={
-                                        submission.indicator ?? "none"
-                                    }
-                                    onClick={() =>
-                                        navigate(
-                                            `/competitions/${
-                                                typeof submission.competition ===
-                                                "string"
-                                                    ? submission.competition
-                                                    : submission.competition._id
-                                            }`
-                                        )
-                                    }
-                                />
-                            </div>
-                        ))
+                                >
+                                    <img
+                                        src={submission.imageUrl}
+                                        onClick={() => {
+                                            if (submission.imageUrl) {
+                                                setFullscreenImage(
+                                                    submission.imageUrl
+                                                );
+                                            }
+                                        }}
+                                    />
+
+                                    <p
+                                        onClick={() =>
+                                            navigate(
+                                                `/competitions/${
+                                                    typeof submission.competition ===
+                                                    "string"
+                                                        ? submission.competition
+                                                        : submission.competition._id
+                                                }`
+                                            )
+                                        }
+                                        className={
+                                            profileStyle.submissionCompetition
+                                        }
+                                    >
+                                        {submission.competitionTitle}
+                                    </p>
+                                </div>
+                            )
+                        )
                     ) : (
                         <p className={profileStyle.emptyText}>
                             No visible submissions yet
                         </p>
                     )}
                 </section>
-            ) : (
+
+                {fullscreenImage && (
+                    <div
+                        className={profileStyle.fullscreenModal}
+                        onClick={() => setFullscreenImage(null)}
+                    >
+                        <div
+                            className={profileStyle.fullscreenContent}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <img
+                                src={fullscreenImage}
+                                className={
+                                    profileStyle.fullscreenImage
+                                }
+                            />
+
+                            <button
+                                className={
+                                    profileStyle.closeFullscreenBtn
+                                }
+                                onClick={() =>
+                                    setFullscreenImage(null)
+                                }
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </>
+        ) : (
                 <section className={profileStyle.competitionsListContainer}>
                     {profile.competitions.length > 0 ? (
                         profile.competitions.map(

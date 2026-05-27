@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { getUserSubmits } from "../../services/api";
 import { useNavigate } from "react-router";
-import SubmissionCard from "../single-competition/SubmissionCard";
+// import SubmissionCard from "../single-competition/SubmissionCard";
 import type { Submission } from "../../types/competitions";
 import profileStyle from "./profile.module.css";
 
 export default function ProfileSubmissions() {
     const [submissions, setSubmissions] = useState<Submission[]>([]);
+    const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -44,6 +45,7 @@ export default function ProfileSubmissions() {
     }, []);
 
     return (
+        <>
         <div className={profileStyle.submissionsGrid}>
             {submissions.length > 0 ? (
                 submissions.map((submission, i) => (
@@ -52,7 +54,28 @@ export default function ProfileSubmissions() {
                         className={profileStyle.submissionCell}
                         style={{ animationDelay: `${i * 60}ms` }}
                     >
-                        <SubmissionCard
+                        <img
+                            src={submission.imageUrl}
+                            onClick={() => {
+                                if (submission.imageUrl) {
+                                    setFullscreenImage(submission.imageUrl);
+                                }
+                            }}
+                        />
+                        <p 
+                            onClick={() =>
+                                navigate(
+                                    `/competitions/${
+                                        typeof submission.competition === "string"
+                                            ? submission.competition
+                                            : submission.competition._id
+                                    }`
+                                )
+                            }
+                            className={profileStyle.submissionCompetition}>
+                            {submission.competitionTitle}
+                        </p> 
+                        {/* <SubmissionCard
                             submission={{
                                 ...submission,
                                 signedImageUrl: submission.imageUrl,
@@ -67,12 +90,37 @@ export default function ProfileSubmissions() {
                                     }`
                                 )
                             }
-                        />
+                        />      */}             
                     </div>
                 ))
             ) : (
                 <p className={profileStyle.emptyText}>No submissions yet</p>
             )}
         </div>
+
+{fullscreenImage && (
+    <div
+        className={profileStyle.fullscreenModal}
+        onClick={() => setFullscreenImage(null)}
+    >
+        <div
+            className={profileStyle.fullscreenContent}
+            onClick={(e) => e.stopPropagation()}
+        >
+            <img
+                src={fullscreenImage}
+                className={profileStyle.fullscreenImage}
+            />
+
+            <button
+                className={profileStyle.closeFullscreenBtn}
+                onClick={() => setFullscreenImage(null)}
+            >
+                Close
+            </button>
+        </div>
+    </div>
+)}
+</>
     );
 }

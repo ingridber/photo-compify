@@ -10,7 +10,6 @@
 /* ---- HERO ---- */
 
 .hero {
-    /* border-bottom: 1px solid var(--border); */
     background: var(--bg);
     margin-top: var(--main-margin);
 }
@@ -60,7 +59,6 @@
     letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--text);
-    /* margin: 0 0 0.85rem; */
     padding-left: 0.2rem;
     font-weight: 400;
 }
@@ -426,15 +424,49 @@
 }
 
 .submissionCell {
+    position: relative;
     aspect-ratio: 4 / 5;
     overflow: hidden;
+    background: var(--gallery-surface);
     animation: fadeUp 0.5s ease both;
 }
 
-.submissionCell > * {
-    width: 100% !important;
-    height: 100% !important;
-    aspect-ratio: unset !important;
+.submissionCell img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 500ms ease;
+}
+
+.submissionCell:hover img {
+    transform: scale(1.03);
+}
+
+.submissionCompetition {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    padding: 0.5rem;
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: white;
+    background:
+        linear-gradient(
+            to top,
+            rgba(0,0,0,0.78),
+            rgba(0,0,0,0.42),
+            rgba(0,0,0,0)
+        );
+    backdrop-filter: blur(4px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
 }
 
 .emptyText {
@@ -451,7 +483,6 @@
 }
 
 /* ---- COMPETITIONS LIST ---- */
-
 .competitionsListContainer {
     max-width: 860px;
     margin: 0 auto;
@@ -477,4 +508,89 @@
     border-radius: 0 !important;
     background: transparent !important;
     box-shadow: none !important;
+}
+
+.fullscreenModal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0,0,0,0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    backdrop-filter: blur(8px);
+    animation: fadeUp 180ms ease;
+}
+
+.fullscreenImage {
+    max-width: 100%;
+    max-height: 75vh;
+    object-fit: contain;
+    box-shadow:
+        0 20px 80px rgba(0,0,0,0.45);
+}
+
+.fullscreenContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.closeFullscreenBtn {
+    border: none;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    color: white;
+    padding: 0.8rem 1.6rem;
+    border-radius: 999px;
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:
+        background 200ms ease,
+        transform 200ms ease;
+}
+
+.space {
+    visibility: hidden;
+}
+
+
+/* ---------- MOBILE LAYOUT ---------- */
+/* ----------------------------------- */
+@media (max-width: 600px) { 
+
+    .submissionsGrid {
+        width: 100%;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.35rem;
+    }
+    .heroInner {
+        flex-wrap: wrap;
+        align-items: center;
+        padding: 1rem 0.5rem 0 0.5rem;
+        margin-left: 1rem;
+    }
+    .heroMeta {
+        min-width: 0;
+        flex: 1;
+    }
+    .editBtn {
+        width: 50%;
+        margin: 1rem auto;
+        order: 10;
+    }
+    .submissionCompetition { 
+        padding: 0.1rem;
+        font-size: 0.62rem;
+        margin-left: 0.2rem;
+    }
+
+    .fullscreenImage {
+        max-height: 100%;
+    }
 }
