@@ -85,6 +85,7 @@ type FetchCompetitionsParams = {
     limit?: number;
     status?: "submission" | "voting" | "ended";
     search?: string;
+    themes?: string[];
 };
 
 // const BASE_URL = "http://localhost:3000/api/v1";
@@ -102,6 +103,10 @@ export async function fetchCompetitions(params?: FetchCompetitionsParams) {
 
     if (params?.search) {
         query.append("search", params.search);
+    }
+
+    if (params?.themes?.length) {
+        query.append("themes", params.themes.join(","));
     }
 
     if (params?.limit) {
