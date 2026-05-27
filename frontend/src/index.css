@@ -15,6 +15,12 @@
   --border: #5D8996;
 
 
+  /* ----- TEXT THEMES ----- */
+  --navy: #001F45;
+
+  /* ----- FILTER ICONS (toggle dark/light mode) ----- */
+  --iconToggleTheme: none;
+
   /* ----- COMP STATUS ----- */
   --ended: red;
   --submission: blue;
@@ -74,6 +80,10 @@
   
 
   --submission: lightblue;
+
+
+    /* ----- FILTER ICONS (toggle dark/light mode) ----- */
+  --iconToggleTheme: brightness(0) saturate(100%) invert(96%) sepia(7%) saturate(188%) hue-rotate(15deg) brightness(104%) contrast(90%);
 
 
 
