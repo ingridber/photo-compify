@@ -28,27 +28,24 @@ export default function ProfileCompetitions() {
         loadCompetitions();
     }, []);
 
-    if (loading) {return <Throbber/>;}
-    if (error) {return <p>{error}</p>;}
+    if (loading) { return <Throbber />; }
+    if (error) { return <p className={profileStyle.emptyText}>{error}</p>; }
 
     return (
-        <>
+        <div className={profileStyle.competitionsListContainer}>
             {competitions.length > 0 ? (
-                competitions.map(
-                    (competition) => (
-                        <div className={profileStyle.competitionsDisplayContainer}>
-                            <CompetitionsCard
-                                key={competition._id}
-                                competition={competition}
-                            />
-                        </div>
-                    )
-                )
+                competitions.map((competition, i) => (
+                    <div
+                        key={competition._id}
+                        className={profileStyle.competitionRow}
+                        style={{ animationDelay: `${i * 80}ms` }}
+                    >
+                        <CompetitionsCard competition={competition} />
+                    </div>
+                ))
             ) : (
-                <p>
-                    No competitions created
-                </p>
+                <p className={profileStyle.emptyText}>No competitions hosted yet</p>
             )}
-        </>
+        </div>
     );
 }
