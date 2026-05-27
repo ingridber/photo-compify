@@ -1,7 +1,9 @@
 import { getCompetitionFilter } from "../utils/competitions/competitionFilter";
 import { getPagination } from "../utils/competitions/pagination";
 import { buildActiveCompetitionAggregation } from "../utils/competitions/competitionAggregation";
+import { getThemeFilter } from "../utils/competitions/themeFilter";
 import { supabase } from "../config/supabase";
+
 // Generates a signed URL for an image stored in Supabase
 async function getSignedImageUrl(filename: string) {
   const { data, error } = await supabase.storage
@@ -21,6 +23,11 @@ export const buildCompetitionQuery = async (
   // Extract search query string from URL (search)
   const search = req.query.search as string | undefined;
 
+  const themes = req.query.themes as
+  | string[]
+  | string
+  | undefined;
+
   // Extract status filter (?status=submission | voting | ended)
   const status = req.query.status as
     | "submission"
@@ -37,6 +44,7 @@ export const buildCompetitionQuery = async (
   // Build base MongoDB filter depending on competition status
   const query: any = {
     ...getCompetitionFilter(status, now),
+    ...getThemeFilter(themes),
   };
 
   // SEARCH LOGIC
