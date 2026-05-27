@@ -1,12 +1,12 @@
 import { app } from "./app";
 import { connectDb } from "./config/db";
-import { initCompetitionPhases } from "./utils/competitions/initCompetitionPhases";
+import { startCompetitionScheduler } from "./utils/competitions/competitionScheduler";
 
 const PORT = process.env.PORT || 3000
 
 async function start() {
     await connectDb().then(async () => {
-        await initCompetitionPhases();
+        startCompetitionScheduler();
     });
     app.listen(PORT, () => {
         console.log(`server running on port ${PORT}`);
