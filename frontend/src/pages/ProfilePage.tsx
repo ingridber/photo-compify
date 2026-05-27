@@ -100,7 +100,7 @@ export function ProfilePage() {
                         onClick={() => navigate("/profile/competitions")}
                     >
                         <span className={profileStyle.statValue}>{stats.competitionsCreated}</span>
-                        <span className={profileStyle.statLabel}>Hosted</span>
+                        <span className={profileStyle.statLabel}>Hosted comps</span>
                     </div>
                     <div
                         className={`${profileStyle.statCell} ${profileStyle.statClickable}`}

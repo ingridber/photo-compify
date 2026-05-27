@@ -424,7 +424,6 @@ export async function getUserSubmissions(
     req: Request,
     res: Response
 ) {
-
     const userId = (req as any).user.id;
 
     try {
@@ -435,18 +434,29 @@ export async function getUserSubmissions(
         .populate("image")
         .populate({
             path: "competition",
+            select: "title endDate votingStartDate submissions",
             populate: {
                 path: "submissions"
             }
         });
 
         const formattedSubmissions =
-            await submissionsIndicator(
-                submissions
-            );
+            await submissionsIndicator(submissions);
+
+        const enrichedSubmissions =
+            formattedSubmissions.map((submission: any) => ({
+                ...submission,
+
+                competitionTitle:
+                    submission.competition &&
+                    typeof submission.competition === "object" &&
+                    "title" in submission.competition
+                        ? submission.competition.title
+                        : null
+            }));
 
         return res.status(200).json({
-            submissions: formattedSubmissions
+            submissions: enrichedSubmissions
         });
 
     } catch (err) {
@@ -537,6 +547,20 @@ export async function getPublicProfile(
                 finishedSubmissions
             );
 
+        const enrichedSubmissions =
+            formattedSubmissions.map(
+                (submission: any, index: number) => ({
+
+                    ...submission,
+
+                    competitionTitle:
+                        finishedSubmissions[index]?.competition &&
+                        typeof finishedSubmissions[index].competition === "object"
+                            ? finishedSubmissions[index].competition.title
+                            : null
+                })
+            );
+
         // ---------- GET USER COMPETITIONS ----------
         const competitions = await Competition.find({
             owner: user._id
@@ -604,7 +628,7 @@ export async function getPublicProfile(
                 themes: user.themes,
             },
 
-            submissions: formattedSubmissions,
+            submissions: enrichedSubmissions,
 
             competitions: formattedCompetitions,
 

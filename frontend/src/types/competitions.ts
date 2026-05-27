@@ -37,6 +37,7 @@ export interface Submission {
   createdAt: string;
   updatedAt: string;
   indicator? : | "voted" | "gold" | "silver" | "bronze" | "none";
+  competitionTitle: string;
 }
 
 export type Phase = "submission" | "voting" | "finished";

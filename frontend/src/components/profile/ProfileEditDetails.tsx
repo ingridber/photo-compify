@@ -78,6 +78,7 @@ export default function ProfileEditDetails({ handleSave }: EditProps) {
                         placeholder="Select themes…"
                         closeMenuOnSelect={false}
                         isOptionDisabled={() => selectedThemes.length >= 3}
+                        menuPortalTarget={document.body}
                     />
                 </div>
             </div>
