@@ -1,35 +1,34 @@
 import { Competition } from "../../models/Competition";
 import { CompetitionInterface } from "../../types";
 
-export async function checkPhaseAndUpdate(comp: CompetitionInterface) {
+type Phase = CompetitionInterface['phase'];
 
+export interface PhaseCheckResult {
+    previousPhase: Phase;
+    currentPhase: Phase;
+}
+
+export async function checkPhaseAndUpdate(comp: CompetitionInterface): Promise<PhaseCheckResult> {
     const now = new Date();
 
+    let currentPhase: Phase;
+
     if (now >= comp.votingStartDate && now < comp.endDate) {
-        try {
-            await Competition.findOneAndUpdate(
-                { _id: comp._id, phase: { $ne: 'voting' } },
-                { $set: { phase: 'voting' } }
-            )
-            return 'voting'
-        } catch (err) {
-            throw err
-        }
+        currentPhase = 'voting';
+    } else if (now >= comp.endDate) {
+        currentPhase = 'ended';
+    } else {
+        currentPhase = 'submission';
     }
 
-    if (now >= comp.endDate) {
-        try {
-            await Competition.findOneAndUpdate(
-                { _id: comp._id, phase: { $ne: 'ended' } },
-                { $set: { phase: 'ended' } }
-            )
-            return 'ended'
-        } catch (err) {
-            throw err
-        }
-    }
+    const previous = await Competition.findOneAndUpdate(
+        { _id: comp._id, phase: { $ne: currentPhase } },
+        { $set: { phase: currentPhase } },
+        { returnDocument: 'before' }
+    );
 
-    if (now < comp.votingStartDate && now < comp.endDate) {
-        return 'submission'
-    }
+    return {
+        previousPhase: previous ? previous.phase : currentPhase,
+        currentPhase
+    };
 }
