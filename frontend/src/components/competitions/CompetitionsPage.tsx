@@ -28,18 +28,13 @@ type Competition = {
 export default function CompetitionsPage() {
   const [competitions, setCompetitions] = useState<Competition[]>([]); // Stores fetched competitions
   const inputRef = useRef<HTMLInputElement>(null); // Ref for focusing search input field
-
   const [page, setPage] = useState(1); // Current pagination page
   const [totalPages, setTotalPages] = useState(1); // Total number of pages
-
   const [selectedThemes, setSelectedThemes] = useState<string[]>([]); // Stores selected theme filters
-  const [showThemeDropdown, setShowThemeDropdown] = useState(false); // Controls visibility of theme filter dropdown
-
   const [view, setView] = useState<"submission" | "voting" | "ended">("submission"); // Current competition status view filter
   const [searchParams] = useSearchParams(); // Reads URL search parameters
-
   const [search, setSearch] = useState(searchParams.get("search") || ""); // Search input state
-  const [showSearch, setShowSearch] = useState(!!searchParams.get("search")); // Controls visibility of search bar
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => { // Fetch competitions whenever dependencies change
     async function load() {
@@ -49,6 +44,7 @@ export default function CompetitionsPage() {
           limit: 5,
           status: view,
           search,
+          themes: selectedThemes,
         });
 
         setCompetitions(result.competitions); // Store fetched competitions
@@ -59,13 +55,13 @@ export default function CompetitionsPage() {
     }
 
     load();
-  }, [page, view, search]); // Re-run when page, view, or search changes
+  }, [page, view, search, selectedThemes]); // Re-run when page, view, or search changes
 
   useEffect(() => { // Auto-focus search input when search is opened
-    if (showSearch) {
+    if (showFilters) {
       inputRef.current?.focus();
     }
-  }, [showSearch]);
+  }, [showFilters]);
 
   const toggleTheme = (theme: string) => { // Toggle theme selection in filter
     setSelectedThemes((prev) =>
@@ -76,12 +72,7 @@ export default function CompetitionsPage() {
     setPage(1); // Reset to first page when filter changes
   };
 
-  const filteredCompetitions =
-    selectedThemes.length === 0
-      ? competitions // If no themes selected, show all competitions
-      : competitions.filter((comp) =>
-          selectedThemes.some((theme) => comp.themes.includes(theme)) // Filter by selected themes
-        );
+  
 
   return (
     <div className={`${styles.competitionsPage} ${mixins.main}`}>
@@ -94,8 +85,6 @@ export default function CompetitionsPage() {
           onClick={() => {
             setView("submission");
             setPage(1);
-            setShowSearch(false);
-            setSearch("");
           }}
         >
           Submission
@@ -106,8 +95,6 @@ export default function CompetitionsPage() {
           onClick={() => {
             setView("voting");
             setPage(1);
-            setShowSearch(false);
-            setSearch("");
           }}
         >
           Voting
@@ -118,18 +105,15 @@ export default function CompetitionsPage() {
           onClick={() => {
             setView("ended");
             setPage(1);
-            setShowSearch(false);
-            setSearch("");
           }}
         >
           Ended
         </button>
 
         <button
-          className={showSearch ? styles.active : ""}
+          className={showFilters ? styles.active : ""}
           onClick={() => {
-            setShowSearch((prev) => !prev);
-            setShowThemeDropdown((prev) => !prev);
+            setShowFilters((prev) => !prev);
           }}
         >
           Search
@@ -137,7 +121,7 @@ export default function CompetitionsPage() {
       </div>
 
       {/* THEME DROPDOWN */}
-      {showThemeDropdown && (
+      {showFilters && (
         <div className={styles.filterContainer}>
           <div className={styles.themeList}>
             {AVAILABLE_THEMES.map((theme) => {
@@ -161,7 +145,7 @@ export default function CompetitionsPage() {
       )}
 
       {/* SEARCH INPUT */}
-      {showSearch && (
+      {showFilters && (
         <div className={styles.searchFieldContainer}>
           <div
             className={`${mixins.inputFieldContainer} ${styles.inputFieldContainer}`}
@@ -195,7 +179,7 @@ export default function CompetitionsPage() {
       {competitions.length === 0 ? (
         <p className={styles.noContent}>No competitions found</p>
       ) : (
-        filteredCompetitions.map((comp) => (
+        competitions.map((comp) => (
           <CompetitionsCard key={comp._id} competition={comp} />
         ))
       )}
