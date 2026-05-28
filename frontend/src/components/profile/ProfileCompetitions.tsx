@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { getUserComps } from "../../services/api";
-import CompetitionsCard from "../competitions/CompetitionsCard";
+import CompetitionsProfileCard from "../competitions/CompetitionsProfileCard";
 import { Throbber } from "../user-feedback/Throbber";
 import type { Competition } from "../../types/competitions";
 import profileStyle from "./profile.module.css";
+import { getCompetitionPhase } from "../../utils/competitions";
 
 export default function ProfileCompetitions() {
     const [competitions, setCompetitions] = useState<Competition[]>([]);
@@ -32,20 +33,31 @@ export default function ProfileCompetitions() {
     if (error) { return <p className={profileStyle.emptyText}>{error}</p>; }
 
     return (
-        <div className={profileStyle.competitionsListContainer}>
-            {competitions.length > 0 ? (
-                competitions.map((competition, i) => (
+    <div className={profileStyle.competitionsGrid}>
+        {competitions.length > 0 ? (
+            [...competitions]
+                .sort((a, b) => {
+                    const phaseOrder = {
+                        voting: 0,
+                        submission: 1,
+                        ended: 2,
+                    };
+
+                    const phaseA = getCompetitionPhase(a);
+                    const phaseB = getCompetitionPhase(b);
+
+                    return phaseOrder[phaseA] - phaseOrder[phaseB];
+                })
+                .map((competition, i) => (
                     <div
                         key={competition._id}
-                        className={profileStyle.competitionRow}
-                        style={{ animationDelay: `${i * 80}ms` }}
-                    >
-                        <CompetitionsCard competition={competition} />
+                        style={{ animationDelay: `${i * 80}ms` }}>
+                        <CompetitionsProfileCard competition={competition} />
                     </div>
                 ))
-            ) : (
-                <p className={profileStyle.emptyText}>No competitions hosted yet</p>
-            )}
-        </div>
+        ) : (
+            <p className={profileStyle.emptyText}>No competitions hosted yet</p>
+        )}
+    </div>
     );
 }
