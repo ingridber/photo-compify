@@ -151,14 +151,16 @@ export default function PublicProfilePage() {
                                 >
                                     {submission.competitionTitle}
                                 </p>
-                                <div className={profileStyle.placementContainer}>
-                                    <img src="/medal.svg" alt="medal" className={profileStyle.medalIcon}/>
-                                    <span>
-                                        {submission.indicator === "gold" ? "1"
-                                        : submission.indicator === "silver" ? "2"
-                                        : "3"}
-                                    </span>
-                                </div>
+                                { view === 'submissions' &&
+                                    <div className={profileStyle.placementContainer}>
+                                        <img src="/medal.svg" alt="medal" className={profileStyle.medalIcon}/>
+                                        <span>
+                                            {submission.indicator === "gold" ? "1"
+                                            : submission.indicator === "silver" ? "2"
+                                            : "3"}
+                                        </span>
+                                    </div>
+                                }
                             </div>
                         </div>
                     ))
