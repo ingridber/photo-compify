@@ -90,22 +90,24 @@ export default function ProfileSubmissions({showOnlyWins = false}: Props) {
                     {typeof submission.competition !== "string" && (() => {
                         const phase = getCompetitionPhase(submission.competition);
                         return (
-                            <div className={profileStyle.placementContainer}>
-                                <img
-                                    src={ 
-                                        phase === "ended" ? "public/medal.svg"
-                                        : phase === "submission" ? "public/submit-edit.svg"
-                                        : "public/hourglass.svg"}
-                                    className={profileStyle.placementIcon}
-                                />
-                                <span>
-                                    {phase === "ended" ? 
-                                        submission.indicator === "gold" ? "1"
-                                        : submission.indicator === "silver" ? "2"
-                                        : "3"
-                                    : phase === "submission" ? "edit" : "vote"}
-                                </span>
-                            </div>
+                            !showOnlyWins && (
+                                <div className={profileStyle.placementContainer}>
+                                    <img
+                                        src={ 
+                                            phase === "ended" ? "/medal.svg"
+                                            : phase === "submission" ? "/submit-edit.svg"
+                                            : "/hourglass.svg"}
+                                        className={profileStyle.placementIcon}
+                                    />
+                                    <span>
+                                        {phase === "ended" ? 
+                                            submission.indicator === "gold" ? "1"
+                                            : submission.indicator === "silver" ? "2"
+                                            : "3"
+                                        : phase === "submission" ? "edit" : "vote"}
+                                    </span>
+                                </div>
+                            )
                         );
                     })()}
 
