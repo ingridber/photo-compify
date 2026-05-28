@@ -1,145 +1,105 @@
 import './App.css';
 import { Routes, Route } from 'react-router';
+import { useEffect } from 'react';
+import type { ComponentType } from 'react';
+
+import Header from './header/Header';
+import { NavBar } from './components/nav-bar/NavBar';
+import { ProtectedRoute } from './components/ProtectedRoute';
+
+import { useUser } from './hooks/useUser';
+import { getCurrentUser } from './services/api';
+
+// Pages
 import { Home } from './pages/Home';
 import { SignIn } from './pages/SignIn';
 import Register from './pages/Register';
 import CompetitionsPage from './components/competitions/CompetitionsPage';
-import ImageUpload from "./pages/ImageUpload";
+import CompetitionPage from './pages/CompetitionPage';
+import SubmitToCompetition from './pages/SubmitToCompetitionPage';
+import CreateCompetitionPage from './pages/CreateCompetitionPage';
+import ImageUpload from './pages/ImageUpload';
 import { ManageAccount } from './pages/ManageAccount';
+import { ProfilePage } from './pages/ProfilePage';
+import PublicProfilePage from './pages/PublicProfilePage';
+import { DeleteAccount } from './pages/DeleteAccount';
+
+// Components
 import { ChangeUsername } from './components/manage-account/ChangeUsername';
 import { ChangePassword } from './components/manage-account/ChangePassword';
 import { ChangeProfilePicture } from './components/manage-account/ChangeProfilePicture';
-import { ProtectedRoute } from './components/ProtectedRoute';
-import { useEffect } from 'react';
-import { useUser } from './hooks/useUser';
-import { getCurrentUser } from './services/api';
-import CreateCompetitionPage from './pages/CreateCompetitionPage'
-import CompetitionPage from './pages/CompetitionPage';
-import SubmitToCompetition from './pages/SubmitToCompetitionPage';
-import { SignOut } from './components/SignOut';
-import { DeleteAccount } from './pages/DeleteAccount';
-import { NavBar } from './components/nav-bar/NavBar';
-import Header from './header/Header';
-import { ProfilePage } from './pages/ProfilePage';
 import ProfileSubmissions from './components/profile/ProfileSubmissions';
 import ProfileCompetitions from './components/profile/ProfileCompetitions';
-import PublicProfilePage from './pages/PublicProfilePage';
+import { SignOut } from './components/SignOut';
 
+const protectedElement = (Component: ComponentType) => (
+  <ProtectedRoute>
+    <Component />
+  </ProtectedRoute>
+);
 
 function App() {
-
-  const{setUser, setLoading} = useUser();
+  const { setUser, setLoading } = useUser();
 
   useEffect(() => {
-    async function fetchUser() {
-
+    (async () => {
       try {
         setLoading(true);
-
         const res = await getCurrentUser();
-
-        if (res) {
-          setUser(res.data);
-        }
+        if (res) setUser(res.data);
       } finally {
         setLoading(false);
       }
-    }
-
-    fetchUser();
+    })();
   }, []);
 
   return (
     <>
-    <Header />
+      <Header />
+
       <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<SignIn />} />
+        <Route path="/logout" element={<SignOut />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/delete-account" element={<DeleteAccount />} />
 
-        <Route path="/" element={<Home/>}/>
-        <Route path="/login" element={<SignIn/>}/>
-        <Route path="/logout" element={<SignOut/>}/>
-        <Route path={"/delete-account"} element={<DeleteAccount/>}/>
-        <Route path="/register" element={<Register />}/>
-        <Route path='/competitions' element={<CompetitionsPage />}/> 
-        <Route path='/competitions/:id' element={<CompetitionPage />}/>
+        <Route path="/competitions" element={<CompetitionsPage />} />
+        <Route path="/competitions/:id" element={<CompetitionPage />} />
+        <Route
+          path="/competitions/:id/submit"
+          element={protectedElement(SubmitToCompetition)}
+        />
+
+        <Route
+          path="/create-competition"
+          element={protectedElement(CreateCompetitionPage)}
+        />
+
         <Route path="/image-upload" element={<ImageUpload />} />
-        <Route path='/competitions/:id/submit' element={
-          <ProtectedRoute>
-            <SubmitToCompetition />
-          </ProtectedRoute>
-        } />
 
-        <Route 
-          path='/create-competition' 
-          element={ 
-            <ProtectedRoute>
-              <CreateCompetitionPage />
-            </ProtectedRoute>
-            }>
+        {/* Manage account */}
+        <Route path="/manage-account">
+          <Route index element={protectedElement(ManageAccount)} />
+          <Route path="change-username" element={protectedElement(ChangeUsername)} />
+          <Route path="change-password" element={protectedElement(ChangePassword)} />
+          <Route path="change-picture" element={protectedElement(ChangeProfilePicture)} />
         </Route>
 
+        {/* Profile */}
+        <Route path="/profile" element={protectedElement(ProfilePage)}>
+          <Route index element={<ProfileSubmissions />} />
+          <Route path="competitions" element={<ProfileCompetitions />} />
+          <Route path="wins" element={<ProfileSubmissions showOnlyWins />} />
+        </Route>
 
-        {/* ----- MANAGE ACCOUNT ----- */}
-        <Route path="/manage-account">
-          <Route index element={
-            <ProtectedRoute>
-              <ManageAccount/>
-            </ProtectedRoute>} />
-          <Route path="change-username" element={
-            <ProtectedRoute>
-              <ChangeUsername/>
-            </ProtectedRoute>} />
-          <Route path="change-password" element={
-            <ProtectedRoute>
-              <ChangePassword/>
-            </ProtectedRoute>} />
-          <Route path="change-picture" element={
-            <ProtectedRoute>
-              <ChangeProfilePicture/>
-            </ProtectedRoute>} />
-          </Route>
-
-
-          {/* ----- PROFILE ----- */}
-
-          <Route
-              path="/profile"
-              element={
-                  <ProtectedRoute>
-                      <ProfilePage />
-                  </ProtectedRoute>
-              }
-          >
-
-              {/* DEFAULT */}
-              <Route
-                  index
-                  element={<ProfileSubmissions />}
-              />
-
-              {/* COMPETITIONS */}
-              
-              <Route
-                  path="competitions"
-                  element={<ProfileCompetitions />}
-              />
-             
-
-          </Route>
-
-
-        {/* ----- USERS ----- */}
+        {/* Public users */}
         <Route path="/users/:username" element={<PublicProfilePage />} />
+      </Routes>
 
-
-
-        </Routes>
-
-
-
-
-        <NavBar/>
+      <NavBar />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

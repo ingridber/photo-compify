@@ -23,7 +23,7 @@ export interface Submission {
   _id: string;
   competition: 
     | string 
-    | {_id: string; title?: string};
+    | Competition;
   user: 
     | string 
     | {_id: string; username: string;};

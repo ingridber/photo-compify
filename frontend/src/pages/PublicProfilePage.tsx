@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { DisplayProfilePicture } from "../components/display-profile-picture/DisplayProfilePicture";
-import CompetitionsCard from "../components/competitions/CompetitionsCard";
-import type {Submission, Competition } from "../types/competitions";
+import CompetitionsProfileCard from "../components/competitions/CompetitionsProfileCard";
+import type { Submission, Competition } from "../types/competitions";
 import type { PublicProfile } from "../types/user";
 import { Throbber } from "../components/user-feedback/Throbber";
 import profileStyle from "../components/profile/profile.module.css";
+import { getCompetitionPhase } from "../utils/competitions";
 
 export default function PublicProfilePage() {
     const { username } = useParams();
@@ -14,17 +15,12 @@ export default function PublicProfilePage() {
     const [profile, setProfile] = useState<PublicProfile | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-
-    const [view, setView] = useState<"submissions" | "competitions">(
-        "submissions"
-    );
+    const [view, setView] = useState<"submissions" | "competitions" | "wins">("submissions");
 
     useEffect(() => {
         async function loadProfile() {
             try {
-                const res = await fetch(
-                    `http://localhost:3000/api/v1/user/${username}`
-                );
+                const res = await fetch(`http://localhost:3000/api/v1/user/${username}`);
 
                 if (!res.ok) {
                     throw new Error("Failed to fetch profile");
@@ -51,234 +47,166 @@ export default function PublicProfilePage() {
     if (!profile) return <p>User not found</p>;
 
     return (
-        <>
-            {/* HERO */}
-            <header className={profileStyle.hero}>
-                <div className={profileStyle.heroInner}>
-                    {/* BACK BUTTON */}
-                    {/* <button
-                        onClick={() => navigate(-1)}
-                        className={profileStyle.backBtn}
-                    >
-                        <img
-                            src="/arrow-left.svg"
-                            alt="back"
-                            className={profileStyle.backBtnIcon}
-                        />
-                        Back
-                    </button> */}
+    <>
+    {/* HEADER ----- Profile pic, username, preferred themes & camera, stats */}
+    <header className={profileStyle.hero}>
+        {/* ----- Profile pic ----- */}
+        <div className={profileStyle.heroInner}>
+            <div
+                className={profileStyle.avatarRing}
+                onClick={() => setView("submissions")}
+            >
+                <div className={profileStyle.avatar}>
+                    <DisplayProfilePicture src={profile.user.profilePicture?.url}/>
+                </div>
+            </div>
 
-                    {/* AVATAR */}
-                    <div
-                        className={profileStyle.avatarRing}
-                        onClick={() => setView("submissions")}
-                    >
-                        <div className={profileStyle.avatar}>
-                            <DisplayProfilePicture src={profile.user.profilePicture?.url}/>
-                        </div>
-                    </div>
+            <div className={profileStyle.heroMeta}>
+                {/* ----- username ----- */}
+                <p className={profileStyle.heroEyebrow}>Photographer</p>
+                <h1 className={profileStyle.heroName} onClick={() => setView("submissions")}>{profile.user.username}</h1>
 
-                    {/* META */}
-                    <div className={profileStyle.heroMeta}>
-                        <p className={profileStyle.heroEyebrow}>
-                            Photographer
-                        </p>
+                {/* ----- themes & camera ----- */}
+                <div className={profileStyle.themePills}>
+                    {profile.user.themes && profile.user.themes.length > 0 ? (
+                        profile.user.themes.map((theme) => {
+                            const safeTheme = theme ?? "Default";
+                            const themeClass = `${safeTheme.replace(/\s+/g, "").replace(/&/g, "")}Color`;
 
-                        <h1
-                            className={profileStyle.heroName}
-                            onClick={() => setView("submissions")}
-                        >
-                            {profile.user.username}
-                        </h1>
-
-                        {/* THEMES */}
-                        <div className={profileStyle.themePills}>
-                            {profile.user.themes &&
-                            profile.user.themes.length > 0 ? (
-                                profile.user.themes.map((theme) => {
-                                    const safeTheme = theme ?? "Default";
-
-                                    const themeClass = `${safeTheme
-                                        .replace(/\s+/g, "")
-                                        .replace(/&/g, "")}Color`;
-
-                                    return (
-                                        <span
-                                            key={safeTheme}
-                                            className={`${profileStyle.pill} ${profileStyle[themeClass]}`}
-                                        >
-                                            {safeTheme}
-                                        </span>
-                                    );
-                                })
-                            ) : (
-                                <span className={profileStyle.heroMuted}>
-                                    No themes specified
+                            return (
+                                <span key={safeTheme} className={`${profileStyle.pill} ${themeClass}`}>
+                                    {safeTheme}
                                 </span>
-                            )}
-                        </div>
+                            );
+                        })
+                    ) : (
+                        <span className={profileStyle.heroMuted}>No themes specified</span>
+                    )}
+                </div>
+                <p className={profileStyle.cameraLine}>
+                    <img src="/camera-detail.svg" alt="camera" className={profileStyle.cameraIcon}/>
+                    {profile.user.camera ? profile.user.camera : "Camera not specified"}
+                </p>
+            </div>
+        </div>
 
-                        {/* CAMERA */}
-                        <p className={profileStyle.cameraLine}>
+        {/* ----- stats ----- */}
+        <div className={profileStyle.statsRow}>
+            {/* ----- hosted ----- */}
+            <div className={`${profileStyle.statCell} ${profileStyle.statClickable}`} onClick={() => setView("competitions")}>
+                <span className={profileStyle.statValue}>{profile.stats.competitionsCreated}</span>
+                <span className={profileStyle.statLabel}>Hosted comps</span>
+            </div>
+            {/* ----- submitted ----- */}
+
+            <div className={`${profileStyle.statCell} ${profileStyle.statClickable}`} onClick={() => setView("submissions")}>
+                <span className={profileStyle.statValue}>{profile.stats.submissions}</span>
+                <span className={profileStyle.statLabel}>Submitted</span>
+            </div>
+            {/* ----- wins ----- */}
+            <div className={`${profileStyle.statCell} ${profileStyle.statClickable}`} onClick={() => setView("wins")}>
+                <span className={profileStyle.statValue}>{profile.stats.wins}</span>
+                <span className={profileStyle.statLabel}>Wins</span>
+            </div>
+        </div>
+    </header>
+
+    {/* ----- VIEWS ----- */}
+    {/* submissions & wins */}
+    {view === "submissions" || view === "wins" ? (
+        <>
+        <section className={profileStyle.submissionsGrid}>
+
+            {profile.submissions.filter((submission) =>
+                view === "wins"
+                    ? submission.indicator === "gold"
+                    : true
+            ).length > 0 ? (
+                profile.submissions
+                    .reverse()
+                    .filter((submission) =>
+                        view === "wins"
+                            ? submission.indicator === "gold"
+                            : true
+                    )
+                    .map((submission: Submission, i: number) => (
+                        <div key={submission._id} className={profileStyle.submissionCell} style={{animationDelay: `${i * 60}ms`,}}>
+                            {/* ----- submission pic ----- */}
                             <img
-                                src="/camera-detail.svg"
-                                alt="camera"
-                                className={profileStyle.cameraIcon}
+                                className={profileStyle.submissionImg}
+                                src={submission.imageUrl}
+                                onClick={() => {
+                                    if (submission.imageUrl) {
+                                        setFullscreenImage(submission.imageUrl);
+                                    }
+                                }}
                             />
 
-                            {profile.user.camera
-                                ? profile.user.camera
-                                : "Camera not specified"}
-                        </p>
-                    </div>
-                </div>
-
-                <span className={profileStyle.space}>Space</span>
-
-                {/* STATS */}
-                <div className={profileStyle.statsRow}>
-                    <div
-                        className={`${profileStyle.statCell} ${profileStyle.statClickable}`}
-                        onClick={() => setView("competitions")}
-                    >
-                        <span className={profileStyle.statValue}>
-                            {profile.stats.competitionsCreated}
-                        </span>
-
-                        <span className={profileStyle.statLabel}>
-                            Hosted comps
-                        </span>
-                    </div>
-
-                    <div
-                        className={`${profileStyle.statCell} ${profileStyle.statClickable}`}
-                        onClick={() => setView("submissions")}
-                    >
-                        <span className={profileStyle.statValue}>
-                            {profile.stats.submissions}
-                        </span>
-
-                        <span className={profileStyle.statLabel}>
-                            Submitted
-                        </span>
-                    </div>
-
-                    <div className={profileStyle.statCell}>
-                        <span className={profileStyle.statValue}>
-                            {profile.stats.wins}
-                        </span>
-
-                        <span className={profileStyle.statLabel}>
-                            Wins
-                        </span>
-                    </div>
-                </div>
-            </header>
-
-            {/* SUBMISSIONS */}
-            {view === "submissions" ? (
-            <>
-                <section className={profileStyle.submissionsGrid}>
-                    {profile.submissions.length > 0 ? (
-                        profile.submissions.map(
-                            (submission: Submission, i: number) => (
-                                <div
-                                    key={submission._id}
-                                    className={profileStyle.submissionCell}
-                                    style={{
-                                        animationDelay: `${i * 60}ms`,
-                                    }}
+                            {/* ----- comp title & placement----- */}
+                            <div className={profileStyle.submissionFooter}>
+                                <p className={profileStyle.competitionTitle}
+                                    onClick={() => navigate(`/competitions/${typeof submission.competition === "string"
+                                        ? submission.competition
+                                        : submission.competition._id}`)}
                                 >
-                                    <img
-                                        src={submission.imageUrl}
-                                        onClick={() => {
-                                            if (submission.imageUrl) {
-                                                setFullscreenImage(
-                                                    submission.imageUrl
-                                                );
-                                            }
-                                        }}
-                                    />
-
-                                    <p
-                                        onClick={() =>
-                                            navigate(
-                                                `/competitions/${
-                                                    typeof submission.competition ===
-                                                    "string"
-                                                        ? submission.competition
-                                                        : submission.competition._id
-                                                }`
-                                            )
-                                        }
-                                        className={
-                                            profileStyle.submissionCompetition
-                                        }
-                                    >
-                                        {submission.competitionTitle}
-                                    </p>
-                                </div>
-                            )
-                        )
-                    ) : (
-                        <p className={profileStyle.emptyText}>
-                            No visible submissions yet
-                        </p>
-                    )}
-                </section>
-
-                {fullscreenImage && (
-                    <div
-                        className={profileStyle.fullscreenModal}
-                        onClick={() => setFullscreenImage(null)}
-                    >
-                        <div
-                            className={profileStyle.fullscreenContent}
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <img
-                                src={fullscreenImage}
-                                className={
-                                    profileStyle.fullscreenImage
+                                    {submission.competitionTitle}
+                                </p>
+                                { view === 'submissions' &&
+                                    <div className={profileStyle.placementContainer}>
+                                        <img src="/medal.svg" alt="medal" className={profileStyle.medalIcon}/>
+                                        <span>
+                                            {submission.indicator === "gold" ? "1"
+                                            : submission.indicator === "silver" ? "2"
+                                            : "3"}
+                                        </span>
+                                    </div>
                                 }
-                            />
-
-                            <button
-                                className={
-                                    profileStyle.closeFullscreenBtn
-                                }
-                                onClick={() =>
-                                    setFullscreenImage(null)
-                                }
-                            >
-                                Close
-                            </button>
+                            </div>
                         </div>
-                    </div>
-                )}
-            </>
-        ) : (
-                <section className={profileStyle.competitionsListContainer}>
-                    {profile.competitions.length > 0 ? (
-                        profile.competitions.map(
-                            (competition: Competition) => (
-                                <div
-                                    key={competition._id}
-                                    className={profileStyle.competitionRow}
-                                >
-                                    <CompetitionsCard
-                                        competition={competition}
-                                    />
-                                </div>
-                            )
-                        )
-                    ) : (
-                        <p className={profileStyle.emptyText}>
-                            No competitions created yet
-                        </p>
-                    )}
-                </section>
+                    ))
+            ) : (
+                <p className={profileStyle.emptyText}>{view === "wins" ? "No wins yet" : "No visible submissions yet"}</p>
             )}
+        </section>
+
+        {/* ----- SUBMISSION FULLSCREEN VIEW MODAL OVERLAY ----- */}
+        {fullscreenImage && (
+            <div className={profileStyle.fullscreenModal} onClick={() => setFullscreenImage(null)} >
+                <div className={profileStyle.fullscreenContent} onClick={(e) => e.stopPropagation()} >
+                    <img src={fullscreenImage} className={profileStyle.fullscreenImage}/>
+                    <button className={profileStyle.closeFullscreenBtn} onClick={() => setFullscreenImage(null)}>
+                        Close
+                    </button>
+                </div>
+            </div>
+        )}
         </>
+    ) : (
+    // ----- VIEW -----
+    // competitions
+        <section className={profileStyle.competitionsGrid}>
+            {profile.competitions.length > 0 ? (
+                [...profile.competitions]
+                    .sort((a, b) => {
+                        const phaseOrder = {
+                            voting: 0,
+                            submission: 1,
+                            ended: 2,
+                        };
+
+                        const phaseA = getCompetitionPhase(a);
+                        const phaseB = getCompetitionPhase(b);
+
+                        return phaseOrder[phaseA] - phaseOrder[phaseB];
+                    })
+                .map((competition: Competition) => (
+                    <CompetitionsProfileCard key={competition._id} competition={competition}/>
+                ))
+            ) : (
+                <p className={profileStyle.emptyText}>No competitions created yet</p>
+            )}
+        </section>
+    )}
+    </>
     );
 }

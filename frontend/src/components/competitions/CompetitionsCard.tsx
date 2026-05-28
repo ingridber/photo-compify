@@ -1,29 +1,12 @@
 import styles from "./competitions-card.module.css";
 import { useNavigate } from "react-router";
 import type { Competition } from "../../types/competitions";
-
+import { getCompetitionPhase } from "../../utils/competitions";
 
 // Props for component
 type Props = {
   competition: Competition;
 };
-
-// Function for what phase the competition is in "submission" | "voting" | "ended"
-function getCompetitionPhase(
-  comp: Competition,
-): "submission" | "voting" | "ended" {
-  const now = new Date();
-  const votingStart = new Date(comp.votingStartDate);
-  const end = new Date(comp.endDate);
-
-  // If competition already has ended
-  if (now >= end) return "ended";
-
-  // If voting has started but not closed
-  if (now >= votingStart) return "voting";
-
-  return "submission";
-}
 
 export default function CompetitionsCard({ competition }: Props) {
   const phase = getCompetitionPhase(competition);
@@ -34,110 +17,74 @@ export default function CompetitionsCard({ competition }: Props) {
   }
 
   return (
-    // ----- CARD CONTAINER -----
-    <div onClick={() => handleClick()}
-        className={styles.cardContainer}>
+  <div onClick={() => handleClick()} className={styles.cardContainer}>
 
-      {/* ----- CARD HEADER: Logo & Themes----- */}
-      <div className={styles.cardHeader}>
+    {/* CARD HEADER ----- background image, phase, competition title */}
+    <div 
+      className={`${styles.cardHeader} ${competition.signedLogoUrl ? styles.cardLogo : styles.cardNoLogo}`}
+      style={competition.signedLogoUrl
+        ? {backgroundImage: 
+          `linear-gradient(
+                to top,
+                rgba(0,0,0,0.82),
+                rgba(0,0,0,0.45),
+                rgba(0,0,0,0.18)
+              ),
+              url(${competition.signedLogoUrl})`}
+        : undefined}>
 
-        {/* LOGO */}
-        <div
-          className={`
-            ${styles.logoContainer}
-            ${
-              phase === "ended"
-                ? styles.endedColor
-                : phase === "submission"
-                ? styles.submissionColor
-                : styles.voteColor
-            }
-          `}
-        >
-          {competition.logoBanner ? (
-            // LOGO PIC
-            <img
-              src={competition.signedLogoUrl}
-              alt={`${competition.title} logo`}
-              className={styles.logoPic}/>
-          ) : (
-            // NO LOGO TEXT
-            <img
-              src="/competitions.svg"
-              alt={`Competition icon`}
-              className={styles.noLogo}/>
-          )}
-        </div>
-
-        {/* THEMES */}
-       <div className={styles.themesContainer}>
-        {(competition.themes ?? []).map((theme) => {
-          
-          const safeTheme = theme ?? "Default";
-          const themeClass = `${safeTheme
-            .replace(/\s+/g, "")
-            .replace(/&/g, "")}Color`;
-
-          return (
-            <span
-              className={`${styles.theme} ${styles[themeClass]}`}
-              key={safeTheme}
-            >
-              {safeTheme}
-            </span>
-          );
-        })}
-      </div>
+      <div
+        className={styles.phasePill}
+        style={{backgroundColor:
+          phase === "voting"
+          ? "rgba(0, 128, 0, 0.5)"
+          : phase === "submission"
+          ? "rgba(0, 0, 255, 0.5)"
+          : "rgba(255, 0, 0, 0.5)",
+        }}>
+          {phase}
       </div>
 
+      <div className={styles.heroContent}>
+        <p className={styles.heroEyebrow}>Photography Competition</p>
+        <h2 className={styles.heroTitle}>{competition.title}</h2>
+      </div>  
+    </div>
 
-      {/* ----- CARD MAIN: Title & description ----- */}
-      <div className={styles.cardMain}>
-        
-        {/* TITLE & DESSCRIPTION */}
-        <div className={styles.titleDescriptionContainer}>
-          {/* COMPETITION TITLE  */}
-          <h2 className={styles.title}>{competition.title}</h2>
-          {/* COMPETITION DESCRIPTION  */}
-          <p className={styles.description}>{competition.description}</p>
-        </div>
+    {/* CARD MAIN ----- themes, description */}
+    <div className={styles.cardMain}>
+      <div className={styles.themesContainer}>
+          {(competition.themes ?? []).map((theme) => {
+
+            const safeTheme = theme ?? "Default";
+            const themeClass =`${safeTheme.replace(/\s+/g, "").replace(/&/g, "")}Color`;
+
+            return (
+              <span key={safeTheme} className={`${styles.theme} ${themeClass}`}>
+                {safeTheme}
+              </span>
+            );
+          })}
       </div>
 
-      {/* ----- CARD FOOTER: Status, End, Creator, Participants ----- */}
-        <div className={styles.cardFooter}>
-          <div>
-            <p className={styles.specsTitle}>Status</p>
-            {/* <p className={styles.phase}
-            style={{
-            color: phase === "ended" ? "red" : phase === "submission" ? "blue" : "green"}}> */}
-            <p
-              className={`
-                ${styles.phase}
-                ${
-                  phase === "ended"
-                    ? styles.endedColor
-                    : phase === "submission"
-                    ? styles.submissionColor
-                    : styles.voteColor
-                }
-              `}
-            >
-            {phase}
-            </p>
-          </div>
-          <div className={styles.hideEnd}>
-            <p className={styles.specsTitle}>Ends on</p>
-            <p className={styles.endDate}>{new Date(competition.endDate).toLocaleDateString()}</p>
-          </div>
-          <div className={styles.hideOwner}>
-            <p className={styles.specsTitle}>Created by</p>
-            <p className={styles.owner}>{competition.owner?.username}</p>
-          </div>
-          <div>
-            <p className={styles.specsTitle}>Participants</p>
-            <p className={styles.participants}>{competition.submissions.length}</p>
-          </div>
-        </div>
+      <p className={styles.description}>{competition.description}</p>
+    </div>
+    
+    {/* CARD FOOTER ----- Owner, Participants, End Date ----- */}
+    <div className={styles.cardFooter}>
+      <div className={styles.hideOwner}>
+        <p className={styles.specsTitle}>Hosted by</p>
+        <p className={styles.owner}>{competition.owner?.username}</p>
+      </div>  
+      <div>
+        <p className={styles.specsTitle}>Participants</p>
+        <p className={styles.participants}>{competition.submissions.length}</p>
       </div>
+      <div className={styles.hideEnd}>
+        <p className={`${styles.specsTitle} ${styles.endsOn}`}>{phase === "ended" ? 'Ended on' : 'Ends on'}</p>
+        <p className={styles.endDate}>{new Date(competition.endDate).toLocaleDateString()}</p>
+      </div>
+    </div>
+  </div>
   );
 }

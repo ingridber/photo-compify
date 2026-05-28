@@ -1,19 +1,23 @@
 import { useState, useEffect } from "react";
 import { getUserSubmits } from "../../services/api";
 import { useNavigate } from "react-router";
-// import SubmissionCard from "../single-competition/SubmissionCard";
 import type { Submission } from "../../types/competitions";
 import profileStyle from "./profile.module.css";
+import { getCompetitionPhase } from "../../utils/competitions";
 
-export default function ProfileSubmissions() {
+type Props = {
+    showOnlyWins?: boolean;
+};
+
+export default function ProfileSubmissions({showOnlyWins = false}: Props) {
     const [submissions, setSubmissions] = useState<Submission[]>([]);
     const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
     const navigate = useNavigate();
 
     useEffect(() => {
         async function loadSubmissions() {
+            // DET HÄR GÖR ATT NYA SUBMISSIONS INTE DYKER UPP I FLÖDET I PROFILEN DIREKT, SKA FUNDERA PÅ LÖSNING 
             try {
-                // ---------- CHECK CACHE ----------
                 const cached = sessionStorage.getItem("profile-submissions");
 
                 if (cached) {
@@ -21,21 +25,20 @@ export default function ProfileSubmissions() {
                     const now = Date.now();
                     const oneHour = 1000 * 60 * 60;
 
-                    // ---------- CACHE STILL VALID ----------
                     if (now - parsed.timestamp < oneHour) {
                         setSubmissions(parsed.data);
                         return;
                     }
                 }
 
-                // ---------- FETCH NEW ----------
                 const result = await getUserSubmits();
                 setSubmissions(result.submissions);
 
-                // ---------- SAVE CACHE ----------
                 sessionStorage.setItem(
                     "profile-submissions",
-                    JSON.stringify({ data: result.submissions, timestamp: Date.now() })
+                    JSON.stringify({
+                        data: result.submissions,
+                        timestamp: Date.now(),})
                 );
             } catch (err) {
                 console.log(err);
@@ -44,83 +47,99 @@ export default function ProfileSubmissions() {
         loadSubmissions();
     }, []);
 
+    // ---------- FILTER WINS ----------
+    const filteredSubmissions = showOnlyWins
+        ? submissions.filter((submission) => submission.indicator === "gold")
+        : submissions;
+
     return (
-        <>
+    <>
         <div className={profileStyle.submissionsGrid}>
-            {submissions.length > 0 ? (
-                submissions.map((submission, i) => (
-                    <div
-                        key={submission._id}
-                        className={profileStyle.submissionCell}
-                        style={{ animationDelay: `${i * 60}ms` }}
+            {filteredSubmissions.length > 0 ? (
+                [...filteredSubmissions]
+                .reverse()
+                .map((submission, i) => (
+            <div
+                key={submission._id}
+                className={profileStyle.submissionCell}
+                style={{ animationDelay: `${i * 60}ms` }}
+            >
+                <img
+                    src={submission.imageUrl}
+                    onClick={() => {
+                        if (submission.imageUrl) {
+                            setFullscreenImage(submission.imageUrl);
+                        }
+                    }}
+                    className={profileStyle.submissionImg}
+                />
+
+                {/* CARD FOOTER ----- Comp Title, Phase indicator ----- */}
+                <div className={profileStyle.submissionFooter}>
+                    <p
+                        className={profileStyle.competitionTitle}
+                        onClick={() =>
+                            navigate(`/competitions/${typeof submission.competition === "string"
+                                ? submission.competition
+                                : submission.competition._id}`
+                            )}
                     >
-                        <img
-                            src={submission.imageUrl}
-                            onClick={() => {
-                                if (submission.imageUrl) {
-                                    setFullscreenImage(submission.imageUrl);
-                                }
-                            }}
-                        />
-                        <p 
-                            onClick={() =>
-                                navigate(
-                                    `/competitions/${
-                                        typeof submission.competition === "string"
-                                            ? submission.competition
-                                            : submission.competition._id
-                                    }`
-                                )
-                            }
-                            className={profileStyle.submissionCompetition}>
-                            {submission.competitionTitle}
-                        </p> 
-                        {/* <SubmissionCard
-                            submission={{
-                                ...submission,
-                                signedImageUrl: submission.imageUrl,
-                            }}
-                            indicator={submission.indicator ?? "none"}
-                            onClick={() =>
-                                navigate(
-                                    `/competitions/${
-                                        typeof submission.competition === "string"
-                                            ? submission.competition
-                                            : submission.competition._id
-                                    }`
-                                )
-                            }
-                        />      */}             
-                    </div>
-                ))
+                        {submission.competitionTitle}
+                    </p>
+
+                    {typeof submission.competition !== "string" && (() => {
+                        const phase = getCompetitionPhase(submission.competition);
+                        return (
+                            !showOnlyWins && (
+                                <div className={profileStyle.placementContainer}>
+                                    <img
+                                        src={ 
+                                            phase === "ended" ? "/medal.svg"
+                                            : phase === "submission" ? "/submit-edit.svg"
+                                            : "/hourglass.svg"}
+                                        className={profileStyle.placementIcon}
+                                    />
+                                    <span>
+                                        {phase === "ended" ? 
+                                            submission.indicator === "gold" ? "1"
+                                            : submission.indicator === "silver" ? "2"
+                                            : "3"
+                                        : phase === "submission" ? "edit" : "vote"}
+                                    </span>
+                                </div>
+                            )
+                        );
+                    })()}
+
+                </div>
+            </div>))
             ) : (
-                <p className={profileStyle.emptyText}>No submissions yet</p>
+                <p className={profileStyle.emptyText}>{showOnlyWins ? "No wins yet" : "No submissions yet"}</p>
             )}
         </div>
 
-{fullscreenImage && (
-    <div
-        className={profileStyle.fullscreenModal}
-        onClick={() => setFullscreenImage(null)}
-    >
-        <div
-            className={profileStyle.fullscreenContent}
-            onClick={(e) => e.stopPropagation()}
-        >
-            <img
-                src={fullscreenImage}
-                className={profileStyle.fullscreenImage}
-            />
-
-            <button
-                className={profileStyle.closeFullscreenBtn}
+        {fullscreenImage && (
+            <div
+                className={profileStyle.fullscreenModal}
                 onClick={() => setFullscreenImage(null)}
             >
-                Close
-            </button>
-        </div>
-    </div>
-)}
-</>
+                <div
+                    className={profileStyle.fullscreenContent}
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <img
+                        src={fullscreenImage}
+                        className={profileStyle.fullscreenImage}
+                    />
+                    <button
+                        className={profileStyle.closeFullscreenBtn}
+                        onClick={() => setFullscreenImage(null)}
+                    >
+                        Close
+                    </button>
+                </div>
+            </div>
+        )}
+    </>
     );
 }
