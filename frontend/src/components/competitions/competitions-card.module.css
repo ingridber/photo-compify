@@ -1,223 +1,188 @@
-
 .cardContainer {
-    border: 1px solid var(--text);
-    width: 100%;
+    width: 70%;
     cursor: pointer;
     border-radius: 1rem;
-    padding: 0.5rem;
-    margin: 0.5rem;
+    margin: 1.5rem;
     box-shadow: var(--shadow);
     background-color: var(--comp-card-bg);
     transition: transform 0.2s ease;
+    position: relative;
 }
 
 .cardContainer:hover {
     transform: scale(1.01);
 }
 
-
-
-
-/* CARD HEADER: Logo & Themes */
-/* -------------------------- */
+/* CARD HEADER ----- background image, phase, competition title */
+/* ------------------------------------------------------------ */
 .cardHeader {
+    position: relative;
     display: flex;
-    justify-content: space-between;
-    border-bottom: 1px dotted var(--text);
-    padding: 0.5rem;
-
-}
-
-/* ----- LOGO ----- */
-.logoContainer {
-    background-color: #B0CBC1;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
+    align-items: flex-end;
+    border-radius: 1rem 1rem 0 0;
     overflow: hidden;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    border-top: 1px solid #171616;
+    border-left: 1px solid #171616;
+    border-right: 1px solid #171616;
+}
+
+.cardLogo {
+    min-height: 12rem;
+    object-fit: fill;
+}
+
+.cardNoLogo {
+    height: 11rem;
+    background:
+    linear-gradient(
+        -135deg,
+        #0D0C0C 0%,
+        #0D0C0C 25%,
+        #0b1220 58%,
+        #08152b 100%
+    );
+}
+
+.phasePill {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    padding:0.8rem 1.2rem;
+    border-radius: 999px;
+    backdrop-filter: blur(16px);
+    font-size: 0.7rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--text-light);
+}
+
+.heroEyebrow {
+    margin: 0.5 0 0rem 0.2rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    opacity: 0.8;
+    padding-left: 2.3rem;
+}
+
+.heroTitle {
+    margin: 0;
+    max-width: 14ch;
+    font-size: clamp(3rem, 4vw, 5.5rem);
+    line-height: 0.88;
+    letter-spacing: -0.07em;
+    font-weight: 300;
+    color: var(--text-light);
+    padding: 0 0 0.8rem 2.4rem;
+}
+
+/* CARD MAIN ----- themes, description */
+/* ----------------------------------- */
+.cardMain {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid var(--text);
-    flex: 0 0 50px;
-    align-self: flex-end;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.5rem 0;
+    width: 90%;
+    margin: auto;
 }
-
-.noLogo {
-    width: 60%;
-}
-
-.logoPic {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* ----- THEMES ----- */
-.PortraitColor {background-color: #D2A4A4;}
-.LandscapeColor {background-color: #ACD2A4;}
-.StreetColor {background-color: #A4B3D2;}
-.WildlifeColor {background-color: #A4D2B1;}
-.MacroColor {background-color: #D2C7A4;}
-.ArchitectureColor {background-color: #B0A4D2;}
-.NatureColor {background-color: #7FBF7F }
-.TravelColor {background-color: #F2B66D;}
-.MinimalistColor {background-color: #D9D9D9;}
-.Color {background-color: #D2C7A4;}
-.BlackWhiteColor {background-color: #4A4A4A; color: var(--text-light) !important;}
-.LongExposureColor {background-color: #6FA8DC;}
-.AbstractColor {background-color: #C77DFF;}
-.AerialColor {background-color: #7DA2A9;}
-.NightColor {background-color: #2C2F4A; color: var(--text-light) !important;}
-.AstrophotographyColor {background-color: #1A1B3A; color: var(--text-light) !important;}
-.DocumentaryColor {background-color: #8C8C8C;}
-.DefaultColor {background-color: #B0CBC1;}
-.AnythingGoesColor {background-color: pink;}
-
 
 .themesContainer {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    justify-content: flex-end;
-    margin-left: 0.5rem ;
-    gap: 0.3rem;
+    gap: 0.5rem;
+    margin: 1rem 0 1.2rem 0;
 }
 
 .theme {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
-    font-size: 0.7rem;
-    letter-spacing: 0;
-    font-weight: 600;
-    padding: 0 0.5rem;
-    border-radius: 0.8rem;
+    padding: 0.65rem 1rem;
+    border-radius: 999px;
     color: var(--text-dark);
     white-space: nowrap;
+    margin: 0;
 }
 
-
-
-/* CARD MAIN: Title & Description */
-/* ------------------------------ */
-.cardMain {
-    display: flex;
-    align-items: center;
+.description {
+    margin: -0.5rem 0 0 0;
+    max-width: 46ch;
+    color: var(--text);
+    font-size: 1rem;
+    line-height: 1.7;
+    padding-left: 0.5rem;
 }
 
-
-
-/* ----- TITLE & DESCRIPTION ----- */
-.titleDescriptionContainer {
-    flex: 1;
-    min-width: 0;
-}
-
-.titleDescriptionContainer .title {
-    margin: 0.5rem 0 0.2rem 0.5rem;
-    font-size: 1.3rem;
-    text-transform: uppercase;
-    overflow-wrap: break-word;
-    word-break: break-word;
-}
-
-.titleDescriptionContainer .description {
-    font-size: 0.9rem;
-    overflow-wrap: break-word;
-    word-break: break-word;
-    white-space: normal;
-    line-height: 1.2;
-    margin-left: 0.5rem;
-}
-
-/* CARD FOOTER: Status, End, Creator, Participants */
+/* CARD FOOTER ----- Owner, Participants, End Date */
 /* ----------------------------------------------- */
-
 .cardFooter {
-    padding-top: 0.5rem;
-    margin-top: 0.5rem;
     display: flex;
+    justify-content: space-between;
     gap: 2rem;
-    justify-content: center;
-    border-top: 1px dotted var(--text);
-    text-align: center;
+    margin: 0 auto 0.8rem auto;
+    padding: 0.5rem 1rem 0 1rem;
+    width: 85%;
+    border-top: 1px solid var(--text);
 }
 
-.cardFooter .specsTitle {
-    font-size: 0.7rem;
-    font-weight: 500;
+.specsTitle {
+    margin: 0 0 0.3rem 0;
+    font-size: 0.62rem;
+    letter-spacing: 0.32em;
     text-transform: uppercase;
-    letter-spacing: 0;
-    margin-top: 0.5rem;
-    line-height: 0.6;
+    color: var(--text);
 }
 
 .endDate,
 .owner,
-.participants,
-.phase {
-    font-weight: 700;
+.participants {
+    font-weight: 500;
     margin: 0;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
 }
 
-.phase {
-    text-transform: uppercase;
+.endsOn {
+    text-align: right;
+    margin-right: -0.2rem;
 }
 
-
-/* COLORS  */
-.endedColor {
-    border-color: var(--ended);
-    color: var(--ended);
-}
-
-.endedColor {
-    border-color: var(--ended);
-    color: var(--ended);
-}
-
-.submissionColor {
-    border-color: var(--submission);
-    color: var(--submission);
-}
-
-.voteColor {
-    border-color: var(--vote);
-    color: var(--vote);
-}
-
+/* ----------------------------------- */
 /* ---------- MOBILE LAYOUT ---------- */
 /* ----------------------------------- */
 @media (max-width: 600px) { 
-    .cardContainer {
-        width: 95%;
-        border: none;
-        border-top: 1px solid var(--text);
-        border-bottom: 1px solid var(--text);
-        border-radius: 0;
-        margin: 1rem;
+.cardContainer {
+    width: 95%;
+    border: none;
+    border-top: 1px solid var(--text);
+    border-bottom: 1px solid var(--text);
+    border-radius: 0;
+    margin: 1rem;
+}
 
+.logoContainer { 
+    width: 35px;
+    height: 35px;
+    flex: 0 0 35px;
+}
 
-    }
+.titleDescriptionContainer .title {
+    font-size: 1rem;
+    line-height: 1;
+}
 
-    .logoContainer { 
-        width: 35px;
-        height: 35px;
-        flex: 0 0 35px;
-    }
+.titleDescriptionContainer .description {
+    line-height: 1;
+    font-size: 0.9rem;
+} 
 
-    .titleDescriptionContainer .title {
-        font-size: 1rem;
-        line-height: 1;
-     }
-
-    .titleDescriptionContainer .description {
-        line-height: 1;
-        font-size: 0.9rem;
-    } 
-
-    .hideEnd,
-    .hideOwner {
-        display: none;
-    }
+.hideEnd,
+.hideOwner {
+    display: none;
+}
 }
