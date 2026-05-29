@@ -33,41 +33,65 @@ export default function SubmissionExpanded({
     }
 
     return (
-        <div className={styles.overlay}>
-            <div className={styles.content}>
-                <button className={styles.close} type="button" onClick={onClose}>
-                    ×
-                </button>
+        <>
+        <button
+                className={styles.voteButton}
+                type="button"
+                onClick={handleVote}
+            >
+                {hasVoted ? "Remove vote" : "Vote"}
+        </button>
+        </>
+        
+    //      <> 
+
+    //     <div className={styles.fullscreenModal}>
+
+
+
+    //         <div className={styles.fullscreenContent}>
+
+
+                
 
             
-                <img
-                    className={styles.image}
-                    src={submission.signedImageUrl}
-                    alt={submission.description ?? "Submission"}
-                    onClick={onClose}
-                />
+    //             <img
 
-                {phase === "voting" && (
-                    <button
-                        className={styles.voteButton}
-                        type="button"
-                        onClick={handleVote}
-                    >
-                        {hasVoted ? "Remove vote" : "Vote"}
-                    </button>
-                )}
+    //                 className={styles.fullscreenImage}
+    //                 src={submission.signedImageUrl}
+    //                 alt={submission.description ?? "Submission"}
+    //                 onClick={onClose}
+    //             />
 
-                {phase === "finished" && (
-                    <div className={styles.details}>
-                        <span className={styles.username}>
-                            {submission.user.username}
-                        </span>
-                        <span className={styles.voteCount}>
-                            {submission.votes.length} votes
-                        </span>
-                    </div>
-                )}
-            </div>
-        </div>
+    //             <button className={styles.closeFullscreenBtn} type="button" onClick={onClose}>
+    //                 Close
+    //             </button>
+
+    //             {phase === "voting" && (
+    //                 <button
+    //                     className={styles.voteButton}
+    //                     type="button"
+    //                     onClick={handleVote}
+    //                 >
+    //                     {hasVoted ? "Remove vote" : "Vote"}
+    //                 </button>
+    //             )}
+
+    //             {phase === "finished" && (
+    //                 <div className={styles.details}>
+    //                     <span className={styles.username}>
+    //                         {submission.user.username}
+    //                     </span>
+    //                     <span className={styles.voteCount}>
+    //                         {submission.votes.length} votes
+    //                     </span>
+    //                 </div>
+    //             )}
+    //         </div>
+    //     </div>
+
+
+    // </>
+
     );
 }

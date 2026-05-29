@@ -45,7 +45,6 @@ export default function CompetitionDetail() {
     const [showLogoModal, setShowLogoModal] = useState(false);
     const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
 
-
     const loadCompetition = useCallback(() => {
         if (!id) return;
 
@@ -269,113 +268,71 @@ export default function CompetitionDetail() {
 
             {/* ----- submissions ----- */}
             {(phase === "voting" || phase === "finished") && (
-                // <div className={styles.gridWrapper}>
+                <>
                 <section className={styles.submissionsGrid}>
+                    {sorted.map((sub, i) => (
+                        <div
+                            key={sub._id ?? i}
+                            className={styles.submissionCell}
+                            style={{ animationDelay: `${i * 60}ms` }}
+                        >
+                            <img
+                                className={styles.submissionImg}
+                                src={sub.signedImageUrl}
+                                alt=""
+                                onClick={() => sub.signedImageUrl && setFullscreenImage(sub.signedImageUrl)}
+                            />
 
-
-                    {!selectedSubmission ? (
-                        <>
-
-                    {/* <div className={styles.grid}> */}
-                            {sorted.map((sub, i) => (
-                                <div
-                                    key={sub._id ?? i}
-                                    className={styles.submissionCell}
-                                    style={{ animationDelay: `${i * 60}ms` }}
+                            <div className={styles.submissionFooter}>
+                                <p
+                                    className={styles.competitionTitle}
+                                    onClick={() => {
+                                        setSelectedSubmission(sub);
+                                        navigate(`/users/${sub.user?.username}`);
+                                    }}
                                 >
-                                    <img
-                                        className={styles.submissionImg}
-                                        src={sub.signedImageUrl}
-                                        alt=""
-                                        onClick={() => sub.signedImageUrl && setFullscreenImage(sub.signedImageUrl)}
-                                    />
-                                    
-                                    <div className={styles.submissionFooter}>
+                                    {sub.user?.username ?? "Unknown"}
+                                </p>
 
-                                        {/* -------------------- */}
-                                        {/* ----- FINISHED ----- */}
-                                        {/* -------------------- */}
-                                        {phase === 'finished' && (
-                                        <>
-
-                                            {/* ----- CONTRIBUTOR ----- */}
-                                            {/* ----------------------- */}
-                                            <p 
-                                                className={styles.submissionContributor}
-                                                onClick={() => {
-                                                    setSelectedSubmission(sub);
-                                                    navigate(`/users/${sub.user?.username}`);
-                                                }}
-                                            >{sub.user?.username ?? "Unknown"}</p>
-
-                                            {/* ----- PLACEMENT ----- */}
-                                            {/* --------------------- */}
-                                            <div className={styles.placementContainer}>
-                                                <img src="/medal.svg" alt="medal" className={styles.medalIcon}/>
-                                                <span>
-                                                    {getIndicator(sub, phase, i, user?._id) === "gold" ? "1"
-                                                    : getIndicator(sub, phase, i, user?._id) === "silver" ? "2"
-                                                    : "3"}
-                                                </span>
-                                            </div>
-                                        </>
-                                        )}
-
-
-                                        {/* ------------------ */}
-                                        {/* ----- VOTING ----- */}
-                                        {/* ------------------ */}
-                                        {phase === 'voting' && (
-                                        <>
-                                            <SubmissionExpanded
-                                                submission={sub}
-                                                phase={phase}
-                                                userId={user?._id}
-                                                onClose={() => setSelectedSubmission(null)}
-                                                onVoteChange={handleVoteChange}
-                                            />
-                                        </>
-                                        )}
-
-
+                                {phase === "finished" && (
+                                    <div className={styles.placementContainer}>
+                                        <img src="/medal.svg" alt="medal" className={styles.medalIcon}/>
+                                        <span>
+                                            {getIndicator(sub, phase, i, user?._id) === "gold" ? "1"
+                                            : getIndicator(sub, phase, i, user?._id) === "silver" ? "2"
+                                            : "3"}
+                                        </span>
                                     </div>
-
-
-                                </div>
-
-
-
-                                // <SubmissionCard
-                                //     key={sub._id ?? i}
-                                //     submission={sub}
-                                //     indicator={getIndicator(sub, phase, i, user?._id)}
-                                //     onClick={() => setSelectedSubmission(sub)}
-                                // />
-                            ))}
-                        {/* </div> */}
-
-                        </>
-                        
-
-
-                    ) : (
-
-
-                        
-
-                        <SubmissionExpanded
-                            submission={selectedSubmission}
-                            phase={phase}
-                            userId={user?._id}
-                            onClose={() => setSelectedSubmission(null)}
-                            onVoteChange={handleVoteChange}
-                        />
-
-
-                    )}
-
-
+                                )}
+                            </div>
+                        </div>
+                    ))}
                 </section>
+
+                {fullscreenImage && (
+                    <div className={styles.fullscreenModal} onClick={() => setFullscreenImage(null)}>
+                        <div className={styles.fullscreenContent} onClick={(e) => e.stopPropagation()}>
+                            <img src={fullscreenImage} className={styles.fullscreenImage}/>
+                            <button
+                                className={styles.closeFullscreenBtn}
+                                onClick={() => setFullscreenImage(null)}
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {selectedSubmission && (
+                    <SubmissionExpanded
+                        submission={selectedSubmission}
+                        phase={phase}
+                        userId={user?._id}
+                        onClose={() => setSelectedSubmission(null)}
+                        onVoteChange={handleVoteChange}
+                    />
+                )}
+                </>
             )}
 
             {showLogoModal && (
