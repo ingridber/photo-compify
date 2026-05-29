@@ -92,6 +92,9 @@ export default function ProfileSubmissions({showOnlyWins = false}: Props) {
                         return (
                             !showOnlyWins && (
                                 <div className={profileStyle.placementContainer}>
+
+                                    {/* ÄNDRA FÄRG PÅ MEDALJ EFTER PLACERING?  */}
+                                    
                                     <img
                                         src={ 
                                             phase === "ended" ? "/medal.svg"
