@@ -18,19 +18,19 @@ const registerSchema = z.object({
         .max(80, "Username must be between 3 and 80 characters")
         .regex(/^[^\u0080-\uFFFF]+$/, "enter a valid username"),
     password: z
-        .string()
+        .string({ required_error: "Password is required"})
         .min(8, { message: "Password must be between 8 and 120 characters"})
         .max(120, { message: "Password must be between 8 and 120 characters"})
         .refine((val) => verifyPassword(val), {
             message: "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character."
         }),
     confirmPassword: z
-        .string()
+        .string({ required_error: "You must confirm your password"})
         .min(1, { message: "Need to fill both fields"}),
     email: z
     .email({ message: "Please enter a valid email adress"})
     .transform((email) => email.trim().toLowerCase()),
-    recaptchaToken: z.string(),
+    recaptchaToken: z.string({required_error: "RecaptchaToken is missing"}),
     name: z.string().optional(),
     profilePicture: z.string().optional()
 })
