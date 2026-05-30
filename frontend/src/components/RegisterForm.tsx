@@ -107,7 +107,7 @@ export default function RegisterForm() {
             });
 
 
-            const res = await register(email, username, password, token);
+            const res = await register(email, username, password, confirmPassword, token);
 
             if (res.status === 201) {
                 setRedirect(true);
