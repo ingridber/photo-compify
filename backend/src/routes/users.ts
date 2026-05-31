@@ -15,9 +15,14 @@ import { editProfileDetails } from "../controllers/editControllers";
 import { authenticateToken } from "../middleware/auth";
 import { get } from "http";
 import { getSubmission } from "../controllers/submissionsController";
+import { exportUserData } from "../controllers/ExportUserDataController";
 
 
 const routerUser = express.Router();
+routerUser.get("/export-my-data", (req, res, next) => {
+    console.log("User data downloaded");
+    next();
+}, authenticateToken, exportUserData);
 
 routerUser.get("/profile", authenticateToken, (req: Request, res: Response) => {
     res.json({
@@ -41,6 +46,8 @@ routerUser.get('/stats', authenticateToken, getUserStats)
 
 routerUser.get('/:username', getPublicProfile)
 routerUser.patch('/edit', authenticateToken, editProfileDetails)
+
+
 
 
 export { routerUser };
