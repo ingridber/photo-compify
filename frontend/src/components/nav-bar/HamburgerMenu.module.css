@@ -35,12 +35,32 @@
   flex-direction: column;
   align-items: flex-end;
   gap: 1.2rem;
-  background-color: var(--bg);
-  border-top: 1px solid var(--text);
-  border-bottom: 1px solid var(--text);
-  opacity: 0.955;
   padding: 2rem 0;
-  z-index: 1000;
+  border-top: 1px solid var(--text);
+  background:
+    linear-gradient(
+      to left,
+      var(--bg) 0%,
+      var(--bg) 30%,
+      transparent 70%
+    );
+  opacity: 0;
+  transform:
+    translateY(-8px);
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 260ms ease,
+    transform 260ms ease,
+    visibility 260ms ease;
+}
+
+.dropdownOpen {
+  opacity: 1;
+  transform:
+    translateY(0);
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .menuBtn {

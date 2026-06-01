@@ -53,8 +53,12 @@ export default function HamburgerMenu() {
           </button>
 
       {/* DROPDOWN */}
-      {open && (
-        <div className={styles.dropdown}>
+        <div
+          className={`
+            ${styles.dropdown}
+            ${open ? styles.dropdownOpen : ""}
+          `}
+        >
           {!user ? (
             <>
               <button
@@ -85,7 +89,7 @@ export default function HamburgerMenu() {
             </>
           )}
         </div>
-      )}
+      
     </nav>
   );
 }
