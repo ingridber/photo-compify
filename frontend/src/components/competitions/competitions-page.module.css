@@ -149,6 +149,32 @@
   color: var(--text-muted);
 }
 
+.inputWrapper {
+  position: relative;
+}
+
+.clearBtn {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.9rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.clearBtn:hover {
+    color: var(--text);
+}
+
 .closeBtn {
   width: 10%;
   margin: auto;

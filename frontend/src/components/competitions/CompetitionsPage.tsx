@@ -142,16 +142,34 @@ export default function CompetitionsPage() {
           {/* search  */}
           <div className={styles.searchContainer}>
             <label className={styles.label}>Search</label>
-            <input
-              ref={inputRef}
-              className={styles.input}
-              type="text"
-              placeholder="Competition title or username"
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-              }}/>
+
+            <div className={styles.inputWrapper}>
+                <input
+                    ref={inputRef}
+                    className={styles.input}
+                    type="text"
+                    placeholder="Competition title or username"
+                    value={search}
+                    onChange={(e) => {
+                        setSearch(e.target.value);
+                        setPage(1);
+                    }}
+                />
+
+                {search && (
+                    <button
+                        type="button"
+                        className={styles.clearBtn}
+                        onClick={() => {
+                            setSearch("");
+                            setPage(1);
+                            inputRef.current?.focus();
+                        }}
+                    >
+                        ✕
+                    </button>
+                )}
+            </div>
           </div>
 
           {/* themes */}
@@ -169,12 +187,20 @@ export default function CompetitionsPage() {
                 isMulti
                 placeholder="Select themes..."
                 closeMenuOnSelect={false}
+                styles={{
+                  option: (base) => ({
+                      ...base,
+                      color: "black"
+                  }),}}
               />
             </div>
           </div>
 
           <button
-            onClick={() => setShowFilters(!showFilters)}
+            onClick={() => {
+              setShowFilters(!showFilters);
+              setSearch("");
+              setSelectedThemes([]);}}
             className={styles.closeBtn}
             aria-label="Close filters"
           >

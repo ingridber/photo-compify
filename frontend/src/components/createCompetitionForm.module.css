@@ -174,6 +174,7 @@
     letter-spacing: 0.12em;
     color: var(--text-muted);
     text-transform: none;
+    visibility: visible;
 }
 
 .previewRow {
@@ -187,7 +188,6 @@
     color: var(--text-muted);
     font-size: 0.72rem;
 }
-
 
 /* ----- MOBILE LAYOUT ----- */
 /* ------------------------- */

@@ -212,17 +212,16 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
                             required
                         />
 
-                        {title.length > 0 && (
                         <small className={styles.counterSmall}>
                             {title.length}/{TITLE_MAX}
                         </small>
-                    )}
+
                         <div className={formStyles.field}>
                         <span className={styles.label}>
                             Themes
-                            {themes.length === 0 && (
-                                <span className={styles.counterTheme}> — pick at least one</span>
-                            )}
+                                <span className={styles.counterTheme}
+                                    style={{visibility: themes.length === 0 ? "visible" : "hidden"}}> — pick at least one</span>
+           
                         </span>
                     
                         <Select
@@ -235,6 +234,11 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
                             closeMenuOnSelect={false}
                             isOptionDisabled={() => themes.length >= 5}
                             classNamePrefix="ccSelect"
+                            styles={{
+                                   option: (base) => ({
+                                        ...base,
+                                        color: "black"
+                                    }),}}
                         />
                     </div>
                     </div>
