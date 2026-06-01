@@ -175,21 +175,17 @@ export default function CompetitionDetail() {
 
             <div className={styles.statCell}>
                 {phase === "submission" && (<>
-                    <div className={styles.stat}>
                         <span className={styles.statLabel}>Voting begins</span>
                         <span className={styles.statValue}>
                             {formatCountdown(countdownTarget)}
                         </span>
-                    </div>
                 </>)}
 
                 {phase === "voting" && (<>
-                    <div className={styles.stat}>
                         <span className={styles.statLabel}>Ends in</span>
                         <span className={styles.statValue}>
                             {formatCountdown(countdownTarget)}
                         </span>
-                    </div>
                 </>)}
 
                 {phase === "ended" && sorted.length > 0 && (<>
