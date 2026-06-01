@@ -31,7 +31,7 @@ import { ChangeProfilePicture } from './components/manage-account/ChangeProfileP
 import ProfileSubmissions from './components/profile/ProfileSubmissions';
 import ProfileCompetitions from './components/profile/ProfileCompetitions';
 import { SignOut } from './components/SignOut';
-import SignOutDeleteAccount from './components/manage-account/SIgnOutPage';
+import SignOutDeleteAccount from './components/manage-account/SignOutPage';
 
 const protectedElement = (Component: ComponentType) => (
   <ProtectedRoute>
