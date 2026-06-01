@@ -83,7 +83,7 @@ export default function PublicProfilePage() {
                     )}
                 </div>
                 <p className={profileStyle.cameraLine}>
-                    <img src="/camera-detail.svg" alt="camera" className={profileStyle.cameraIcon}/>
+                    <img src="/icons/camera-detail.svg" alt="camera" className={profileStyle.cameraIcon}/>
                     {profile.user.camera ? profile.user.camera : "Camera not specified"}
                 </p>
             </div>
@@ -152,7 +152,7 @@ export default function PublicProfilePage() {
                                 </p>
                                 { view === 'submissions' &&
                                     <div className={profileStyle.placementContainer}>
-                                        <img src="/medal.svg" alt="medal" className={profileStyle.medalIcon}/>
+                                        <img src="/icons/medal.svg" alt="medal" className={profileStyle.medalIcon}/>
                                         <span>
                                             {submission.indicator === "gold" ? "1"
                                             : submission.indicator === "silver" ? "2"

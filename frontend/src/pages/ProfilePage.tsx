@@ -66,7 +66,7 @@ export function ProfilePage() {
                         )}
                     </div>
                     <p className={profileStyle.cameraLine}>
-                        <img src="/camera-detail.svg" alt="camera" className={profileStyle.cameraIcon} />
+                        <img src="/icons/camera-detail.svg" alt="camera" className={profileStyle.cameraIcon} />
                         {user?.camera ? user.camera : "Camera not specified"}
                     </p>
                 </div>
