@@ -3,6 +3,16 @@
     margin-top: var(--main-margin);
 }
 
+.pageTitle {
+  margin: 0 0 2rem;
+  font: 300 clamp(1.1rem, 3vw, 1.9rem) / 1.1 var(--heading);
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--text);
+  text-align: center;
+  padding-top: 2rem;
+}
+
 .hero {
     position: relative;
     display: flex;
@@ -41,6 +51,7 @@
 .noLogo {
     width: 42%;
     opacity: 0.7;
+    filter: var(--iconToggleTheme)
 }
 
 .uploadLogoBtn {
@@ -68,10 +79,9 @@
 .heroEyebrow {
     text-transform: uppercase;
     font-family: var(--sans);
-    font-size: 1rem;
+    font-size: 0.8rem;
     letter-spacing: 0.3em;
     color: var(--text);
-    font-weight: 500;
 }
 
 .titleInput {
@@ -179,10 +189,8 @@
 }
 
 
-/* =========================================================
-   MOBILE
-========================================================= */
-
+/* ----- MOBILE LAYOUT ----- */
+/* ------------------------- */
 @media (max-width: 740px) {
 
     .hero {
@@ -202,16 +210,21 @@
 
     .titleInput {
         margin-left: 0;
-        text-align: center;
+        text-align: left;
     }
 
     .heroEyebrow {
         margin-left: 0;
+        text-align: left;
     }
 
     .themePills {
         justify-content: center;
         margin-left: 0;
+    }
+
+    .label {
+        text-align: left;
     }
 
     .formSection {
