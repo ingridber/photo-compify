@@ -42,56 +42,6 @@ export default function SubmissionExpanded({
                 {hasVoted ? "Remove vote" : "Vote"}
         </button>
         </>
-        
-    //      <> 
-
-    //     <div className={styles.fullscreenModal}>
-
-
-
-    //         <div className={styles.fullscreenContent}>
-
-
-                
-
-            
-    //             <img
-
-    //                 className={styles.fullscreenImage}
-    //                 src={submission.signedImageUrl}
-    //                 alt={submission.description ?? "Submission"}
-    //                 onClick={onClose}
-    //             />
-
-    //             <button className={styles.closeFullscreenBtn} type="button" onClick={onClose}>
-    //                 Close
-    //             </button>
-
-    //             {phase === "voting" && (
-    //                 <button
-    //                     className={styles.voteButton}
-    //                     type="button"
-    //                     onClick={handleVote}
-    //                 >
-    //                     {hasVoted ? "Remove vote" : "Vote"}
-    //                 </button>
-    //             )}
-
-    //             {phase === "finished" && (
-    //                 <div className={styles.details}>
-    //                     <span className={styles.username}>
-    //                         {submission.user.username}
-    //                     </span>
-    //                     <span className={styles.voteCount}>
-    //                         {submission.votes.length} votes
-    //                     </span>
-    //                 </div>
-    //             )}
-    //         </div>
-    //     </div>
-
-
-    // </>
 
     );
 }

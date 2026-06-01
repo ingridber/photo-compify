@@ -2,7 +2,6 @@ import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router";
 import { fetchCompetitionById } from "../../services/api";
 import { type Competition, type Phase, type Submission } from "../../types/competitions.ts";
-import SubmissionCard from "./SubmissionCard";
 import SubmissionExpanded from "./SubmissionExpanded.tsx";
 import styles from "./CompetitionDetail.module.css";
 import { useUser } from "../../hooks/useUser.ts";
@@ -96,9 +95,8 @@ export default function CompetitionDetail() {
     <header className={styles.header}>
   
         <div className={styles.hero}>
-
             {/* ----- logo ----- */}
-            <div className={styles.logo}> {/* className={profileStyle.avatarRing}*/}
+            <div className={styles.logo}>
                 {competition.signedLogoUrl ? (
                 <>
                     <div className={styles.logoContainer}>
@@ -157,7 +155,6 @@ export default function CompetitionDetail() {
 
                     return (
                         <span
-                        // className={`${styles.theme} ${styles[themeClass]}`}
                         className={`${styles.pill} ${themeClass}`}
                         key={safeTheme}
                         >
@@ -176,14 +173,8 @@ export default function CompetitionDetail() {
         <p className={styles.description}>{competition.description}</p>
     </div>
 
-
-
-
-
     {/* ----- STATS: comp phase, time indicators & winner, participants ----- */}
-
     <div className={styles.stats}>
-
         {/* ----- comp phase ----- */}
         <div className={styles.statCell}>
             <span className={styles.statLabel}>Phase</span>
@@ -218,9 +209,6 @@ export default function CompetitionDetail() {
             <span className={styles.statValue}>{competition.submissions.length}</span>
         </div>
     </div>
-
-            
-
 
             {/* VIEWS ----- submit & submissions */}
             {/* ----- submit ----- */}
@@ -342,27 +330,10 @@ export default function CompetitionDetail() {
 
 
                                 </div>
-
-
-
-                                // <SubmissionCard
-                                //     key={sub._id ?? i}
-                                //     submission={sub}
-                                //     indicator={getIndicator(sub, phase, i, user?._id)}
-                                //     onClick={() => setSelectedSubmission(sub)}
-                                // />
                             ))}
-                        {/* </div> */}
 
                         </>
-                        
-
-
                     ) : (
-
-
-                        
-
                         <SubmissionExpanded
                             submission={selectedSubmission}
                             phase={phase}
@@ -370,11 +341,7 @@ export default function CompetitionDetail() {
                             onClose={() => setSelectedSubmission(null)}
                             onVoteChange={handleVoteChange}
                         />
-
-
                     )}
-
-
                 </section>
             )}
 
@@ -395,7 +362,6 @@ export default function CompetitionDetail() {
                     </div>
                 </div>
             )}
-
     </>
     );
 }

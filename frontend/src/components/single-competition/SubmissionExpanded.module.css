@@ -23,16 +23,11 @@
 
 
 .content {
-  /* display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  gap: 12px; */
   background: var(--modal-bg);
   padding: 2.2rem;
   border-radius: 1rem;
   border: 2px outset var(--modal-border);
-  position: relative;
+  position: relative; /* viktigt */
   max-width: 800px;
   width: 90%;
   color: var(--text-light);
@@ -68,32 +63,23 @@
 }
 
 .voteButton {
-  /* all: unset;
-  display: block;
-  border: none;
-  cursor: pointer;
-  padding: 8px 24px;
-  margin: 0 auto; */
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
 
+  padding: 0.55rem 0.8rem;
+  border-radius: 999px;
 
-
-  display: block;
-  margin: auto;
-  width: 40%;
-  text-decoration: none;
+  font-size: 0.55rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--edit-btn-text);
-  background-color: var(--edit-btn);
+
+  font-family: var(--sans);
   box-shadow: var(--shadow);
   border: 1px solid var(--text);
-  border-radius: 0.8rem;
-  padding: 0.8rem 1rem;
-  margin-top: 0.5rem;
   cursor: pointer;
-  text-align: center;
-
 }
 
 
