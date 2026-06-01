@@ -33,41 +33,15 @@ export default function SubmissionExpanded({
     }
 
     return (
-        <div className={styles.overlay}>
-            <div className={styles.content}>
-                <button className={styles.close} type="button" onClick={onClose}>
-                    ×
-                </button>
+        <>
+        <button
+                className={styles.voteButton}
+                type="button"
+                onClick={handleVote}
+            >
+                {hasVoted ? "Remove vote" : "Vote"}
+        </button>
+        </>
 
-            
-                <img
-                    className={styles.image}
-                    src={submission.signedImageUrl}
-                    alt={submission.description ?? "Submission"}
-                    onClick={onClose}
-                />
-
-                {phase === "voting" && (
-                    <button
-                        className={styles.voteButton}
-                        type="button"
-                        onClick={handleVote}
-                    >
-                        {hasVoted ? "Remove vote" : "Vote"}
-                    </button>
-                )}
-
-                {phase === "ended" && (
-                    <div className={styles.details}>
-                        <span className={styles.username}>
-                            {submission.user.username}
-                        </span>
-                        <span className={styles.voteCount}>
-                            {submission.votes.length} votes
-                        </span>
-                    </div>
-                )}
-            </div>
-        </div>
     );
 }

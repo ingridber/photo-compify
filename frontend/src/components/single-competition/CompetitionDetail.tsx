@@ -1,8 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router";
 import { fetchCompetitionById } from "../../services/api";
-import { type Competition, type Indicator, type Submission } from "../../types/competitions.ts";
-import SubmissionCard from "./SubmissionCard";
+import { type Competition, type Submission } from "../../types/competitions.ts";
 import SubmissionExpanded from "./SubmissionExpanded.tsx";
 import styles from "./CompetitionDetail.module.css";
 import { useUser } from "../../hooks/useUser.ts";
@@ -33,6 +32,8 @@ export default function CompetitionDetail() {
     const [loading, setLoading] = useState(true);
     const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
     const [showLogoModal, setShowLogoModal] = useState(false);
+    const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
+
 
     const loadCompetition = useCallback(() => {
         if (!id) return;
@@ -77,64 +78,64 @@ export default function CompetitionDetail() {
     }
 
     return (
-        <div className={mixins.main}>
-        <div className={styles.container}>
+    <>
 
-            {/* ----- HEADER: Navigate btn, Logo, Title----- */}
-            <div className={styles.header}>
 
-                {/* NAVIGATE BACK BTN */}
-                <button
-                    // onClick={() => navigate("/competitions")}
-                    onClick={() => navigate(-1)}
-                    className={styles.backBtn}>
-                    <img src="/arrow-left.svg" alt="icon of arrow pointing left" className={mixins.backBtnIcon} />
-                </button>
+    {/* ----- HEADER: logo, comp-title, themes ----- */}
+    <header className={styles.header}>
+  
+        <div className={styles.hero}>
+            {/* ----- logo ----- */}
+            <div className={styles.logo}>
+                {competition.signedLogoUrl ? (
+                <>
+                    <div className={styles.logoContainer}>
+                        <img className={styles.logoPic} src={competition.signedLogoUrl} alt={`${competition.title} logo`}/>
+                    </div>
 
-                {/* LOGO */}
-                <div className={styles.logoContainer}>
-                    {competition.signedLogoUrl ? (
-                        // LOGO PIC
-                        <img
-                            src={competition.signedLogoUrl}
-                            alt={`${competition.title} logo`}
-                            className={styles.logoPic} />
-                    ) : (
-                        // NO LOGO TEXT
-                        <img
-                            src="/competitions.svg"
-                            alt={`Competition icon`}
-                            className={styles.noLogo} />
+                    {competition.owner && 
+                    user?.username === competition.owner.username && 
+                    phase !== "finished" && (
+                        <button 
+                            className={styles.uploadLogoBtn}
+                            onClick={() => setShowLogoModal(true)}
+                        >
+                            {competition.signedLogoUrl ? 'Change Logo' : 'Update Logo'}
+                        </button>
                     )}
-                </div>
-                {competition.owner && user?.username === competition.owner.username ? (
-                    <button
-                        type="button"
-                        className={styles.uploadLogoBtn}
-                        onClick={() => setShowLogoModal(true)}
-                    >
-                        {competition.signedLogoUrl ? 'Update Logo' : 'Upload Logo'}
-                    </button>
-                ) : null}
+                </>
+                ) : (
+                <>
+                    {competition.owner &&
+                    user?.username === competition.owner.username &&
+                    phase !== "finished" && (
+                        <>
+                        <div className={styles.logoContainer}>              
+                            <img className={styles.noLogo} src="/competitions.svg" alt="Competition icon"/>
+                        </div>
 
-
-                {/* TITLE */}
-                <h1 className={styles.title}>{competition.title}</h1>
-
-                {/* OWNER */}
-                {<p 
-                    className={styles.owner}
-                    onClick={() => navigate(`/users/${competition.owner.username}`)}>
-                        By: {competition.owner?.username ?? "Deleted User"}
-                </p>}
-
+                        <button className={styles.uploadLogoBtn} onClick={() => setShowLogoModal(true)}>
+                            Update Logo
+                        </button>
+                        </>
+                    )}
+                </>
+                )}
             </div>
 
-            {/* ----- INFORMATIVE: Themes & Description ----- */}
-            <div className={styles.informative}>
 
-                {/* THEMES */}
-                <div className={styles.themesContainer}>
+            <div className={styles.heroMeta}>
+
+                {/* ----- comp title & owner ----- */}
+                <p className={styles.heroEyebrow}>Competition</p>
+                <h1 className={styles.title}>{competition.title}</h1>
+                <p className={styles.owner}
+                    onClick={() => navigate(`/users/${competition.owner.username}`)}>
+                        By: {competition.owner?.username ?? "Deleted User"}
+                </p>
+
+                {/* ----- themes ----- */}
+                <div className={styles.themePills}>
                     {(competition.themes ?? []).map((theme) => {
                     
                     const safeTheme = theme ?? "Default";
@@ -144,7 +145,7 @@ export default function CompetitionDetail() {
 
                     return (
                         <span
-                        className={`${styles.theme} ${styles[themeClass]}`}
+                        className={`${styles.pill} ${themeClass}`}
                         key={safeTheme}
                         >
                         {safeTheme}
@@ -152,11 +153,23 @@ export default function CompetitionDetail() {
                     );
                     })}
                 </div>
-
-                {/* DESCRIPTION */}
-                <p className={styles.descriptionTitle}>Description</p>
-                <p className={styles.description}>{competition.description}</p>
             </div>
+        </div>
+    </header>
+
+    {/* DESCRIPTION */}
+    <div className={styles.descriptionContainer}>
+        <p className={styles.descriptionTitle}>Description</p>
+        <p className={styles.description}>{competition.description}</p>
+    </div>
+
+    {/* ----- STATS: comp phase, time indicators & winner, participants ----- */}
+    <div className={styles.stats}>
+        {/* ----- comp phase ----- */}
+        <div className={styles.statCell}>
+            <span className={styles.statLabel}>Phase</span>
+            <span className={styles.statValue}>{phase === "submission" ? "open" : phase === "ended" ? "closed" : phase}</span>
+        </div>
 
             {/* ----- STATS ----- */}
 
@@ -186,21 +199,19 @@ export default function CompetitionDetail() {
                             onClick={() => navigate(`/users/${sorted[0].user.username}`)}
                             style= {{cursor: "pointer"}}>
                             {sorted[0].user.username}
-                        </span>
-                    </div>
-                )}
+                </span>
+            </>)}
+        </div>
 
+        {/* ----- participants ----- */}
+        <div className={styles.statCell}>
+            <span className={styles.statLabel}>Participants</span>
+            <span className={styles.statValue}>{competition.submissions.length}</span>
+        </div>
+    </div>
 
-                <div className={styles.stat}>
-                    <span className={styles.statLabel}>Participants</span>
-                    <span className={styles.statValue}>
-                        {competition.submissions.length}
-                    </span>
-                </div>
-            </div>
-
-            {/* ----- SUBMIT & SUBMISSIONS ----- */}
-
+            {/* VIEWS ----- submit & submissions */}
+            {/* ----- submit ----- */}
             {phase === "submission" && !userSubmission && (
                 <div className={styles.cta}>
                     <p className={styles.ctaTitle}>Want to participate?</p>
@@ -242,9 +253,85 @@ export default function CompetitionDetail() {
                 </div>
             )}
 
+            {/* ----- submissions ----- */}
             {(phase === "voting" || phase === "ended") && (
-                <div className={styles.gridWrapper}>
-                    {selectedSubmission ? (
+                // <div className={styles.gridWrapper}>
+                <section className={styles.submissionsGrid}>
+
+
+                    {!selectedSubmission ? (
+                        <>
+
+                    {/* <div className={styles.grid}> */}
+                            {sorted.map((sub, i) => (
+                                <div
+                                    key={sub._id ?? i}
+                                    className={styles.submissionCell}
+                                    style={{ animationDelay: `${i * 60}ms` }}
+                                >
+                                    <img
+                                        className={styles.submissionImg}
+                                        src={sub.signedImageUrl}
+                                        alt=""
+                                        onClick={() => sub.signedImageUrl && setFullscreenImage(sub.signedImageUrl)}
+                                    />
+                                    
+                                    <div className={styles.submissionFooter}>
+
+                                        {/* -------------------- */}
+                                        {/* ----- FINISHED ----- */}
+                                        {/* -------------------- */}
+                                        {phase === 'ended' && (
+                                        <>
+
+                                            {/* ----- CONTRIBUTOR ----- */}
+                                            {/* ----------------------- */}
+                                            <p 
+                                                className={styles.submissionContributor}
+                                                onClick={() => {
+                                                    setSelectedSubmission(sub);
+                                                    navigate(`/users/${sub.user?.username}`);
+                                                }}
+                                            >{sub.user?.username ?? "Unknown"}</p>
+
+                                            {/* ----- PLACEMENT ----- */}
+                                            {/* --------------------- */}
+                                            <div className={styles.placementContainer}>
+                                                <img src="/medal.svg" alt="medal" className={styles.medalIcon}/>
+                                                <span>
+                                                    {getIndicator(sub, phase, i, user?._id) === "gold" ? "1"
+                                                    : getIndicator(sub, phase, i, user?._id) === "silver" ? "2"
+                                                    : "3"}
+                                                </span>
+                                            </div>
+                                        </>
+                                        )}
+
+
+                                        {/* ------------------ */}
+                                        {/* ----- VOTING ----- */}
+                                        {/* ------------------ */}
+                                        {phase === 'voting' && (
+                                        <>
+                                            <SubmissionExpanded
+                                                submission={sub}
+                                                phase={phase}
+                                                userId={user?._id}
+                                                onClose={() => setSelectedSubmission(null)}
+                                                onVoteChange={handleVoteChange}
+                                            />
+                                        </>
+                                        )}
+
+
+                                    </div>
+
+
+                                </div>
+                            ))}
+
+                        </>
+                    ) : (
                         <SubmissionExpanded
                             submission={selectedSubmission}
                             phase={phase}
@@ -252,20 +339,10 @@ export default function CompetitionDetail() {
                             onClose={() => setSelectedSubmission(null)}
                             onVoteChange={handleVoteChange}
                         />
-                    ) : (
-                        <div className={styles.grid}>
-                            {sorted.map((sub, i) => (
-                                <SubmissionCard
-                                    key={sub._id ?? i}
-                                    submission={sub}
-                                    indicator={getIndicator(sub, phase, i, user?._id)}
-                                    onClick={() => setSelectedSubmission(sub)}
-                                />
-                            ))}
-                        </div>
                     )}
-                </div>
+                </section>
             )}
+
             {showLogoModal && (
                 <div className={mixins.modalOverlay} onClick={() => setShowLogoModal(false)}>
                     <div className={mixins.modalContent} onClick={(e) => e.stopPropagation()}>
@@ -283,7 +360,6 @@ export default function CompetitionDetail() {
                     </div>
                 </div>
             )}
-        </div>
-        </div>
+    </>
     );
 }
