@@ -1,12 +1,22 @@
 import { Request, Response } from "express";
 import { User } from "../models/User";
+import z from "zod";
 
+const editProfileDetailsSchema = z.object({
+    camera: z.string().optional(),
+    themes: z.array(z.string()).optional()
+})
 
 export async function editProfileDetails(req: Request, res: Response) {
-
     const userId = (req as any).user.id;
+    const validation = editProfileDetailsSchema.safeParse(req.body);
 
-    const { camera, themes } = req.body;
+    if(!validation.success) {
+        const message = validation.error.issues?.[0]?.message ?? "Validation failed";
+        return res.status(400).json({message});
+    }
+    
+    const { camera, themes } = validation.data;
 
     try {
         // ---------- BUILD UPDATE OBJECT ----------
