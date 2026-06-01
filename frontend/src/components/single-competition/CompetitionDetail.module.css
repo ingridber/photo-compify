@@ -53,6 +53,7 @@
 .noLogo {
   width: 42%;
   opacity: 0.7;
+  filter: var(--iconToggleTheme)
 }
 
 .uploadLogoBtn {
