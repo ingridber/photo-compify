@@ -41,7 +41,7 @@ export default function HamburgerMenu() {
           >
             {open ? (
               <img
-                src="/close.svg"
+                src="/icons/close.svg"
                 alt=""
                 className={styles.hamburgerIcon}
               />
@@ -67,10 +67,6 @@ export default function HamburgerMenu() {
             </>
           ) : (
             <>
-              <span className={styles.username}>
-                Signed in as:{" "}
-                {user?.username?.toLocaleUpperCase()}
-              </span>
 
               <button
                 onClick={() => goTo("/profile/account")}

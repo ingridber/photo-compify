@@ -1,4 +1,4 @@
-import { useTheme } from "../hooks/useTheme";
+import { useTheme } from "../../hooks/useTheme";
 import styles from "./toggleTheme.module.css";
 
 export default function ToggleTheme() {
@@ -12,13 +12,13 @@ export default function ToggleTheme() {
         >
             {theme === "light" ? (
                 <img
-                    src="/moon.svg"
+                    src="/icons/moon.svg"
                     alt="Activate dark mode"
                     className={styles.darkMode}
                 />
             ) : (
                 <img
-                    src="/sun.svg"
+                    src="/icons/sun.svg"
                     alt="Activate light mode"
                     className={styles.lightMode}
                 />

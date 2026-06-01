@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import notificationBlack from '../../assets/images/notification_black.png';
 import styles from './NotificationMenu.module.css'; 
 import { useNotifications } from '../../hooks/useNotifications';
 
@@ -25,7 +24,7 @@ export const NotificationMenu = () => {
     return (
         <div className={styles.notificationMenu}>
             <button onClick={handleToggleMenu} className={styles.notificationBtn}>
-                <img src={notificationBlack} alt="Notifications" className={styles.notificationIcon} />
+                <img src="/icons/notification.png" alt="Notifications" className={styles.notificationIcon} />
                 {count > 0 && <span className={styles.notificationBadge}>{count}</span>}
             </button>
 

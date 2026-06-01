@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router";
-import { NotificationMenu } from "../components/nav-bar/NotificationMenu";
-import HamburgerMenu from "../components/nav-bar/HamburgerMenu";
+import { NotificationMenu } from "../nav-bar/NotificationMenu";
+import HamburgerMenu from "../nav-bar/HamburgerMenu";
 import styles from "./Header.module.css";
 import { NavLink } from "react-router";
 import ToggleTheme from "./ToggleTheme";
-import { useUser } from "../hooks/useUser";
+import { useUser } from "../../hooks/useUser";
 
 export default function Header() {
     const navigate = useNavigate();
@@ -22,12 +22,13 @@ export default function Header() {
                 <NavLink to="/" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}`: styles.navLink}>
                     <span className={styles.navTitle}>Home</span>
                 </NavLink>
-                <NavLink to="/create-competition" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}`: styles.navLink}>
-                    <span className={styles.navTitle}>Create</span>
-                </NavLink>
                 <NavLink to="/competitions" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}`: styles.navLink}>
                     <span className={styles.navTitle}>Comps</span>
                 </NavLink>
+                <NavLink to="/create-competition" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}`: styles.navLink}>
+                    <span className={styles.navTitle}>Create</span>
+                </NavLink>
+
 
                 { !user ? (
                     <NavLink to="/login" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}`: styles.navLink}>

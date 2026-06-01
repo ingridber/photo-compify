@@ -15,7 +15,7 @@ export function Throbber({message, action = 'Loading'}: ThrobberProps) {
     return(
         < div className={styles.wrapper}>
             <div className={styles.throbberBackground}>
-                <img src="/throbber.svg" alt="loading icon" className={styles.throbberAnimation} />
+                <img src="/icons/throbber.svg" alt="loading icon" className={styles.throbberAnimation} />
             </div>
 
             {displayMessage && <p className={styles.message}>{displayMessage}</p>}

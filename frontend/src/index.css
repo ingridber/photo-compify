@@ -5,15 +5,19 @@
   --main-margin: 100px;
 
   /* ----- COLORS ----- */
-  --text: #001F45;
+  --text: #171616;
   --text-light: #F2F1EB;
   --text-dark: #171616;
-  --bg: #F2F1EB;
+  /* --bg: #F2F1EB; */
+  --bg: #F3EEE5;
+
   --bg-dark: #001F45;
   --bg-light: #F2F1EB;
   --comp-card-bg: #F2F1EB;
   --border: #2C2F4A;
   --nav-bg: #F2F1EB;
+
+  --image-bg: url("images/background_light.png");
 
 
   /* ----- TEXT THEMES ----- */
@@ -79,7 +83,8 @@
 
 
 [data-theme="dark"] {
-  --bg: #0D0C0C;
+  /* --bg: #0D0C0C; */
+  --bg: #000000;
   --text: #F2F1EB;
   --shadow: none;
   --input-placeholder: #B0CBC1;
@@ -89,6 +94,7 @@
   --border: #4A4A4A;
 
   --nav-bg: #171616;
+  --image-bg: url("images/background_dark.png");
 
   
 

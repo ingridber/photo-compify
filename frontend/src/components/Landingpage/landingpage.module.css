@@ -1,24 +1,106 @@
 .container {
-  text-align: center;
-  margin: 0;
-  padding-top: var(--main-margin);
-  padding-bottom: 100px;
-}
-
-.container h1 {
-  font-weight: 500;
-  font-size: 1.9rem;
+  width: 100%;
   margin-bottom: var(--main-margin);
 }
 
-.container h1 span {
-  display: block;
-  font-size: 1.2rem;
-  letter-spacing: 0.2rem;
-  text-transform: uppercase;
-  font-weight: 300;
-  margin-bottom: 0.5rem;
+.hero {
+  position: relative;
+  min-height: 78vh;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  padding: 0 2rem 2rem 2rem;
 }
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+}
+
+
+.badge {
+  display: inline-block;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--text);
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.12rem;
+  margin-bottom: 1.5rem;
+}
+
+.heroTitle {
+  font-size: clamp(3rem, 8vw, 5.8rem);
+  line-height: 0.95;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.heroText {
+  max-width: 420px;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.12rem;
+}
+
+.heroActions {
+  margin-top: 2rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.primaryBtn {
+  padding: 0.95rem 1.6rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  background: var(--text);
+  color: var(--bg);
+}
+
+.primaryBtn:hover {
+  opacity: 0.9;
+}
+
+.secondaryBtn {
+  padding: 0.95rem 1.6rem;
+  border-radius: 999px;
+  background: transparent;
+  border: 1px solid var(--text);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.secondaryBtn:hover {
+  background: var(--text);
+  color: var(--bg);
+}
+
+.heroBackground {
+  position: absolute;
+  inset: 0;
+
+  background-image: var(--image-bg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  z-index: 0;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+}
+
+
+
+/* MATTIAS SLIDER */
+
 
 .box {
   width: 300px;
@@ -66,26 +148,6 @@
   background: var(--text);
 }
 
- .competitionButton {
-   width: 10.5rem;
-  color: var(--text-light);
-  background-color: var(--btn);
-  border: 1px solid var(--btn);
-  border-radius: 0.7rem;
-  padding: 0.5rem;
-  text-transform: uppercase;
-  font-weight: 550;
-  letter-spacing: 8%;
-  margin-top: 20px;
-}
-
-.competitionButton:hover {
-  background-color: var(--bg);
-    border: 1px solid var(--text);
-    color: var(--text);
-    font-weight: 600;
-    cursor: pointer;
-}
 
 .content {
   width: 100%;
@@ -103,23 +165,20 @@
   transform: translateX(-10px);
 }
 
-.signupButton {
-width: 10.5rem;
-  color: var(--text-light);
-  background-color: var(--btn);
-  border: 1px solid var(--btn);
-  border-radius: 0.7rem;
-  padding: 0.5rem;
-  text-transform: uppercase;
-  font-weight: 550;
-  letter-spacing: 8%;
-  margin-top: 10px;
+
+
+/* ----- MOBILE ----- */
+
+@media (max-width: 740px) {
+
+.container {
+  margin-top: -7rem;
+  margin-bottom: 200px;
 }
 
-.signupButton:hover {
-    background-color: var(--bg);
-    border: 1px solid var(--text);
-    color: var(--text);
-    font-weight: 600;
-    cursor: pointer;
+
+.badge {
+  display: none;
+}
+
 }

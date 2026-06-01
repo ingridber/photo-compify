@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router';
 import { useEffect } from 'react';
 import type { ComponentType } from 'react';
 
-import Header from './header/Header';
+import Header from './components/header/Header';
 import { NavBarMobile } from './components/nav-bar/NavBarMobile';
 import { ProtectedRoute } from './components/ProtectedRoute';
 

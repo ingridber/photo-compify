@@ -111,7 +111,7 @@ export default function CompetitionDetail() {
                     phase !== "ended" && (
                         <>
                         <div className={styles.logoContainer}>              
-                            <img className={styles.noLogo} src="/competitions.svg" alt="Competition icon"/>
+                            <img className={styles.noLogo} src="/icons/competitions.svg" alt="Competition icon"/>
                         </div>
 
                         <button className={styles.uploadLogoBtn} onClick={() => setShowLogoModal(true)}>
@@ -216,7 +216,7 @@ export default function CompetitionDetail() {
                         type="button"
                         onClick={() => navigate(`/competitions/${id}/submit`)}
                     >
-                        <img src="/submit-upload.svg" alt="icon upload image" className={mixins.uploadSubmitIcon} />
+                        <img src="/icons/submit-upload.svg" alt="icon upload image" className={mixins.uploadSubmitIcon} />
                     </button>
                     <p className={styles.ctaSubtext}>
                         Submit your entry before voting begins
@@ -240,7 +240,7 @@ export default function CompetitionDetail() {
                         type="button"
                         onClick={() => navigate(`/competitions/${id}/submit`)}
                     >
-                        <img src="/submit-edit.svg" alt="icon upload image" className={mixins.editSubmitIcon} />
+                        <img src="/icons/submit-edit.svg" alt="icon upload image" className={mixins.editSubmitIcon} />
                     </button>
                     <p className={styles.ctaSubtext}>
                         Edit your submission?
@@ -292,7 +292,7 @@ export default function CompetitionDetail() {
                                             {/* ----- PLACEMENT ----- */}
                                             {/* --------------------- */}
                                             <div className={styles.placementContainer}>
-                                                <img src="/medal.svg" alt="medal" className={styles.medalIcon}/>
+                                                <img src="/icons/medal.svg" alt="medal" className={styles.medalIcon}/>
                                                 <span>
                                                     {getIndicator(sub, phase, i, user?._id) === "gold" ? "1"
                                                     : getIndicator(sub, phase, i, user?._id) === "silver" ? "2"

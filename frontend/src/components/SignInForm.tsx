@@ -117,7 +117,7 @@ export function SignInForm() {
                             onClick={() => setShowPassword((prev) => !prev)}
                         >
                             <img
-                                src={showPassword ? "/eye-off.svg" : "/eye.svg"}
+                                src={showPassword ? "/icons/eye-off.svg" : "/icons/eye.svg"}
                                 alt="toggle password"
                                 className={styles.passwordIcon}
                             />
