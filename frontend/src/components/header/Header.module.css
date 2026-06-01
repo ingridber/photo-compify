@@ -1,0 +1,118 @@
+.header {
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  background-color: var(--nav-bg);
+  border-bottom: 1px solid var(--text);
+  z-index: 1001;
+}
+
+/* LEFT SIDE */
+.wrapper-left {
+  flex: 1;
+
+  display: flex;
+  align-items: center;
+  margin-left: 0.75rem;
+}
+
+.appName {
+  font: 200 clamp(1.5rem, 3vw, 1.9rem) / 1.1 var(--heading);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text);
+
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* NAVIGATION */
+.navLinksContainer {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  height: 100%;
+}
+
+.navTitle {
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.8rem;
+  font-weight: 300;
+  transition: all 0.2s ease;
+}
+
+.navLink {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.navLink::after {
+  content: "";
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  transform-origin: center;
+  width: 32px;
+  height: 2px;
+  background: #bfa48c;
+  transition: transform 0.2s ease;
+}
+
+.navLink:hover::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+.active::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+.active .navTitle {
+  font-weight: 700;
+}
+
+
+
+/* RIGHT SIDE */
+.wrapper-right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+  height: 100%;
+  margin-right: 0.75rem;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .navLinksContainer {
+    gap: 1.75rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .header {
+    height: 50px;
+  }
+
+  .navLinksContainer {
+    display: none;
+  }
+
+  .appName {
+    font-size: 1.2rem;
+  }
+}
