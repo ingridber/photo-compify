@@ -74,7 +74,7 @@ export async function getCompetitionById(req: AuthRequest, res: Response) {
 
   if (competition.logoBanner?.getSignedUrl) {
      const url = await competition.logoBanner.getSignedUrl();
-     competition._doc.signedLogoUrl = url;
+     competition.signedLogoUrl = url;
   }
 
   const now = new Date();

@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router";
 import { fetchCompetitionById } from "../../services/api";
-import { type Competition, type Phase, type Submission } from "../../types/competitions.ts";
+import { type Competition, type Submission } from "../../types/competitions.ts";
 import SubmissionExpanded from "./SubmissionExpanded.tsx";
 import styles from "./CompetitionDetail.module.css";
 import { useUser } from "../../hooks/useUser.ts";
@@ -9,16 +9,6 @@ import mixins from "../../styles/mixins.module.css";
 import { Throbber } from "../user-feedback/Throbber.tsx";
 import ImageUploadForm from "../images/ImageUploadForm.tsx";
 import { getIndicator, sortSubmissions } from "../../utils/submissionIndicators.ts";
-
-function getPhase(comp: Competition): Phase {
-    const now = Date.now();
-    const votingStart = new Date(comp.votingStartDate).getTime();
-    const end = new Date(comp.endDate).getTime();
-
-    if (now < votingStart) return "submission";
-    if (now < end) return "voting";
-    return "finished";
-}
 
 function formatCountdown(target: string): string {
     const diff = new Date(target).getTime() - Date.now();
@@ -63,7 +53,7 @@ export default function CompetitionDetail() {
     if (loading) return <Throbber />;
     if (error) return <p>{error}</p>;
     if (!competition) return <p>Competition not found</p>;
-    const phase = getPhase(competition);
+    const phase = competition.phase;
 
     const sorted = sortSubmissions(competition.submissions, phase, user?._id);
     const userSubmission = competition.submissions.find((s) => {
@@ -178,26 +168,36 @@ export default function CompetitionDetail() {
         {/* ----- comp phase ----- */}
         <div className={styles.statCell}>
             <span className={styles.statLabel}>Phase</span>
-            <span className={styles.statValue}>{phase === "submission" ? "open" : phase === "finished" ? "closed" : phase}</span>
+            <span className={styles.statValue}>{phase === "submission" ? "open" : phase === "ended" ? "closed" : phase}</span>
         </div>
 
-        {/* ----- time indicators, winner ----- */}
-        <div className={styles.statCell}>
-            {phase === "submission" && (<>
-                <span className={styles.statLabel}>Voting begins</span>
-                <span className={styles.statValue}>{formatCountdown(countdownTarget)}</span>
-            </>)}
+            {/* ----- STATS ----- */}
 
-            {phase === "voting" && (<>
-                <span className={styles.statLabel}>Ends in</span>
-                <span className={styles.statValue}>{formatCountdown(countdownTarget)}</span>
-            </>)}
+            <div className={styles.stats}>
+                {phase === "submission" && (
+                    <div className={styles.stat}>
+                        <span className={styles.statLabel}>Voting begins</span>
+                        <span className={styles.statValue}>
+                            {formatCountdown(countdownTarget)}
+                        </span>
+                    </div>
+                )}
 
-            {phase === "finished" && sorted.length > 0 && (<>
-                <span className={styles.statLabel}>Winner</span>
-                <span className={styles.statValue}
-                    onClick={() => navigate(`/users/${sorted[0].user.username}`)}
-                    style= {{cursor: "pointer"}}>
+                {phase === "voting" && (
+                    <div className={styles.stat}>
+                        <span className={styles.statLabel}>Ends in</span>
+                        <span className={styles.statValue}>
+                            {formatCountdown(countdownTarget)}
+                        </span>
+                    </div>
+                )}
+
+                {phase === "ended" && sorted.length > 0 && (
+                    <div className={styles.stat}>
+                        <span className={styles.statLabel}>Winner</span>
+                        <span className={styles.statValue}
+                            onClick={() => navigate(`/users/${sorted[0].user.username}`)}
+                            style= {{cursor: "pointer"}}>
                             {sorted[0].user.username}
                 </span>
             </>)}
@@ -253,10 +253,8 @@ export default function CompetitionDetail() {
                 </div>
             )}
 
-
-
             {/* ----- submissions ----- */}
-            {(phase === "voting" || phase === "finished") && (
+            {(phase === "voting" || phase === "ended") && (
                 // <div className={styles.gridWrapper}>
                 <section className={styles.submissionsGrid}>
 
@@ -283,7 +281,7 @@ export default function CompetitionDetail() {
                                         {/* -------------------- */}
                                         {/* ----- FINISHED ----- */}
                                         {/* -------------------- */}
-                                        {phase === 'finished' && (
+                                        {phase === 'ended' && (
                                         <>
 
                                             {/* ----- CONTRIBUTOR ----- */}

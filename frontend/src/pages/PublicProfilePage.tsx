@@ -6,7 +6,6 @@ import type { Submission, Competition } from "../types/competitions";
 import type { PublicProfile } from "../types/user";
 import { Throbber } from "../components/user-feedback/Throbber";
 import profileStyle from "../components/profile/profile.module.css";
-import { getCompetitionPhase } from "../utils/competitions";
 
 export default function PublicProfilePage() {
     const { username } = useParams();
@@ -194,8 +193,8 @@ export default function PublicProfilePage() {
                             ended: 2,
                         };
 
-                        const phaseA = getCompetitionPhase(a);
-                        const phaseB = getCompetitionPhase(b);
+                        const phaseA = a.phase;
+                        const phaseB = b.phase;
 
                         return phaseOrder[phaseA] - phaseOrder[phaseB];
                     })

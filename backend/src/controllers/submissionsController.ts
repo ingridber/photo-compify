@@ -6,6 +6,7 @@ import { supabase } from "../config/supabase";
 import { Image } from "../models/Image";
 import { Types } from "mongoose";
 import { CompetitionVote } from "../models/CompetitionVote";
+import z from "zod";
 
 export async function getSubmission(req: Request, res: Response) {
     try {
@@ -29,9 +30,21 @@ export async function getSubmission(req: Request, res: Response) {
     }
 };
 
+const createSubmissionSchema = z.object({
+    imageId: z.string({ required_error: "No image ID provided"})
+})
+
 export async function createSubmission(req: AuthRequest, res: Response) {
+
+    const validation = createSubmissionSchema.safeParse(req.body);
+
+    if(!validation.success){
+        const message = validation.error.issues?.[0]?.message ?? "Validation failed";
+        return res.status(400).json({message});
+    }
+
     try {
-        const { imageId } = req.body;
+        const { imageId } = validation.data;
         const competitionId = req.params.competitionId;
         const competition = await Competition.findById(competitionId);
 
@@ -63,14 +76,6 @@ export async function createSubmission(req: AuthRequest, res: Response) {
                 code: 'SUBMISSION_ALREADY_EXISTS',
                 message: 'You have already submitted to this competition',
                 status: 409,
-            });
-        }
-
-        if (!imageId) {
-            return res.status(400).json({
-                code: 'IMAGE_MISSING',
-                message: 'No image ID provided',
-                status: 400,
             });
         }
 
@@ -295,9 +300,21 @@ export async function deleteSubmission(req: AuthRequest, res: Response) {
     }
 };
 
+const updateSubmissionSchema = z.object ({
+    description: z.string().optional()
+})
+
 export async function updateSubmission(req: AuthRequest, res: Response) {
+
+    const validation = updateSubmissionSchema.safeParse(req.body);
+
+    if(!validation.success){
+        const message = validation.error.issues?.[0]?.message ?? "Validation failed";
+        return res.status(400).json({message});
+    }
+
     try {
-        const { description } = req.body;
+        const { description } = validation.data;
         const submission = await Submission.findById(req.params.id);
 
         if (!submission) {

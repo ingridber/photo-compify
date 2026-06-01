@@ -1,7 +1,6 @@
 import styles from "./competitions-card.module.css";
 import { useNavigate } from "react-router";
 import type { Competition } from "../../types/competitions";
-import { getCompetitionPhase } from "../../utils/competitions";
 
 // Props for component
 type Props = {
@@ -9,7 +8,7 @@ type Props = {
 };
 
 export default function CompetitionsCard({ competition }: Props) {
-  const phase = getCompetitionPhase(competition);
+  const phase = competition.phase;
   const navigate = useNavigate();
 
   function handleClick() {

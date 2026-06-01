@@ -1,6 +1,5 @@
 import styles from "./competitions-profile-card.module.css";
 import { useNavigate } from "react-router";
-import { getCompetitionPhase } from "../../utils/competitions";
 import type { Competition } from "../../types/competitions";
 
 type Props = {
@@ -8,7 +7,7 @@ type Props = {
 };
 
 export default function CompetitionsProfileCard({competition}: Props) {
-  const phase = getCompetitionPhase(competition);
+  const phase = competition.phase;
   const navigate = useNavigate();
 
   function handleClick() {

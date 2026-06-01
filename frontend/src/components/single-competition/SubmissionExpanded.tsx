@@ -1,10 +1,10 @@
-import type { Submission, Phase} from "../../types/competitions";
+import type { Submission } from "../../types/competitions";
 import { voteOnSubmission, removeVote } from "../../services/api";
 import styles from "./SubmissionExpanded.module.css";
 
 interface SubmissionExpandedProps {
     submission: Submission;
-    phase: Phase;
+    phase: "submission" | "voting" | "ended";
     userId?: string;
     onClose: () => void;
     onVoteChange: () => void;

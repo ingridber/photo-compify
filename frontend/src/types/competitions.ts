@@ -17,6 +17,7 @@ export interface Competition {
   createdAt: string;
   updatedAt: string;
   participantCount: number;
+  phase: "submission" | "voting" | "ended";
 }
 
 export interface Submission {
@@ -39,8 +40,6 @@ export interface Submission {
   indicator? : | "voted" | "gold" | "silver" | "bronze" | "none";
   competitionTitle: string;
 }
-
-export type Phase = "submission" | "voting" | "finished";
 
 export type Indicator = "voted" | "gold" | "silver" | "bronze" | "none";
 

@@ -4,7 +4,6 @@ import CompetitionsProfileCard from "../competitions/CompetitionsProfileCard";
 import { Throbber } from "../user-feedback/Throbber";
 import type { Competition } from "../../types/competitions";
 import profileStyle from "./profile.module.css";
-import { getCompetitionPhase } from "../../utils/competitions";
 
 export default function ProfileCompetitions() {
     const [competitions, setCompetitions] = useState<Competition[]>([]);
@@ -43,8 +42,8 @@ export default function ProfileCompetitions() {
                         ended: 2,
                     };
 
-                    const phaseA = getCompetitionPhase(a);
-                    const phaseB = getCompetitionPhase(b);
+                    const phaseA = a.phase;
+                    const phaseB = b.phase;
 
                     return phaseOrder[phaseA] - phaseOrder[phaseB];
                 })
