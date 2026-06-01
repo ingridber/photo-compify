@@ -1,3 +1,175 @@
+.header {
+    margin-top: var(--main-margin);
+}
+
+.hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 3rem 3rem 2rem;
+}
+
+.profilePicContainer {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.profilePic {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+}
+
+
+.uploadLogoBtn {
+    all: unset;
+    font-family: var(--sans);
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: opacity 180ms ease;
+}
+
+.uploadLogoBtn:hover {
+    opacity: 0.7;
+    font-weight: 600;
+}
+
+
+
+.heroMeta {
+    flex: 1;
+    min-width: 0;
+    margin-left: 2rem;
+}
+
+.heroEyebrow {
+    text-transform: uppercase;
+    font-family: var(--sans);
+    font-size: .6rem;
+    letter-spacing: .3em;
+    color: var(--text);
+}
+
+.heroName {
+    margin: 0 0 .9rem;
+    font: 300 clamp(1.6rem, 3.5vw, 2.4rem)/1.1 var(--heading);
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--text);
+}
+
+
+.optionsRow {
+  display: flex;
+  max-width: 860px;
+  margin: 0 auto 1rem;
+  border-block: 1px solid var(--border);
+}
+
+.optionCell {
+  position: relative;
+
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.35rem;
+  padding: 1.3rem 0;
+
+  border-right: 1px solid var(--border);
+
+  transition: opacity 0.2s ease;
+}
+
+.optionCell:last-child {
+  border-right: 0;
+}
+
+.optionClickable {
+  cursor: pointer;
+}
+
+.optionClickable:hover {
+  opacity: 0.75;
+}
+
+.optionClickable::after {
+  content: "";
+
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+
+  transform: translateX(-50%) scaleX(0);
+
+  width: 32px;
+  height: 2px;
+
+  background: #bfa48c;
+
+  transition: transform 0.2s ease;
+}
+
+.optionClickable:hover::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+.activeOption::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+.large {
+  color: var(--text);
+
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+
+  font: 300 clamp(1rem, 1.8vw, 1.4rem) / 1
+    var(--heading);
+
+  transition: all 0.2s ease;
+}
+
+.activeOption .large,
+.activeOption .small {
+  font-weight: 700;
+}
+
+
+.small {
+  color: var(--text);
+
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+
+  font-size: 0.8rem;
+  font-weight: 400;
+
+  font-family: var(--sans);
+
+  transition: all 0.2s ease;
+}
+
+
+
 
 .changeProfilePicLink {
     display: block;
@@ -209,9 +381,9 @@ article {
 /* ----------------------------------- */
 @media (max-width: 600px) { 
 
-    /* .confirmDeleteContainer{
-        width: 90vw;
-    } */
+    .heroMeta {
+        margin-left: .2rem;
+    }
 
     .confirmBtnBye {
         background-color: var(--abort-btn);
@@ -221,5 +393,44 @@ article {
         background-color: var(--submit-btn);
     }
 
+     .optionsRow {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        margin: 0 1rem 1rem;
+    }
+
+    .optionCell {
+        min-height: 90px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 0;
+    }
+
+    .optionCell:nth-child(odd) {
+        border-right: 1px solid var(--border);
+    }
+
+    .optionCell:nth-last-child(-n + 2) {
+        border-bottom: none;
+    }
+
+    .large {
+        font-size: 1rem;
+        text-align: center;
+    }
+
+    .small {
+        font-size: 0.65rem;
+        letter-spacing: 0.18em;
+        text-align: center;
+    }
+
+    .confirmBtnBye {
+        background-color: var(--abort-btn);
+    }
+
+    .confirmBtnStay {
+        background-color: var(--submit-btn);
+    }
 
 }

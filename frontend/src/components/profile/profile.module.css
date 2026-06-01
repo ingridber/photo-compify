@@ -3,6 +3,10 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+.outletContainer {
+    animation: fadeUp 0.35s ease-out;
+}
+
 .hero {
   background: var(--bg);
   margin-top: var(--main-margin);
@@ -340,6 +344,11 @@
   backdrop-filter: blur(4px);
 }
 
+.competitionItem {
+  opacity: 0;
+  animation: fadeUp 0.4s ease-out forwards;
+}
+
 .competitionTitle {
   flex: 1;
   margin: 0;
@@ -421,12 +430,20 @@
 
 /* ---------- MOBILE LAYOUT ---------- */
 @media (max-width: 740px) {
-  .heroInner {
-    flex-wrap: wrap;
-    align-items: center;
-    margin-left: 1rem;
-    padding: 1rem .5rem 0;
-  }
+    .heroInner {
+        flex-wrap: wrap;
+        align-items: center;
+        margin-left: 1rem;
+        padding: 1rem .5rem 0;
+    }
+
+
+  .pill {
+    padding: .7rem .85rem;
+    font-size: .6rem;
+    font-weight: 00;
+    letter-spacing: .2em;
+}
 
   .editBtn {
     width: 50%;
@@ -444,4 +461,49 @@
   .fullscreenImage {
     max-height: 100%;
   }
+
+  .editPanel {
+    width: 100%;
+  }
+
+  .editForm {
+    width: 100%;
+    padding: 0 1rem 2rem;
+    box-sizing: border-box;
+  }
+
+  .editActions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .editError {
+    text-align: center;
+  }
+
+  .saveBtn {
+    width: 100%;
+    padding: .9rem 1rem;
+  }
+
+  .editLabel {
+    letter-spacing: .15em;
+  }
+
+  .editInput {
+    font-size: 16px;
+  }
+
+
+  @media (max-width: 480px) {
+  .editForm {
+    padding-inline: .75rem;
+  }
+
+  .editPanel {
+    margin-top: .5rem;
+  }
+}
+
 }

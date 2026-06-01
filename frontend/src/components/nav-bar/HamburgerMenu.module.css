@@ -1,7 +1,6 @@
-.container {
-  height: 100%;
+.profileContainer {
+  height: 45px;
   display: flex;
-  align-items: center;
 }
 
 .hamburger {
@@ -12,11 +11,12 @@
   background: none;
   border: none;
   cursor: pointer;
+  padding: 0;
 }
 
 .hamburgerIcon {
   height: 100%;
-  filter: var(--back-btn-icon);
+  filter: var(--iconToggleTheme);
   margin-right: 1rem;
 }
 
@@ -63,13 +63,11 @@
   color: white;
 }
 
-/* ----------------------------------- */
-/* ---------- MOBILE LAYOUT ---------- */
-/* ----------------------------------- */
 @media (max-width: 600px) {
   .navbar {
     height: 50px;
   }
+
   .hamburger {
     height: 35px;
     width: 35px;

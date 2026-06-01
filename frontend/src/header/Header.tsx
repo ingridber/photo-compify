@@ -1,25 +1,56 @@
 import { useNavigate } from "react-router";
-import { DisplayLogo } from "../components/display-profile-picture/DisplayProfilePicture";
 import { NotificationMenu } from "../components/nav-bar/NotificationMenu";
 import HamburgerMenu from "../components/nav-bar/HamburgerMenu";
 import styles from "./Header.module.css";
+import { NavLink } from "react-router";
+import ToggleTheme from "./ToggleTheme";
+import { useUser } from "../hooks/useUser";
 
 export default function Header() {
     const navigate = useNavigate();
+    const {user} = useUser();
 
     return (
         <header className={styles.header}>
-            <div
-                className={styles.logoContainer}
-                onClick={() => navigate("/")}
-            >
-                <DisplayLogo text={false} />
+            <div className={styles['wrapper-left']}>
+                <h1 className={styles.appName} onClick={() => navigate("/")}>
+                    Photo Compify
+                </h1>
+            </div>
+
+            <div className={styles.navLinksContainer}>
+                <NavLink to="/" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}`: styles.navLink}>
+                    <span className={styles.navTitle}>Home</span>
+                </NavLink>
+                <NavLink to="/create-competition" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}`: styles.navLink}>
+                    <span className={styles.navTitle}>Create</span>
+                </NavLink>
+                <NavLink to="/competitions" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}`: styles.navLink}>
+                    <span className={styles.navTitle}>Comps</span>
+                </NavLink>
+
+                { !user ? (
+                    <NavLink to="/login" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}`: styles.navLink}>
+                        <span className={styles.navTitle}>Sign in</span>
+                    </NavLink>
+                ):(
+                    <NavLink to="/profile" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}`: styles.navLink}>
+                        <span className={styles.navTitle}>Profile</span>
+                    </NavLink>
+                )}
+                
             </div>
 
             <div className={styles["wrapper-right"]}>
-                <NotificationMenu />
-                <HamburgerMenu />
+                <ToggleTheme />
+                { user && (
+                    <>
+                    <NotificationMenu />
+                    <HamburgerMenu />
+                    </>
+                )}
             </div>
+
         </header>
     );
 }

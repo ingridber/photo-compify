@@ -108,7 +108,9 @@ export function ProfilePage() {
         </header>
 
         {/* CHILD ROUTES ----- <ProfileCompetitions/> & <ProfileSubmissions/> */}
-        <Outlet />
+        <div className={profileStyle.outletContainer}>
+            <Outlet />
+        </div>
     </>
     );
 }

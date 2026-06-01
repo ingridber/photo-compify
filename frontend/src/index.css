@@ -13,6 +13,7 @@
   --bg-light: #F2F1EB;
   --comp-card-bg: #F2F1EB;
   --border: #2C2F4A;
+  --nav-bg: #F2F1EB;
 
 
   /* ----- TEXT THEMES ----- */
@@ -86,6 +87,9 @@
   --bg-dark: #001229;
   --comp-card-bg: #171616;
   --border: #4A4A4A;
+
+  --nav-bg: #171616;
+
   
 
   --submission: lightblue;
