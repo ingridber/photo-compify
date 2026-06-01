@@ -50,6 +50,7 @@ export default function ProfileCompetitions() {
                 })
                 .map((competition, i) => (
                     <div
+                        className={profileStyle.competitionItem}
                         key={competition._id}
                         style={{ animationDelay: `${i * 80}ms` }}>
                         <CompetitionsProfileCard competition={competition} />
