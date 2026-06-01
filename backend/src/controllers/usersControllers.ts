@@ -387,7 +387,7 @@ export async function getUserCompetitions(req: Request, res: Response) {
             owner: user._id
         })
         .populate("owner", "username")
-        .populate("logoBanner");
+        .populate("logoBanner");;
 
         // ---------- ADD SIGNED URL ----------
         await Promise.all(
@@ -434,7 +434,7 @@ export async function getUserSubmissions(
         .populate("image")
         .populate({
             path: "competition",
-            select: "title endDate votingStartDate submissions",
+            select: "title endDate votingStartDate submissions phase",
             populate: {
                 path: "submissions"
             }
@@ -602,7 +602,8 @@ export async function getPublicProfile(
                                 competition.submissions,
                             owner:
                                 competition.owner,
-
+                            phase:
+                                competition.phase,
                             logoBanner:
                                 competition.logoBanner,
 

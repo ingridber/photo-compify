@@ -3,7 +3,6 @@ import { getUserSubmits } from "../../services/api";
 import { useNavigate } from "react-router";
 import type { Submission } from "../../types/competitions";
 import profileStyle from "./profile.module.css";
-import { getCompetitionPhase } from "../../utils/competitions";
 
 type Props = {
     showOnlyWins?: boolean;
@@ -88,7 +87,7 @@ export default function ProfileSubmissions({showOnlyWins = false}: Props) {
                     </p>
 
                     {typeof submission.competition !== "string" && (() => {
-                        const phase = getCompetitionPhase(submission.competition);
+                        const phase = submission.competition.phase;
                         return (
                             !showOnlyWins && (
                                 <div className={profileStyle.placementContainer}>
