@@ -90,7 +90,7 @@ export function ChangePassword() {
                             onClick={() => setShowPassword( (prev) => !prev)}
                         >
                             <img
-                                src={showPassword ? "/eye-off.svg" : "/eye.svg"}
+                                src={showPassword ? "/icons/eye-off.svg" : "/icons/eye.svg"}
                                 alt="Toggle password"
                                 className={styles.passwordIcon}
                             />
@@ -116,7 +116,7 @@ export function ChangePassword() {
                             onClick={() => setShowNewPassword((prev) => !prev)}
                         >
                             <img
-                                src={showNewPassword ? "/eye-off.svg" : "/eye.svg"}
+                                src={showNewPassword ? "/icons/eye-off.svg" : "/icons/eye.svg"}
                                 alt="Toggle password"
                                 className={styles.passwordIcon}
                             />
@@ -142,7 +142,7 @@ export function ChangePassword() {
                             onClick={() => setShowConfirmPassword((prev) => !prev)}
                         >
                             <img
-                                src={showConfirmPassword ? "/eye-off.svg" : "/eye.svg"}
+                                src={showConfirmPassword ? "/icons/eye-off.svg" : "/icons/eye.svg"}
                                 alt="Toggle password"
                                 className={styles.passwordIcon}
                             />
