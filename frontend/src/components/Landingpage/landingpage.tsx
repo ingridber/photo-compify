@@ -14,9 +14,6 @@ export default function LandingPage() {
 
   const navigate = useNavigate();
   const {user} = useUser();
-   const goTo = (path: string) => {
-    navigate(path);
-  };
 
   // Fetching data from backend, 5 competitions currently in voting stage
   useEffect(() => {
@@ -73,83 +70,97 @@ export default function LandingPage() {
   const current = topCompetitions[index];
 
   return (
-    <div
-      className={styles.container}
-      onMouseEnter={stopAutoplay} // Pause autoplay when hovering
-      onMouseLeave={startAutoplay} // Resume autoplay when leaving
-    >
+    <main className={styles.container}>
+      <section className={styles.hero}>
+        <div className={styles.heroContent}>
 
-      <h1><span>Welcome</span>{`${user?.username ? user.username.toLocaleUpperCase() : 'Stranger'} <3`}</h1>
+          <span className={styles.badge}>Welcome to Photo Compify</span>
 
-      {/* BOX */}
-      <div className={styles.box}
-      
-        onClick={() => navigate(`/competitions/${current._id}`)}
-        style={{ cursor: "pointer" }}
-        >
-        <div
-          className={`${styles.content} ${fade ? styles.fadeIn : styles.fadeOut}`}
-        >
-          {current.logoBanner ? (
-            <img
-              src={current.signedLogoUrl}
-              alt={current.title}
-              className={styles.image}
+          <h1 className={styles.heroTitle}>
+            Capture.
+            <br />
+            Compete.
+            <br />
+            Inspire.
+          </h1>
+
+          <p className={styles.heroText}>Join photographers from around the world. Enter competitions, showcase your vision, and get discovered.</p>
+
+          <div className={styles.heroActions}>
+            <button
+              onClick={() => navigate("/competitions")}
+              className={styles.primaryBtn}
+            >
+              Explore Competitions
+            </button>
+
+            {user ? (
+              <button
+                onClick={() => navigate("/create-competition")}
+                className={styles.secondaryBtn}
+              >
+                Create Competition
+              </button>
+            ) : (
+              <button
+                onClick={() => navigate("/login")}
+                className={styles.secondaryBtn}
+              >
+                Sign In
+              </button>
+            )}
+          </div>
+        </div>
+
+        <div className={styles.heroBackground}>
+          <div className={styles.overlay} />
+        </div>
+      </section>
+
+      <div
+        className={styles.sliderContainer}
+        onMouseEnter={stopAutoplay} // Pause autoplay when hovering
+        onMouseLeave={startAutoplay} // Resume autoplay when leaving
+      >
+        {/* BOX */}
+        <div className={styles.box}
+          onClick={() => navigate(`/competitions/${current._id}`)}
+          style={{ cursor: "pointer" }}>
+
+          <div className={`${styles.content} ${fade ? styles.fadeIn : styles.fadeOut}`}>
+
+            {current.logoBanner ? (
+              <img
+                src={current.signedLogoUrl}
+                alt={current.title}
+                className={styles.image}
+              />
+            ) : (
+              <h2 className={styles.title}>{current.title}</h2> // Fallback if no image
+            )}
+          </div>
+        </div>
+
+        {/* DOTS */}
+        <div className={styles.dots}>
+          {topCompetitions.map((_, i) => (
+            <div
+              key={i}
+              onClick={() => {
+                setFade(false);
+
+                setTimeout(() => {
+                  setIndex(i);
+                  setFade(true);
+                }, 150);
+              }}
+              className={`${styles.dot} ${
+                i === index ? styles.activeDot : ""
+              }`}
             />
-          ) : (
-            <h2 className={styles.title}>{current.title}</h2> // Fallback if no image
-          )}
+          ))}
         </div>
       </div>
-
-      {/* DOTS */}
-      <div className={styles.dots}>
-        {topCompetitions.map((_, i) => (
-          <div
-            key={i}
-            onClick={() => {
-              setFade(false);
-
-              setTimeout(() => {
-                setIndex(i);
-                setFade(true);
-              }, 150);
-            }}
-            className={`${styles.dot} ${
-              i === index ? styles.activeDot : ""
-            }`}
-          />
-        ))}
-      </div>
-
-      {/* Button to competitionPage*/}
-      <button
-        onClick={() => navigate("/competitions")} 
-        className={styles.competitionButton}
-      >
-        Explore all competitions
-      </button>
-
-        
-  {!user ? (
-    <>
-      <h2 className={styles.hostComp}>
-        Want to HOST or JOIN a competition?
-      </h2>
-      <button onClick={() => goTo("/login")} className={styles.signupButton}>
-        Sign up
-      </button>
-    </>
-  ) : (
-    <>
-      <h2 className={styles.hostComp}>
-        Create competition here!
-      </h2>
-      <button onClick={() => goTo("/create-competition")} className={styles.signupButton}>
-        Create
-      </button>
-    </>
-  )}
-</div>
+    </main>
   );
 }
