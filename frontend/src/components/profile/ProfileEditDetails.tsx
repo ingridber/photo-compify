@@ -79,6 +79,11 @@ export default function ProfileEditDetails({ handleSave }: EditProps) {
                         closeMenuOnSelect={false}
                         isOptionDisabled={() => selectedThemes.length >= 3}
                         menuPortalTarget={document.body}
+                        styles={{
+                          option: (base) => ({
+                              ...base,
+                              color: "black"
+                          }),}}
                     />
                 </div>
             </div>
