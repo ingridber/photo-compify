@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router";
 import { fetchCompetitionById } from "../../services/api";
-import { type Competition, type Phase, type Indicator, type Submission } from "../../types/competitions.ts";
+import { type Competition, type Indicator, type Submission } from "../../types/competitions.ts";
 import SubmissionCard from "./SubmissionCard";
 import SubmissionExpanded from "./SubmissionExpanded.tsx";
 import styles from "./CompetitionDetail.module.css";
@@ -10,16 +10,6 @@ import mixins from "../../styles/mixins.module.css";
 import { Throbber } from "../user-feedback/Throbber.tsx";
 import ImageUploadForm from "../images/ImageUploadForm.tsx";
 import { getIndicator, sortSubmissions } from "../../utils/submissionIndicators.ts";
-
-function getPhase(comp: Competition): Phase {
-    const now = Date.now();
-    const votingStart = new Date(comp.votingStartDate).getTime();
-    const end = new Date(comp.endDate).getTime();
-
-    if (now < votingStart) return "submission";
-    if (now < end) return "voting";
-    return "finished";
-}
 
 function formatCountdown(target: string): string {
     const diff = new Date(target).getTime() - Date.now();
@@ -33,49 +23,6 @@ function formatCountdown(target: string): string {
     if (days >= 1) return `${days}d ${hours}h`;
     return `${hours}h ${minutes}m`;
 }
-
-// function getIndicator(
-//     submission: Submission,
-//     phase: Phase,
-//     rank: number,
-//     userId?: string,
-// ): Indicator {
-//     if (!submission) return "none";
-//     if (phase === "voting" && userId) {
-//         return submission.votes?.includes(userId) ? "voted" : "none";
-//     }
-
-//     if (phase === "finished") {
-//         if (rank === 0) return "gold";
-//         if (rank === 1) return "silver";
-//         if (rank === 2) return "bronze";
-//     }
-
-//     return "none";
-// }
-
-// function sortSubmissions(
-//     submissions: Submission[],
-//     phase: Phase,
-//     userId?: string,
-// ): Submission[] {
-//     if (phase === "submission" && userId) return [...submissions].filter(s => s.user?._id === userId);
-//     if (phase === "voting" && userId) {
-//         return [...submissions].sort(
-//             (a, b) =>
-//                 (b.votes?.includes(userId) ? 1 : 0) -
-//                 (a.votes?.includes(userId) ? 1 : 0),
-//         );
-//     }
-
-//     if (phase === "finished") {
-//         return [...submissions].sort(
-//             (a, b) => (b.votes.length ?? 0) - (a.votes.length ?? 0),
-//         );
-//     }
-
-//     return submissions;
-// }
 
 export default function CompetitionDetail() {
     const { id } = useParams<{ id: string }>();
@@ -105,7 +52,7 @@ export default function CompetitionDetail() {
     if (loading) return <Throbber />;
     if (error) return <p>{error}</p>;
     if (!competition) return <p>Competition not found</p>;
-    const phase = getPhase(competition);
+    const phase = competition.phase;
 
     const sorted = sortSubmissions(competition.submissions, phase, user?._id);
     const userSubmission = competition.submissions.find((s) => {
@@ -214,17 +161,6 @@ export default function CompetitionDetail() {
             {/* ----- STATS ----- */}
 
             <div className={styles.stats}>
-                {/* {phase === "finished" && (
-                    <div className={styles.stat}>
-                        <span className={styles.statLabel}>Host</span>
-                        <span className={styles.statValue}>
-                            {competition.owner?.username ?? "Deleted User"}
-                        </span>
-                    </div>
-                )} */}
-
-
-
                 {phase === "submission" && (
                     <div className={styles.stat}>
                         <span className={styles.statLabel}>Voting begins</span>
@@ -243,7 +179,7 @@ export default function CompetitionDetail() {
                     </div>
                 )}
 
-                {phase === "finished" && sorted.length > 0 && (
+                {phase === "ended" && sorted.length > 0 && (
                     <div className={styles.stat}>
                         <span className={styles.statLabel}>Winner</span>
                         <span className={styles.statValue}
@@ -306,7 +242,7 @@ export default function CompetitionDetail() {
                 </div>
             )}
 
-            {(phase === "voting" || phase === "finished") && (
+            {(phase === "voting" || phase === "ended") && (
                 <div className={styles.gridWrapper}>
                     {selectedSubmission ? (
                         <SubmissionExpanded
