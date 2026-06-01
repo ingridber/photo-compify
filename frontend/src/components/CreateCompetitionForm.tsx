@@ -169,6 +169,8 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
         <>
             {/* ── HERO – mirrors CompetitionDetail exactly ── */}
             <header className={styles.header}>
+                <h1 className={styles.pageTitle}>New Competition</h1>
+
                 <div className={styles.hero}>
 
                     {/* Logo */}
@@ -177,7 +179,7 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
                             {previewUrl ? (
                                 <img className={styles.logoPic} src={previewUrl} alt="Logo preview" />
                             ) : (
-                                <img className={styles.noLogo} src="/competitions.svg" alt="Competition icon" />
+                                <img className={styles.noLogo} src="/icons/competitions.svg" alt="Competition icon" />
                             )}
                         </div>
                         <button
@@ -199,7 +201,7 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
 
                     {/* Title + themes */}
                     <div className={styles.heroMeta}>
-                        <p className={styles.heroEyebrow}>New Competition</p>
+                        <p className={styles.heroEyebrow}>Enter a title</p>
                         <input
                             type="text"
                             value={title}
