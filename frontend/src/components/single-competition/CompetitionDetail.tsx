@@ -95,7 +95,7 @@ export default function CompetitionDetail() {
 
                     {competition.owner && 
                     user?.username === competition.owner.username && 
-                    phase !== "finished" && (
+                    phase !== "ended" && (
                         <button 
                             className={styles.uploadLogoBtn}
                             onClick={() => setShowLogoModal(true)}
@@ -108,7 +108,7 @@ export default function CompetitionDetail() {
                 <>
                     {competition.owner &&
                     user?.username === competition.owner.username &&
-                    phase !== "finished" && (
+                    phase !== "ended" && (
                         <>
                         <div className={styles.logoContainer}>              
                             <img className={styles.noLogo} src="/competitions.svg" alt="Competition icon"/>
@@ -173,27 +173,26 @@ export default function CompetitionDetail() {
 
             {/* ----- STATS ----- */}
 
-            <div className={styles.stats}>
-                {phase === "submission" && (
+            <div className={styles.statCell}>
+                {phase === "submission" && (<>
                     <div className={styles.stat}>
                         <span className={styles.statLabel}>Voting begins</span>
                         <span className={styles.statValue}>
                             {formatCountdown(countdownTarget)}
                         </span>
                     </div>
-                )}
+                </>)}
 
-                {phase === "voting" && (
+                {phase === "voting" && (<>
                     <div className={styles.stat}>
                         <span className={styles.statLabel}>Ends in</span>
                         <span className={styles.statValue}>
                             {formatCountdown(countdownTarget)}
                         </span>
                     </div>
-                )}
+                </>)}
 
-                {phase === "ended" && sorted.length > 0 && (
-                    <div className={styles.stat}>
+                {phase === "ended" && sorted.length > 0 && (<>
                         <span className={styles.statLabel}>Winner</span>
                         <span className={styles.statValue}
                             onClick={() => navigate(`/users/${sorted[0].user.username}`)}
