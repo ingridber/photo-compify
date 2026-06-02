@@ -80,10 +80,10 @@ export default function ProfileEditDetails({ handleSave }: EditProps) {
                         isOptionDisabled={() => selectedThemes.length >= 3}
                         menuPortalTarget={document.body}
                         styles={{
-                          option: (base) => ({
-                              ...base,
-                              color: "black"
-                          }),}}
+                                   option: (base, state) => ({
+                                        ...base,
+                                        color: state.isDisabled ? "#999" : "black"
+                                    }),}}
                     />
                 </div>
             </div>
