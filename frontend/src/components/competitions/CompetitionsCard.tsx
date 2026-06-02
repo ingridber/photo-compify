@@ -22,15 +22,19 @@ export default function CompetitionsCard({ competition }: Props) {
     <div 
       className={`${styles.cardHeader} ${competition.signedLogoUrl ? styles.cardLogo : styles.cardNoLogo}`}
       style={competition.signedLogoUrl
-        ? {backgroundImage: 
-          `linear-gradient(
-                to top,
-                rgba(0,0,0,0.82),
-                rgba(0,0,0,0.45),
-                rgba(0,0,0,0.18)
-              ),
-              url(${competition.signedLogoUrl})`}
-        : undefined}>
+        ? {
+          backgroundImage: `
+            linear-gradient(
+              to top,
+              rgba(0,0,0,0.82),
+              rgba(0,0,0,0.45),
+              rgba(0,0,0,0.18)
+            ),
+            url(${competition.signedLogoUrl})
+          `,
+          color: 'var(--text-light)',}
+        : undefined}
+    >
 
       <div
         className={styles.phasePill}

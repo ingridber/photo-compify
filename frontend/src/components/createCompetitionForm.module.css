@@ -193,6 +193,10 @@
 /* ------------------------- */
 @media (max-width: 740px) {
 
+    .pageTitle {
+        margin-bottom: 0;
+    }
+
     .hero {
         flex-direction: column;
         text-align: center;
