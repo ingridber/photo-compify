@@ -10,7 +10,7 @@ export default function Footer() {
             <div className={styles.wrapperLeft}>
                 <h2 className={styles.appName}>Photo Compify</h2>
                 <p className={styles.appText}>
-                    <span>By: </span>
+                    <span>By </span>
                     Ingrid, Olle, Mattias, Mårten and Delzar
                 </p>
                 <p className={`${styles.appTextSmall} ${styles.hide}`}>
