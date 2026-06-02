@@ -256,6 +256,10 @@
 /* ------------------------- */
 @media (max-width: 600px) {
 
+  .competitionsPage {
+    padding: 2rem 0 0;
+  }
+
   .optionsRow {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -294,9 +298,12 @@
 
   .pageTitle {
     font-size: 1.9rem;
+    margin-left: 1rem ;
   }
 
   .pageDescription {
     font-size: .75rem;
+    margin-left: 1rem ;
+
   }
 }
