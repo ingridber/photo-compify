@@ -1,0 +1,103 @@
+.navbar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    display: block;
+  }
+}
+
+.navbarContainer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 65px !important;
+  background: var(--nav-bg);
+  border-top: 1px solid var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 9999;
+}
+
+.navLink {
+  position: relative;
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.navIcon {
+  width: 22px;
+  height: 22px;
+  filter: var(--iconToggleTheme);
+  opacity: 0.75;
+  transition: all 0.2s ease;
+}
+
+.navTitle {
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.68rem;
+  font-weight: 400;
+  opacity: 0.75;
+  transition: all 0.2s ease;
+}
+
+.navLink:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 15px;
+  bottom: 15px;
+  width: 1px;
+  background: var(--text);
+  opacity: 0.4;
+}
+
+.active::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 20%;
+  width: 60%;
+  height: 2px;
+  background: var(--text);
+}
+
+.active .navIcon {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+.active .navTitle {
+  opacity: 1;
+  font-weight: 700;
+}
+
+/* ----------------------------------- */
+/* ---------- MOBILE LAYOUT ---------- */
+/* ----------------------------------- */
+@media (max-width: 600px) {
+  .navbarContainer {
+    height: 68px;
+  }
+
+  .navIcon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .navTitle {
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+  }
+}

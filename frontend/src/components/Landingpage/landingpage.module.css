@@ -1,0 +1,184 @@
+.container {
+  width: 100%;
+  margin-bottom: var(--main-margin);
+}
+
+.hero {
+  position: relative;
+  min-height: 78vh;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  padding: 0 2rem 2rem 2rem;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+}
+
+
+.badge {
+  display: inline-block;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--text);
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.12rem;
+  margin-bottom: 1.5rem;
+}
+
+.heroTitle {
+  font-size: clamp(3rem, 8vw, 5.8rem);
+  line-height: 0.95;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.heroText {
+  max-width: 420px;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.12rem;
+}
+
+.heroActions {
+  margin-top: 2rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.primaryBtn {
+  padding: 0.95rem 1.6rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  background: var(--text);
+  color: var(--bg);
+}
+
+.primaryBtn:hover {
+  opacity: 0.9;
+}
+
+.secondaryBtn {
+  padding: 0.95rem 1.6rem;
+  border-radius: 999px;
+  background: transparent;
+  border: 1px solid var(--text);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.secondaryBtn:hover {
+  background: var(--text);
+  color: var(--bg);
+}
+
+.heroBackground {
+  position: absolute;
+  inset: 0;
+
+  background-image: var(--image-bg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  z-index: 0;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+}
+
+
+
+/* MATTIAS SLIDER */
+
+
+.box {
+  width: 300px;
+  height: 200px;
+  margin: 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid;
+  border-color: white;
+  position: relative;
+  margin-top: 10px;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.title {
+  color: white;
+}
+
+.dots {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: gray;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.activeDot {
+  background: var(--text);
+}
+
+
+.content {
+  width: 100%;
+  height: 100%;
+  transition: opacity 300ms ease, transform 300ms ease;
+}
+
+.fadeIn {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.fadeOut {
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+
+
+/* ----- MOBILE ----- */
+
+@media (max-width: 740px) {
+
+.container {
+  margin-top: -7rem;
+  margin-bottom: 200px;
+}
+
+
+.badge {
+  display: none;
+}
+
+}

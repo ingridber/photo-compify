@@ -1,0 +1,270 @@
+/* ---------------------------------------- */
+/* ---------- CONTENT CONTAINERS ---------- */
+/* ---------------------------------------- */
+.headerContainer {
+    text-align: center;
+    width: 400px;
+    height: 200px;
+    margin: 0 auto;
+    padding-top: var(--main-margin);
+}
+
+.contentContainer {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    text-align: center;
+    margin: 1rem auto;
+}
+
+
+.main {
+    padding-top: var(--main-margin);
+}
+
+
+/* --------------------------------- */
+/* ---------- BACK BUTTON ---------- */
+/* ---------- UPLOAD SUBMIT BTN ---------- */
+/* ---------- EDIT SUBMIT BTN  ---------- */
+/* --------------------------------- */
+.backBtn,
+.uploadSubmit,
+.editSubmit {
+    width: 3.5rem;
+    padding: 0.4rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--back-btn);
+    border: none;
+    border-radius: 0.8rem 0.8rem 0 0.8rem;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    position: fixed;
+}
+
+.backBtnIcon,
+.uploadSubmitIcon,
+.editSubmitIcon {
+    width: 1.5rem;
+    filter: var(--back-btn-icon);
+}
+
+.uploadSubmit,
+.editSubmit {
+    margin-top: 1rem;
+    position: relative;
+    border: 1px solid var(--back-btn);
+    border-radius: 0.8rem;
+}
+
+.uploadSubmit:hover,
+.editSubmit:hover{
+    background-color: var(--bg);
+    border-color: var(--text);
+    filter: none;
+}
+
+.uploadSubmit:hover .uploadSubmitIcon,
+.editSubmit:hover .editSubmitIcon {
+    filter: none;
+}
+
+[data-theme="dark"] .uploadSubmit:hover .uploadSubmitIcon,
+[data-theme="dark"] .editSubmit:hover .editSubmitIcon {
+    filter: var(--back-btn-icon);
+}
+
+/* ------------------------------ */
+/* ---------- USERNAME ---------- */
+/* ------------------------------ */
+.username,
+.title {
+    text-transform: uppercase;
+    font-weight: 800;
+    font-size: 1.3rem;
+    color: var(--text);
+    letter-spacing: 0.05rem;
+    padding-top: 1.8rem;
+    margin-bottom: 1.8rem;
+}
+
+.username:hover{
+    cursor: pointer;
+}
+
+/* ---------------------------------- */
+/* ---------- INPUT FIELDS ---------- */
+/* ---------------------------------- */
+/* 
+.fieldgroup 
+    .labelForInput
+    .inputFieldContainer
+        .inputField
+        (.displayPasswordBtn
+            .displayPasswordBtnIcon)
+*/
+.fieldGroup{
+    text-align: left;
+    margin-bottom: 3%;
+}
+
+.labelForInput {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text);
+}
+
+.inputFieldContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--input-field);
+    border-radius: 0 0.8rem 0.8rem;
+    padding: 2%;
+}
+
+.inputField {
+    width: 100%;
+    border: none;
+    background: none;
+    padding: 2%;
+    color: var(--text);
+}
+
+.inputField::placeholder {
+    color: var( --input-placeholder);
+    font-size: 0.9rem;
+    padding: 0;
+}
+
+.displayPasswordBtn {
+    border: none;
+    background: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.displayPasswordBtnIcon {
+    width: 1.5rem;
+    filter: var(--display-pw-icon);
+}
+
+/* ----------------------------------- */
+/* ---------- SUBMIT BUTTON ---------- */
+/* ----------------------------------- */
+.submitBtn {
+    background-color: var(--submit-btn);
+    padding: 0.4rem 1.1rem;
+    border: none;
+    border-radius: 0.8rem;
+    margin-top: 2rem;
+    cursor: pointer;
+    color: var(--text-light);
+    font-size: 1rem;
+    text-transform: uppercase;
+    box-shadow: var(--shadow);
+
+}
+
+.submitBtn:disabled {
+    opacity: 0.8;
+    background-color: var(--submit-disabled);
+    cursor: not-allowed;
+}
+
+.submitBtnIcon {
+    width: 1.7rem;
+    filter: brightness(0) invert(1);
+}
+
+
+/* ------------------------------ */
+/* ---------- MESSAGES ---------- */
+/* ------------------------------ */
+.message {
+    margin-top: 1.5rem;
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: var(--text);
+}
+
+.errorMessage {
+    margin-top: 1.5rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: red;
+}
+
+
+
+/* ------------------------------------------ */
+/* ---------- CHANGE PICTURE MODAL ---------- */
+/* ---------- SUBMIT PICTURE MODAL ---------- */
+/* ------------------------------------------ */
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--modal-overlay);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 1000;
+}
+
+.modalContent {
+  background: var(--modal-bg);
+  padding: 0 1rem;
+  border-radius: 1rem;
+  border: 2px outset var(--modal-border);
+  position: relative;
+  max-width: 400px;
+  width: 90%;
+  color: var(--text-light);
+  box-shadow: var(--shadow);
+}
+
+.closeBtn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  border: none;
+  background: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  filter:   var(--back-btn-icon);
+}
+
+
+/* ----------------------------------- */
+/* ---------- MOBILE LAYOUT ---------- */
+/* ----------------------------------- */
+@media (max-width: 600px) { 
+
+    .headerContainer {
+        width: 90vw;
+    }
+    .contentContainer{
+        width: 90vw;
+    }
+
+    .modalContent {
+        width: 85%;
+    }
+
+    .profileSubmissionsgrid {
+        width: 95%;
+        margin: 1rem auto;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.2rem;
+    }
+} 

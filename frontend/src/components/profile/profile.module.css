@@ -1,0 +1,509 @@
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.outletContainer {
+    animation: fadeUp 0.35s ease-out;
+}
+
+.hero {
+  background: var(--bg);
+  margin-top: var(--main-margin);
+}
+
+.heroInner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 3rem 3rem 2rem;
+}
+
+.avatarRing {
+  width: 150px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.heroMeta {
+  flex: 1;
+  min-width: 0;
+}
+
+.heroEyebrow,
+.statLabel,
+.pill,
+.editBtn,
+.saveBtn,
+.closeFullscreenBtn {
+  text-transform: uppercase;
+  font-family: var(--sans);
+}
+
+.heroEyebrow {
+  font-size: .6rem;
+  letter-spacing: .3em;
+  color: var(--text);
+}
+
+.heroName {
+  margin: 0 0 .9rem;
+  font: 300 clamp(1.6rem, 3.5vw, 2.4rem)/1.1 var(--heading);
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.themePills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  margin-bottom: .75rem;
+}
+
+.pill {
+  margin: 0;
+  padding: .85rem 1rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  color: black;
+  font-size: .65rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: .22em;
+}
+
+.heroMuted,
+.cameraLine {
+  color: var(--text-muted);
+  font-size: .78rem;
+}
+
+.cameraLine {
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  margin: 0;
+  letter-spacing: .03em;
+}
+
+.cameraIcon {
+  width: 1rem;
+  flex-shrink: 0;
+  opacity: .35;
+  filter: var(--iconToggleTheme);
+}
+
+.editBtn,
+.saveBtn {
+  border: none;
+  border-radius: 2rem;
+  cursor: pointer;
+  letter-spacing: .14em;
+  transition: .2s;
+}
+
+.editBtn {
+  padding: .38rem 1.1rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: .62rem;
+}
+
+.editBtn:hover {
+  border-color: var(--text-muted);
+}
+
+.statsRow {
+  display: flex;
+  max-width: 860px;
+  margin: 0 auto 1rem;
+  border-block: 1px solid var(--border);
+}
+
+.statCell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .25rem;
+  padding: 1.3rem 0;
+  border-right: 1px solid var(--border);
+  transition: background var(--t-base);
+}
+
+.statCell:last-child {
+  border-right: 0;
+}
+
+.statClickable {
+  cursor: pointer;
+}
+
+.statClickable:hover {
+  background: var(--bg-subtle);
+}
+
+.statValue {
+  font: 300 1.9rem/1 var(--heading);
+  color: var(--text);
+}
+
+.statLabel {
+  font-size: .55rem;
+  font-weight: 500;
+  letter-spacing: .25em;
+  color: var(--text);
+}
+
+.editPanel {
+    width: 50%;
+    margin: auto;
+  background: var(--bg);
+  animation: fadeUp .25s ease both;
+}
+
+.editForm {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 3rem 2.5rem 3rem;
+}
+
+.editField {
+  display: flex;
+  flex-direction: column;
+  gap: .65rem;
+}
+
+.editLabel {
+  font: 600 .7rem var(--sans);
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.editLabelMuted {
+  font-weight: 400;
+  letter-spacing: .05em;
+  text-transform: none;
+  color: var(--text-muted);
+}
+
+.editInput,
+.selectWrapper .cinema-select__control {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-strong);
+  box-shadow: none;
+}
+
+.editInput {
+  padding: .25rem 0 .55rem .15rem;
+  color: var(--text);
+  font: 300 .95rem var(--sans);
+  outline: none;
+  transition: border-color var(--t-base);
+  border-bottom: 1px solid var(--text);
+}
+
+.editInput::placeholder,
+.selectWrapper .cinema-select__placeholder {
+  color: var(--text-muted);
+}
+
+.selectWrapper .cinema-select__control {
+  min-height: 38px;
+  border-radius: 0;
+}
+
+.selectWrapper .cinema-select__menu {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.selectWrapper .cinema-select__option {
+  background: transparent;
+  color: var(--text-muted);
+  font: .85rem var(--sans);
+}
+
+.selectWrapper .cinema-select__option--is-focused {
+  background: var(--bg-subtle);
+  color: var(--text);
+}
+
+.selectWrapper .cinema-select__multi-value {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 2rem;
+}
+
+.selectWrapper .cinema-select__multi-value__label {
+  padding: 2px 6px;
+  color: var(--text);
+  font: .7rem var(--sans);
+  letter-spacing: .08em;
+}
+
+.selectWrapper .cinema-select__multi-value__remove:hover {
+  background: var(--border);
+  color: var(--text-dark) !important;
+  border-radius: 2rem;
+}
+
+.selectWrapper .cinema-select__indicator-separator {
+  display: none;
+}
+
+.selectWrapper .cinema-select__dropdown-indicator,
+.selectWrapper .cinema-select__input-container {
+  color: var(--text);
+}
+
+.editActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: .75rem;
+}
+
+.editError {
+  flex: 1;
+  margin: 0;
+  color: var(--abort-btn);
+  font: .75rem var(--sans);
+}
+
+.saveBtn {
+  padding: .55rem 1.8rem;
+  background: var(--submit-btn);
+  color: var(--text-light);
+  font-size: .62rem;
+  font-weight: 700;
+}
+
+.saveBtn:hover {
+  opacity: .85;
+}
+
+.submissionsGrid,
+.competitionsGrid {
+  width: 80%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .5rem;
+  margin: auto auto 100px;
+  background: var(--gallery-bg);
+}
+
+.submissionCell {
+  position: relative;
+  aspect-ratio: 4/5;
+  overflow: hidden;
+  background: var(--gallery-surface);
+  animation: fadeUp .5s ease both;
+}
+
+.submissionImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .5s ease;
+}
+
+.submissionCell:hover .submissionImg {
+  transform: scale(1.03);
+}
+
+.submissionFooter {
+  position: absolute;
+  inset: auto 0 0;
+  display: flex;
+  align-items: center;
+  padding: .5rem;
+  color: white;
+  font: .72rem var(--sans);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  background: linear-gradient(to top, rgba(0,0,0,.78), rgba(0,0,0,.42), transparent);
+  backdrop-filter: blur(4px);
+}
+
+.competitionItem {
+  opacity: 0;
+  animation: fadeUp 0.4s ease-out forwards;
+}
+
+.competitionTitle {
+  flex: 1;
+  margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 4rem;
+  cursor: pointer;
+}
+
+.placementContainer {
+  position: absolute;
+  right: .5rem;
+  bottom: .5rem;
+  display: flex;
+  align-items: center;
+  gap: .2rem;
+}
+
+.medalIcon,
+.placementIcon {
+  width: 1.2rem;
+  margin-left: .5rem;
+  object-fit: contain;
+  filter: var(--back-btn-icon);
+}
+
+.emptyText {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 4rem 0;
+  text-align: center;
+  color: var(--gallery-text-meta);
+  background: var(--gallery-bg);
+  font: .75rem var(--sans);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
+
+.fullscreenModal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  background: rgba(0,0,0,.85);
+  backdrop-filter: blur(8px);
+  animation: fadeUp .18s ease;
+}
+
+.fullscreenContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.fullscreenImage {
+  max-width: 100%;
+  max-height: 75vh;
+  object-fit: contain;
+  box-shadow: 0 20px 80px rgba(0,0,0,.45);
+}
+
+.closeFullscreenBtn {
+  padding: .8rem 1.6rem;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+  color: white;
+  font-size: .72rem;
+  letter-spacing: .14em;
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+}
+
+/* ---------- MOBILE LAYOUT ---------- */
+@media (max-width: 740px) {
+    .heroInner {
+        flex-wrap: wrap;
+        align-items: center;
+        margin-left: 1rem;
+        padding: 1rem .5rem 0;
+    }
+
+
+  .pill {
+    padding: .7rem .85rem;
+    font-size: .6rem;
+    font-weight: 00;
+    letter-spacing: .2em;
+}
+
+  .editBtn {
+    width: 50%;
+    margin: 1rem auto;
+    order: 10;
+  }
+
+  .submissionsGrid,
+  .competitionsGrid {
+    width: 100%;
+    grid-template-columns: repeat(2, 1fr);
+    gap: .35rem;
+  }
+
+  .fullscreenImage {
+    max-height: 100%;
+  }
+
+  .editPanel {
+    width: 100%;
+  }
+
+  .editForm {
+    width: 100%;
+    padding: 0 1rem 2rem;
+    box-sizing: border-box;
+  }
+
+  .editActions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .editError {
+    text-align: center;
+  }
+
+  .saveBtn {
+    width: 100%;
+    padding: .9rem 1rem;
+  }
+
+  .editLabel {
+    letter-spacing: .15em;
+  }
+
+  .editInput {
+    font-size: 16px;
+  }
+
+
+  @media (max-width: 480px) {
+  .editForm {
+    padding-inline: .75rem;
+  }
+
+  .editPanel {
+    margin-top: .5rem;
+  }
+}
+
+}

@@ -1,0 +1,34 @@
+.profileBackground {
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #B0CBC1;
+}
+
+.logoBackground {
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--text);
+    border: 2px solid var(--text);
+}
+
+.avatar {
+    width: 60%;
+    object-fit: cover; 
+}
+
+.logo,
+.picture {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

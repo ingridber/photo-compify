@@ -1,0 +1,175 @@
+.competitionCell {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: var(--gallery-surface);
+    animation: fadeUp 0.5s ease both;
+    cursor: pointer;
+}
+
+.card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+
+    transition: transform 0.45s ease;
+}
+
+.competitionCell:hover .card::before {
+    transform: scale(1.03);
+}
+
+.card > * {
+    position: relative;
+    z-index: 1;
+}
+
+.cardLogo::before {
+    background-image: var(--card-bg);
+}
+
+.cardNoLogo::before {
+    background:linear-gradient(
+        -135deg,
+        #0D0C0C 0%,
+        #0D0C0C 25%,
+        #0b1220 58%,
+        #08152b 100%);
+}
+
+.phasePill {
+    position: absolute;
+    top: 1.2rem;
+    right: 1.2rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.5rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--text-light);
+}
+
+.titleContainer {
+    position: relative;
+    width: 100%;
+    padding: 0.5rem 0;
+    overflow: hidden;
+}
+
+.titleContainer::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(10px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.titleContainer > * {
+    position: relative;
+    z-index: 1;
+}
+
+.heroEyebrow {
+    font-size: 0.68rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    opacity: 0.8;
+    padding-left: 1.1rem;
+}
+
+.heroTitle {
+    margin: 0;
+    max-width: 14ch;
+    font-size: clamp(2.5rem, 3.5vw, 5rem);
+    line-height: 0.88;
+    letter-spacing: -0.05em;
+    font-weight: 300;
+    color: white;
+    padding-left: 1rem;
+    padding-bottom: 0.8rem;
+}
+
+.competitionFooter {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0.5rem;
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background: linear-gradient(
+        to top,
+        rgba(0,0,0,0.78),
+        rgba(0,0,0,0.42),
+        rgba(0,0,0,0));
+    backdrop-filter: blur(4px);
+}
+
+.themesContainer {
+    display: flex;
+    flex-wrap: wrap-reverse;
+    gap: 0.25rem;
+}
+
+.theme {
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.65rem;
+    border-radius: 999px;
+    color: black;
+    white-space: nowrap;
+    margin: 0;
+    opacity: 0.8;
+}
+
+
+/* ---------- MOBILE LAYOUT ---------- */
+/* ----------------------------------- */
+@media (max-width: 600px) { 
+
+    .phasePill {
+        top: 0.4rem;
+        right: 0.2rem;
+        font-size: 0.5rem;
+        padding: 0.2rem 0.6rem;
+    }
+ 
+    .heroEyebrow {
+        display: none;
+    }
+
+    .theme {
+        font-size: 0.5rem;
+        padding: 0.1rem 0.55rem;
+    }
+
+    .heroTitle {
+        font-size: 1.5rem;
+        padding-bottom: 0.3rem;
+        padding-left: 0.5rem;
+    }
+}
+
+

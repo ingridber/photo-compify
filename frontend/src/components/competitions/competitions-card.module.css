@@ -1,0 +1,235 @@
+.cardContainer {
+    width: 70%;
+    cursor: pointer;
+    border-radius: 1rem;
+    margin: 1.5rem;
+    box-shadow: var(--shadow);
+    background-color: var(--comp-card-bg);
+    transition: transform 0.2s ease;
+    position: relative;
+    border: var(--card-header-border-size) var(--card-header-border-style) var(--card-header-border);
+}
+
+.cardContainer:hover {
+    transform: scale(1.01);
+}
+
+/* CARD HEADER ----- background image, phase, competition title */
+/* ------------------------------------------------------------ */
+.cardHeader {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    border-radius: 1rem 1rem 0 0;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+.cardLogo {
+    min-height: 12rem;
+    object-fit: fill;
+}
+
+.cardNoLogo {
+    height: 11rem;
+    background: var(--card-header-bg);
+}
+
+.phasePill {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    padding:0.8rem 1.2rem;
+    border-radius: 999px;
+    backdrop-filter: blur(16px);
+    font-size: 0.7rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--text-light);
+}
+
+.heroEyebrow {
+    margin: 0.5 0 0rem 0.2rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    opacity: 0.8;
+    padding-left: 2.3rem;
+}
+
+.heroTitle {
+    margin: 0;
+    max-width: 14ch;
+    font-size: clamp(3rem, 4vw, 5.5rem);
+    line-height: 0.88;
+    letter-spacing: -0.07em;
+    font-weight: 300;
+    padding: 0 0 0.8rem 2.4rem;
+}
+
+/* CARD MAIN ----- themes, description */
+/* ----------------------------------- */
+.cardMain {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.5rem 0;
+    width: 90%;
+    margin: auto;
+}
+
+.themesContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1rem 0 1.2rem 0;
+}
+
+.theme {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    padding: 0.65rem 1rem;
+    border-radius: 999px;
+    color: var(--text-dark);
+    white-space: nowrap;
+    margin: 0;
+}
+
+.description {
+    margin: -0.5rem 0 0 0;
+    max-width: 46ch;
+    color: var(--text);
+    font-size: 1rem;
+    line-height: 1.7;
+    padding-left: 0.5rem;
+}
+
+/* CARD FOOTER ----- Owner, Participants, End Date */
+/* ----------------------------------------------- */
+.cardFooter {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    margin: 0 auto 0.8rem auto;
+    padding: 0.5rem 1rem 0 1rem;
+    width: 85%;
+    border-top: 1px solid var(--text);
+}
+
+.specsTitle {
+    margin: 0 0 0.3rem 0;
+    font-size: 0.62rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--text);
+}
+
+.endDate,
+.owner,
+.participants {
+    font-weight: 500;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.endsOn {
+    text-align: right;
+    margin-right: -0.2rem;
+}
+
+/* ----------------------------------- */
+/* ---------- MOBILE LAYOUT ---------- */
+/* ----------------------------------- */
+@media (max-width: 600px) {
+
+.cardContainer {
+    width: calc(100% - 1rem);
+    margin: 0.5rem auto;
+    box-shadow: none;
+}
+
+.cardLogo {
+    min-height: 8rem;
+}
+
+.cardNoLogo {
+    height: 8rem;
+}
+
+.phasePill {
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.55rem;
+    letter-spacing: 0.16em;
+}
+
+.heroEyebrow {
+    padding-left: 1rem;
+    margin-bottom: 0.25rem;
+    font-size: 0.55rem;
+    letter-spacing: 0.18em;
+}
+
+.heroTitle {
+    padding: 0 1rem 0.8rem 1rem;
+    max-width: 100%;
+    font-size: 2rem;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+}
+
+.cardMain {
+    width: 92%;
+    padding: 0.75rem 0;
+}
+
+.themesContainer {
+    gap: 0.35rem;
+    margin: 0.5rem 0 1rem 0;
+}
+
+.theme {
+    font-size: 0.55rem;
+    padding: 0.45rem 0.75rem;
+}
+
+.description {
+    max-width: 100%;
+    padding-left: 0;
+    margin-top: 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.cardFooter {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.specsTitle {
+    font-size: 0.55rem;
+    letter-spacing: 0.18em;
+}
+
+.endDate,
+.owner,
+.participants {
+    font-size: 0.8rem;
+}
+
+.endsOn {
+    text-align: left;
+    margin-right: 0;
+}
+
+.hideOwner {
+    display: none;
+}
+
+}
