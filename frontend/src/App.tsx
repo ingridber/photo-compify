@@ -6,6 +6,7 @@ import type { ComponentType } from 'react';
 import Header from './components/header/Header';
 import { NavBarMobile } from './components/nav-bar/NavBarMobile';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import Footer from './components/footer/Footer';
 
 import { useUser } from './hooks/useUser';
 import { getCurrentUser } from './services/api';
@@ -23,6 +24,7 @@ import { ManageAccount } from './pages/ManageAccount';
 import { ProfilePage } from './pages/ProfilePage';
 import PublicProfilePage from './pages/PublicProfilePage';
 import { DeleteAccount } from './components/manage-account/DeleteAccount';
+import Faq from './pages/Faq';
 
 // Components
 import { ChangeUsername } from './components/manage-account/ChangeUsername';
@@ -55,9 +57,10 @@ function App() {
   }, []);
 
   return (
-    <>
-      <Header />
+  <div className="app">
+    <Header />
 
+    <main className="mainContent">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<SignIn />} />
@@ -65,12 +68,17 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/image-upload" element={<ImageUpload />} />
 
-
-        {/* competitions  */}
+        {/* competitions */}
         <Route path="/competitions" element={<CompetitionsPage />} />
         <Route path="/competitions/:id" element={<CompetitionPage />} />
-        <Route path="/competitions/:id/submit" element={protectedElement(SubmitToCompetition)}/>
-        <Route path="/create-competition" element={protectedElement(CreateCompetitionPage)}/>
+        <Route
+          path="/competitions/:id/submit"
+          element={protectedElement(SubmitToCompetition)}
+        />
+        <Route
+          path="/create-competition"
+          element={protectedElement(CreateCompetitionPage)}
+        />
 
         {/* profile */}
         <Route path="/profile" element={protectedElement(ProfilePage)}>
@@ -79,7 +87,9 @@ function App() {
           <Route path="wins" element={<ProfileSubmissions showOnlyWins />} />
         </Route>
 
-        {/* profile/account */}
+        <Route path="/users/:username" element={<PublicProfilePage />} />
+
+        {/* account */}
         <Route path="/profile/account" element={protectedElement(ManageAccount)}>
           <Route path="change-username" element={protectedElement(ChangeUsername)} />
           <Route path="change-password" element={protectedElement(ChangePassword)} />
@@ -88,13 +98,15 @@ function App() {
           <Route path="delete-account" element={protectedElement(DeleteAccount)} />
         </Route>
 
-        {/* public profile */}
-        <Route path="/users/:username" element={<PublicProfilePage />} />
+        {/* footer */}
+        <Route path="/faq" element={<Faq />} />
       </Routes>
+    </main>
 
-      <NavBarMobile />
-    </>
-  );
+    <NavBarMobile />
+    <Footer />
+  </div>
+);
 }
 
 export default App;
