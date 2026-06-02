@@ -298,12 +298,11 @@
 
   .pageTitle {
     font-size: 1.9rem;
-    margin-left: 1rem ;
+    text-align: center;
   }
 
   .pageDescription {
     font-size: .75rem;
-    margin-left: 1rem ;
-
+    text-align: center;
   }
 }
