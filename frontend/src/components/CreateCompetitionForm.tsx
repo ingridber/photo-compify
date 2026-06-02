@@ -175,7 +175,8 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
 
                     {/* Logo */}
                     <div className={styles.logo}>
-                        <div className={styles.logoContainer}>
+                        <div className={styles.logoContainer}
+                            onClick={() => fileInputRef.current?.click()}>
                             {previewUrl ? (
                                 <img className={styles.logoPic} src={previewUrl} alt="Logo preview" />
                             ) : (
@@ -201,13 +202,12 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
 
                     {/* Title + themes */}
                     <div className={styles.heroMeta}>
-                        <p className={styles.heroEyebrow}>Enter a title</p>
                         <input
                             type="text"
                             value={title}
                             maxLength={TITLE_MAX}
                             onChange={(e) => setTitle(e.target.value)}
-                            placeholder="Title"
+                            placeholder="Enter a title"
                             className={styles.titleInput}
                             required
                         />
@@ -235,9 +235,9 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
                             isOptionDisabled={() => themes.length >= 5}
                             classNamePrefix="ccSelect"
                             styles={{
-                                   option: (base) => ({
+                                   option: (base, state) => ({
                                         ...base,
-                                        color: "black"
+                                        color: state.isDisabled ? "#999" : "black"
                                     }),}}
                         />
                     </div>
@@ -255,7 +255,7 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
                     
                     {/* Description */}
                     <div className={formStyles.field}>
-                        <label className={formStyles.label} htmlFor="cc-description">
+                        <label className={styles.label} htmlFor="cc-description">
                             Description
                         </label>
                         <textarea
@@ -265,7 +265,7 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
                             rows={4}
                             onChange={(e) => setDescription(e.target.value)}
                             placeholder="What is this competition about?"
-                            className={formStyles.input}
+                            className={styles.input}
                             required
                         />
                         <small className={styles.counter}>
