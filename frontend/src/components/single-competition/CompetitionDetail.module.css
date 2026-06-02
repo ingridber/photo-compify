@@ -1,17 +1,10 @@
 @keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ----- HEADER ----- */
 .header {
-  background: var(--bg);
   margin-top: var(--main-margin);
 }
 
@@ -53,7 +46,7 @@
 .noLogo {
   width: 42%;
   opacity: 0.7;
-  filter: var(--iconToggleTheme)
+  filter: var(--iconToggleTheme);
 }
 
 .uploadLogoBtn {
@@ -72,7 +65,7 @@
   font-weight: 600;
 }
 
-/* ----- HERO ----- */
+/* ----- HERO META ----- */
 .heroMeta {
   flex: 1;
   min-width: 0;
@@ -109,7 +102,7 @@
   font-weight: 600;
 }
 
-/* ----- THEMES ----- */
+/* ----- THEME PILLS ----- */
 .themePills {
   display: flex;
   flex-wrap: wrap;
@@ -183,21 +176,13 @@
   color: var(--text);
 }
 
-/* ----- CTA ----- */
+/* ----- CTA (no submission yet) ----- */
 .cta {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.8rem;
-  padding: 1rem 2rem 3rem;
-}
-
-.ctaImage {
-  width: 180px;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
-  border-radius: 0.4rem;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
+  padding: 1rem 2rem 30rem;
 }
 
 .ctaTitle {
@@ -216,13 +201,53 @@
   color: var(--text-muted);
 }
 
-/* ----- SUBMISSIONS ----- */
+/* ----- SUBMITTED LAYOUT ----- */
+.submittedLayout {
+  width: 80%;
+  margin: 2rem auto 30rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+}
+
+.ctaImage {
+  width: 50%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.submittedInfo {
+  gap: 1rem;
+}
+
+.editSubmit {
+  text-transform: uppercase;
+  font-family: var(--sans);
+  border-radius: 2rem;
+  cursor: pointer;
+  letter-spacing: 0.14em;
+  transition: 0.2s;
+  padding: 0.38rem 1.1rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 0.62rem;
+  margin-top: 1rem;
+}
+
+.editSubmit:hover {
+  border-color: var(--text-muted);
+}
+
+/* ----- SUBMISSIONS GRID ----- */
 .submissionsGrid {
   width: 80%;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0.5rem;
   margin: auto auto 100px;
+  padding-bottom: 200px;
 }
 
 .submissionCell {
@@ -251,12 +276,7 @@
   align-items: center;
   padding: 0.5rem;
   color: white;
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.78),
-    rgba(0, 0, 0, 0.42),
-    transparent
-  );
+  background: linear-gradient(to top, rgba(0,0,0,.78), rgba(0,0,0,.42), transparent);
 }
 
 .submissionContributor {
@@ -275,7 +295,7 @@
   filter: var(--back-btn-icon);
 }
 
-/* ----- FULLSCREEN ----- */
+/* ----- FULLSCREEN MODAL ----- */
 .fullscreenModal {
   position: fixed;
   inset: 0;
@@ -283,29 +303,74 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
-  background: rgba(0, 0, 0, 0.85);
+  padding: 3rem;
+  background: rgba(0,0,0,.85);
+  backdrop-filter: blur(8px);
+  animation: fadeUp .18s ease;
+}
+
+.fullscreenContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
 }
 
 .fullscreenImage {
   max-width: 100%;
-  max-height: 85vh;
+  max-height: 75vh;
   object-fit: contain;
+  box-shadow: 0 20px 80px rgba(0,0,0,.45);
 }
 
+.fullscreenActions {
+  width: 100%;
+  margin-top: 0.5rem;
+  display: grid;
+  grid-template-columns: 120px 1fr 120px;
+  align-items: center;
+}
 
-/* ----- MOBILE LAYOUT ----- */
-/* ------------------------- */
+.closeFullscreenBtn {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+  color: white;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+}
+
+.closeFullscreenBtn {
+  min-width: 120px;
+  justify-self: center;
+}
+
+/* ----- RESPONSIVE ----- */
+@media (max-width: 768px) {
+  .submittedLayout {
+    flex-direction: column;
+  }
+
+  .ctaImage {
+    width: 90%;
+  }
+}
+
 @media (max-width: 700px) {
-
-  .container {
-    margin-bottom: 90px;
+  .fullscreenModal {
+    padding: 0;
   }
 
   .hero {
     flex-direction: column;
     text-align: center;
-
     padding: 1.5rem 1rem;
     gap: 1.25rem;
   }
@@ -361,21 +426,15 @@
     font-size: 1.5rem;
   }
 
-  .ctaImage {
-    width: 150px;
-  }
-
   .submissionsGrid {
     width: 100%;
     grid-template-columns: repeat(2, 1fr);
     gap: 0.35rem;
-
-    padding: 0 0.35rem;
+    padding-bottom: 100px;
   }
 }
 
 @media (max-width: 500px) {
-
   .stats {
     display: flex;
     flex-direction: column;

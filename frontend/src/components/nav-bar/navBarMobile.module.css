@@ -12,8 +12,8 @@
   position: fixed;
   bottom: 0;
   left: 0;
-  width: 100%;
-  height: 65px !important;
+  right: 0;
+  height: 65px;
   background: var(--nav-bg);
   border-top: 1px solid var(--text);
   display: flex;
