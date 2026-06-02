@@ -3,12 +3,30 @@ import profileStyle from "../components/profile/profile.module.css";
 import { Outlet, useNavigate, useLocation } from "react-router";
 import { useUser } from "../hooks/useUser";
 import { DisplayProfilePicture } from "../components/display-profile-picture/DisplayProfilePicture";
+import { useState } from "react";
+import { exportMyData } from "../services/exportMyData";
+
 
 export function ManageAccount() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useUser();
+const [isExporting, setIsExporting] = useState(false);
 
+const handleExport = async () => {
+  if (isExporting) return;
+  try {
+    setIsExporting(true);
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await exportMyData();
+  } catch (err) {
+    console.error(err);
+    alert("Failed to export data");
+  } finally {
+    setIsExporting(false);
+  }
+};
   return (
     <>
       <header className={styles.header}>
@@ -56,6 +74,19 @@ export function ManageAccount() {
             <span className={styles.small}>Change</span>
             <span className={styles.large}>Password</span>
           </div>
+
+          {/* Download your data */}
+           <div
+              className={`${styles.optionCell} ${styles.optionClickable}
+                ${location.pathname.includes("export-my-data")
+                  ? styles.activeOption
+                  : ""
+              }`}
+              onClick={handleExport}
+            >
+              <span className={styles.small}>Download</span>
+              <span className={styles.large}>your data</span>
+            </div>
 
           <div
             className={`${styles.optionCell} ${styles.optionClickable} 
