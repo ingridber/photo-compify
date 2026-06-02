@@ -166,10 +166,10 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
     };
 
     return (
-        <>
+        <div className={styles.pageContent}>
             {/* ── HERO – mirrors CompetitionDetail exactly ── */}
             <header className={styles.header}>
-                <h1 className={styles.pageTitle}>New Competition</h1>
+                {/* <h1 className={styles.pageTitle}>Create New Competition</h1> */}
 
                 <div className={styles.hero}>
 
@@ -315,6 +315,6 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
                     </div>
                 </form>
             </div>
-        </>
+        </div>
     );
 }

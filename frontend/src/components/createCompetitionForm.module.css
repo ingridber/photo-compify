@@ -1,3 +1,7 @@
+.pageContent {
+    min-height: 100vh;
+}
+
 .header {
     background: var(--bg);
     margin-top: var(--main-margin);
