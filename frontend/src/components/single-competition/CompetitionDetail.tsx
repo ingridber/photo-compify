@@ -5,7 +5,7 @@ import { type Competition, type Submission } from "../../types/competitions.ts";
 import VoteButton from "./VoteButton.tsx";
 import styles from "./CompetitionDetail.module.css";
 import { useUser } from "../../hooks/useUser.ts";
-import mixins from "../../styles/mixins.module.css";
+import modalStyles from "../../styles/upload-overlay.module.css";
 import { Throbber } from "../user-feedback/Throbber.tsx";
 import ImageUploadForm from "../images/ImageUploadForm.tsx";
 import { getIndicator, sortSubmissions } from "../../utils/submissionIndicators.ts";
@@ -246,9 +246,9 @@ export default function CompetitionDetail() {
         )}
 
         {showLogoModal && (
-            <div className={mixins.modalOverlay} onClick={() => setShowLogoModal(false)}>
-                <div className={mixins.modalContent} onClick={(e) => e.stopPropagation()}>
-                    <button className={mixins.closeBtn} onClick={() => setShowLogoModal(false)}>✕</button>
+            <div className={modalStyles.modalOverlay} onClick={() => setShowLogoModal(false)}>
+                <div className={modalStyles.modalContent} onClick={(e) => e.stopPropagation()}>
+                    <button className={modalStyles.closeBtn} onClick={() => setShowLogoModal(false)}>✕</button>
                     <ImageUploadForm
                         pictureType="logo"
                         competitionId={id}
