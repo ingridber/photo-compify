@@ -1,0 +1,47 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: .65rem;
+}
+
+.label {
+    font: 500 1rem var(--sans);
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin-top: 1rem;
+
+}
+
+.counter {
+    align-self: flex-end;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.input {
+    background-color: var(--nav-bg);
+    width: 100%;
+  border: 1px solid var(--border);
+  padding: .25rem 0 .55rem .15rem;
+
+  color: var(--text);
+  font: 300 .95rem var(--sans);
+
+  outline: none;
+  transition: border-color var(--t-base);
+}
+
+
+.image {
+    max-width: 4rem;
+}
+
+
+
+
+.error {
+  margin: 0;
+  color: var(--abort-btn);
+  font: .75rem var(--sans);
+}

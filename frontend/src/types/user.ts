@@ -9,8 +9,8 @@ export type User = {
         _id: string;
         url: string;
     } | null;
-    camera: string;
-    themes: string[];
+    camera?: string;
+    themes?: string[];
 };
 
 export type UserContextType = {
