@@ -97,7 +97,7 @@ export default function ProfileSubmissions({showOnlyWins = false}: Props) {
                                     <img
                                         src={ 
                                             phase === "ended" ? "/icons/medal.svg"
-                                            : phase === "submission" ? "/icons/submit-edit.svg"
+                                            : phase === "submission" ? "/icons/edit.svg"
                                             : "/icons/hourglass.svg"}
                                         className={profileStyle.placementIcon}
                                     />
