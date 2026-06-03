@@ -10,25 +10,31 @@ export async function competitionPhaseHandler(
 ): Promise<void> {
 
     if (previousPhase === 'submission' && currentPhase === 'voting') {
-        const votingNotifications = comp.submissions.map((submission: any) => {
-            return {
-                user: submission.user, 
-                competition: comp._id,
-                title: "Voting has started! 🗳️",
-                description: `You can now vote for your favorite submission in ${comp.title}!`,
-                phase: currentPhase
-            };
-        });
+        const votingNotifications = comp.submissions
+            .filter((submission: any) => submission.user) 
+            .map((submission: any) => {
+                return {
+                    user: submission.user, 
+                    competition: comp._id,
+                    title: "Voting has started!",
+                    description: `You can now vote for your favorite submission in ${comp.title}!`,
+                    phase: currentPhase
+                };
+            });
 
-        await Notification.insertMany(votingNotifications);
+        if (votingNotifications.length > 0) {
+            await Notification.insertMany(votingNotifications);
+        }
         
-        await Notification.create({
-            user: comp.owner,
-            competition: comp._id,
-            title: "Voting has started!",
-            description: `Voting has now opened for your competition: ${comp.title}`,
-            phase: currentPhase
-        });
+        if (comp.owner) {
+            await Notification.create({
+                user: comp.owner,
+                competition: comp._id,
+                title: "Voting has started!",
+                description: `Voting has now opened for your competition: ${comp.title}`,
+                phase: currentPhase
+            });
+        }
     }
 
     if (previousPhase === 'voting' && currentPhase === 'ended') {
@@ -38,20 +44,24 @@ export async function competitionPhaseHandler(
             { $set: { winners } }
         );
 
-        const endedNotifications = comp.submissions.map((submission: any) => {
-            const isWinner = winners.includes(submission.user);
+        const endedNotifications = comp.submissions
+            .filter((submission: any) => submission.user) 
+            .map((submission: any) => {
+                const isWinner = winners.includes(submission.user.toString());
 
-            return {
-                user: submission.user,
-                competition: comp._id,
-                title: isWinner ? "You won the competition! 🎉" : "Competition is now over",
-                description: isWinner
-                    ? `Congratulations! Your submission to ${comp.title} won!`
-                    : `Voting is over for ${comp.title}. Go and look who won.`,
-                phase: currentPhase
-            };
-        });
+                return {
+                    user: submission.user,
+                    competition: comp._id,
+                    title: isWinner ? "You won the competition! " : "Competition is now over",
+                    description: isWinner
+                        ? `Congratulations! Your submission to ${comp.title} won!`
+                        : `Voting is over for ${comp.title}. Go and look who won.`,
+                    phase: currentPhase
+                };
+            });
 
-        await Notification.insertMany(endedNotifications);
+        if (endedNotifications.length > 0) {
+            await Notification.insertMany(endedNotifications);
+        }
     }
 }
