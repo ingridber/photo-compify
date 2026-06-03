@@ -9,9 +9,9 @@
 .pagination-buttons button {
   min-width: 36px;
   height: 36px;
-  color: var(--text-light);
-  background-color: var(--btn);
-  border: 1px solid var(--btn);
+  color: var(--text);
+  background-color: var(---nav-bg);
+  border: 1px solid var(--text);
   border-radius: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -20,7 +20,7 @@
 .pagination-buttons button:hover:not(:disabled),
 .pagination-buttons .active {
   background-color: var(--bg);
-  border: 1px solid var(--text);
+  border: 3px solid var(--text);
   color: var(--text);
   font-weight: 600;
   cursor: pointer;

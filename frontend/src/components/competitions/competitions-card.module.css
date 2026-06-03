@@ -1,5 +1,5 @@
 .cardContainer {
-    width: 70%;
+    width: 80%;
     cursor: pointer;
     border-radius: 1rem;
     margin: 1.5rem;
@@ -7,6 +7,7 @@
     background-color: var(--comp-card-bg);
     transition: transform 0.2s ease;
     position: relative;
+    border: var(--card-header-border-size) var(--card-header-border-style) var(--card-header-border);
 }
 
 .cardContainer:hover {
@@ -24,9 +25,6 @@
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
-    border-top: 1px solid #171616;
-    border-left: 1px solid #171616;
-    border-right: 1px solid #171616;
 }
 
 .cardLogo {
@@ -36,14 +34,7 @@
 
 .cardNoLogo {
     height: 11rem;
-    background:
-    linear-gradient(
-        -135deg,
-        #0D0C0C 0%,
-        #0D0C0C 25%,
-        #0b1220 58%,
-        #08152b 100%
-    );
+    background: var(--card-header-bg);
 }
 
 .phasePill {
@@ -64,7 +55,6 @@
     font-size: 0.68rem;
     letter-spacing: 0.32em;
     text-transform: uppercase;
-    color: var(--text-light);
     opacity: 0.8;
     padding-left: 2.3rem;
 }
@@ -76,7 +66,6 @@
     line-height: 0.88;
     letter-spacing: -0.07em;
     font-weight: 300;
-    color: var(--text-light);
     padding: 0 0 0.8rem 2.4rem;
 }
 
@@ -155,34 +144,92 @@
 /* ----------------------------------- */
 /* ---------- MOBILE LAYOUT ---------- */
 /* ----------------------------------- */
-@media (max-width: 600px) { 
+@media (max-width: 600px) {
+
 .cardContainer {
-    width: 95%;
-    border: none;
-    border-top: 1px solid var(--text);
-    border-bottom: 1px solid var(--text);
-    border-radius: 0;
-    margin: 1rem;
+    width: calc(100% - 1rem);
+    margin: 0.5rem auto;
+    box-shadow: none;
 }
 
-.logoContainer { 
-    width: 35px;
-    height: 35px;
-    flex: 0 0 35px;
+.cardLogo {
+    min-height: 8rem;
 }
 
-.titleDescriptionContainer .title {
-    font-size: 1rem;
-    line-height: 1;
+.cardNoLogo {
+    height: 8rem;
 }
 
-.titleDescriptionContainer .description {
-    line-height: 1;
+.phasePill {
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.55rem;
+    letter-spacing: 0.16em;
+}
+
+.heroEyebrow {
+    padding-left: 1rem;
+    margin-bottom: 0.25rem;
+    font-size: 0.55rem;
+    letter-spacing: 0.18em;
+}
+
+.heroTitle {
+    padding: 0 1rem 0.8rem 1rem;
+    max-width: 100%;
+    font-size: 2rem;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+}
+
+.cardMain {
+    width: 92%;
+    padding: 0.75rem 0;
+}
+
+.themesContainer {
+    gap: 0.35rem;
+    margin: 0.5rem 0 1rem 0;
+}
+
+.theme {
+    font-size: 0.55rem;
+    padding: 0.45rem 0.75rem;
+}
+
+.description {
+    max-width: 100%;
+    padding-left: 0;
+    margin-top: 0;
     font-size: 0.9rem;
-} 
+    line-height: 1.5;
+}
 
-.hideEnd,
+.cardFooter {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.specsTitle {
+    font-size: 0.55rem;
+    letter-spacing: 0.18em;
+}
+
+.endDate,
+.owner,
+.participants {
+    font-size: 0.8rem;
+}
+
+.endsOn {
+    text-align: left;
+    margin-right: 0;
+}
+
 .hideOwner {
     display: none;
 }
+
 }

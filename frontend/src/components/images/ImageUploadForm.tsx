@@ -7,6 +7,8 @@ import { updateProfilePicture, createSubmission } from "../../services/api";
 import { getCurrentUser } from "../../services/api";
 import { useUser } from "../../hooks/useUser";
 import { useNavigate } from "react-router";
+import Cropper from "react-easy-crop";
+import getCroppedImg from "./getCroppedImg";
 
 type PictureProps = {
     pictureType? : string | null;
@@ -20,6 +22,10 @@ export default function ImageUploadForm({pictureType, competitionId, onUploadSuc
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [message, setMessage] = useState<string>("");
+
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
 
   const fileSizeRules = FileSizeValidation();
   const fileFormatRules = FileFormatValidation();
@@ -171,14 +177,41 @@ export default function ImageUploadForm({pictureType, competitionId, onUploadSuc
         style={{ display: "none" }}
       />
 
-      <div className="upload-box" onClick={handleOpenFilePicker}>
-        {previewUrl ? (
+      <div
+        className="upload-box"
+        onClick={!previewUrl ? handleOpenFilePicker : undefined}
+      >
+      {previewUrl ? (
+        pictureType === "profile" ? (
+        <Cropper
+            image={previewUrl}
+            crop={crop}
+            zoom={zoom}
+            aspect={1}
+            cropShape="round"
+            onCropChange={setCrop}
+            onZoomChange={setZoom}
+            onCropComplete={async (_, croppedAreaPixels) => {
+                setCroppedAreaPixels(croppedAreaPixels);
+
+                if (!previewUrl) return;
+
+                const croppedImage = await getCroppedImg(
+                    previewUrl,
+                    croppedAreaPixels
+                );
+
+                setSelectedFile(croppedImage);
+            }}
+        />
+        ) : (
           <img
             src={previewUrl}
             alt="preview"
             className="preview-image"
           />
-        ) : (
+        )
+      ) : (
           <div className="upload">
             <p className="upload-plus">+</p>
             <h2 className="upload-title">Upload Image</h2>
@@ -188,8 +221,6 @@ export default function ImageUploadForm({pictureType, competitionId, onUploadSuc
       </div>
 
       <p className="upload-info">Max 1MB, JPG, PNG, WEBP</p>
-
-
 
       <button
         className={`upload-button ${selectedFile ? "active" : ""}`}

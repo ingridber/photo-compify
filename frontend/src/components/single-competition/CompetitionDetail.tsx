@@ -1,25 +1,14 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router";
 import { fetchCompetitionById } from "../../services/api";
-import { type Competition, type Phase, type Indicator, type Submission } from "../../types/competitions.ts";
-import SubmissionCard from "./SubmissionCard";
-import SubmissionExpanded from "./SubmissionExpanded.tsx";
+import { type Competition, type Submission } from "../../types/competitions.ts";
+import VoteButton from "./VoteButton.tsx";
 import styles from "./CompetitionDetail.module.css";
 import { useUser } from "../../hooks/useUser.ts";
-import mixins from "../../styles/mixins.module.css";
+import modalStyles from "../../styles/upload-overlay.module.css";
 import { Throbber } from "../user-feedback/Throbber.tsx";
 import ImageUploadForm from "../images/ImageUploadForm.tsx";
 import { getIndicator, sortSubmissions } from "../../utils/submissionIndicators.ts";
-
-function getPhase(comp: Competition): Phase {
-    const now = Date.now();
-    const votingStart = new Date(comp.votingStartDate).getTime();
-    const end = new Date(comp.endDate).getTime();
-
-    if (now < votingStart) return "submission";
-    if (now < end) return "voting";
-    return "finished";
-}
 
 function formatCountdown(target: string): string {
     const diff = new Date(target).getTime() - Date.now();
@@ -34,49 +23,6 @@ function formatCountdown(target: string): string {
     return `${hours}h ${minutes}m`;
 }
 
-// function getIndicator(
-//     submission: Submission,
-//     phase: Phase,
-//     rank: number,
-//     userId?: string,
-// ): Indicator {
-//     if (!submission) return "none";
-//     if (phase === "voting" && userId) {
-//         return submission.votes?.includes(userId) ? "voted" : "none";
-//     }
-
-//     if (phase === "finished") {
-//         if (rank === 0) return "gold";
-//         if (rank === 1) return "silver";
-//         if (rank === 2) return "bronze";
-//     }
-
-//     return "none";
-// }
-
-// function sortSubmissions(
-//     submissions: Submission[],
-//     phase: Phase,
-//     userId?: string,
-// ): Submission[] {
-//     if (phase === "submission" && userId) return [...submissions].filter(s => s.user?._id === userId);
-//     if (phase === "voting" && userId) {
-//         return [...submissions].sort(
-//             (a, b) =>
-//                 (b.votes?.includes(userId) ? 1 : 0) -
-//                 (a.votes?.includes(userId) ? 1 : 0),
-//         );
-//     }
-
-//     if (phase === "finished") {
-//         return [...submissions].sort(
-//             (a, b) => (b.votes.length ?? 0) - (a.votes.length ?? 0),
-//         );
-//     }
-
-//     return submissions;
-// }
-
 export default function CompetitionDetail() {
     const { id } = useParams<{ id: string }>();
     const { user } = useUser();
@@ -86,6 +32,7 @@ export default function CompetitionDetail() {
     const [loading, setLoading] = useState(true);
     const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
     const [showLogoModal, setShowLogoModal] = useState(false);
+    const [fullscreenSubmission, setFullscreenSubmission] = useState<Submission | null>(null);
 
     const loadCompetition = useCallback(() => {
         if (!id) return;
@@ -105,7 +52,7 @@ export default function CompetitionDetail() {
     if (loading) return <Throbber />;
     if (error) return <p>{error}</p>;
     if (!competition) return <p>Competition not found</p>;
-    const phase = getPhase(competition);
+    const phase = competition.phase;
 
     const sorted = sortSubmissions(competition.submissions, phase, user?._id);
     const userSubmission = competition.submissions.find((s) => {
@@ -130,224 +77,211 @@ export default function CompetitionDetail() {
     }
 
     return (
-        <div className={mixins.main}>
-        <div className={styles.container}>
-
-            {/* ----- HEADER: Navigate btn, Logo, Title----- */}
-            <div className={styles.header}>
-
-                {/* NAVIGATE BACK BTN */}
-                <button
-                    // onClick={() => navigate("/competitions")}
-                    onClick={() => navigate(-1)}
-                    className={styles.backBtn}>
-                    <img src="/arrow-left.svg" alt="icon of arrow pointing left" className={mixins.backBtnIcon} />
-                </button>
-
-                {/* LOGO */}
-                <div className={styles.logoContainer}>
+    <div className={styles.container}>
+        {/* ----- HEADER: logo, comp-title, themes ----- */}
+        <header className={styles.header}>
+            <div className={styles.hero}>
+                {/* ----- logo ----- */}
+                <div className={styles.logo}>
                     {competition.signedLogoUrl ? (
-                        // LOGO PIC
-                        <img
-                            src={competition.signedLogoUrl}
-                            alt={`${competition.title} logo`}
-                            className={styles.logoPic} />
+                    <>
+                        <div className={styles.logoContainer}>
+                            <img className={styles.logoPic} src={competition.signedLogoUrl} alt={`${competition.title} logo`}/>
+                        </div>
+
+                        {competition.owner && 
+                        user?.username === competition.owner.username && 
+                        phase !== "ended" && (
+                            <button className={styles.uploadLogoBtn} onClick={() => setShowLogoModal(true)}>
+                                {competition.signedLogoUrl ? 'Change Logo' : 'Update Logo'}
+                            </button>
+                        )}
+                    </>
                     ) : (
-                        // NO LOGO TEXT
-                        <img
-                            src="/competitions.svg"
-                            alt={`Competition icon`}
-                            className={styles.noLogo} />
+                    <>
+                        {competition.owner &&
+                        user?.username === competition.owner.username &&
+                        phase !== "ended" && (
+                            <>
+                            <div className={styles.logoContainer}>              
+                                <img className={styles.noLogo} src="/icons/competitions.svg" alt="Competition icon"/>
+                            </div>
+                            <button className={styles.uploadLogoBtn} onClick={() => setShowLogoModal(true)}>Update Logo</button>
+                            </>
+                        )}
+                    </>
                     )}
                 </div>
-                {competition.owner && user?.username === competition.owner.username ? (
-                    <button
-                        type="button"
-                        className={styles.uploadLogoBtn}
-                        onClick={() => setShowLogoModal(true)}
-                    >
-                        {competition.signedLogoUrl ? 'Update Logo' : 'Upload Logo'}
-                    </button>
-                ) : null}
-
-
-                {/* TITLE */}
-                <h1 className={styles.title}>{competition.title}</h1>
-
-                {/* OWNER */}
-                {<p 
-                    className={styles.owner}
-                    onClick={() => navigate(`/users/${competition.owner.username}`)}>
+                <div className={styles.heroMeta}>
+                    {/* ----- comp title & owner ----- */}
+                    <p className={styles.heroEyebrow}>Competition</p>
+                    <h1 className={styles.title}>{competition.title}</h1>
+                    <p className={styles.owner} onClick={() => navigate(`/users/${competition.owner.username}`)}>
                         By: {competition.owner?.username ?? "Deleted User"}
-                </p>}
+                    </p>
 
-            </div>
+                    {/* ----- themes ----- */}
+                    <div className={styles.themePills}>
+                        {(competition.themes ?? []).map((theme) => {
+                            const safeTheme = theme ?? "Default";
+                            const themeClass = `${safeTheme
+                                .replace(/\s+/g, "")
+                                .replace(/&/g, "")}Color`;
 
-            {/* ----- INFORMATIVE: Themes & Description ----- */}
-            <div className={styles.informative}>
-
-                {/* THEMES */}
-                <div className={styles.themesContainer}>
-                    {(competition.themes ?? []).map((theme) => {
-                    
-                    const safeTheme = theme ?? "Default";
-                    const themeClass = `${safeTheme
-                        .replace(/\s+/g, "")
-                        .replace(/&/g, "")}Color`;
-
-                    return (
-                        <span
-                        className={`${styles.theme} ${styles[themeClass]}`}
-                        key={safeTheme}
-                        >
-                        {safeTheme}
-                        </span>
-                    );
-                    })}
+                            return (
+                                <span className={`${styles.pill} ${themeClass}`} key={safeTheme}>{safeTheme}</span>
+                            );
+                        })}
+                    </div>
                 </div>
-
-                {/* DESCRIPTION */}
-                <p className={styles.descriptionTitle}>Description</p>
-                <p className={styles.description}>{competition.description}</p>
             </div>
+        </header>
 
+        {/* DESCRIPTION */}
+        <div className={styles.descriptionContainer}>
+            <p className={styles.descriptionTitle}>Description</p>
+            <p className={styles.description}>{competition.description}</p>
+        </div>
+
+        {/* ----- STATS: comp phase, time indicators & winner, participants ----- */}
+        <div className={styles.stats}>
+            {/* ----- comp phase ----- */}
+            <div className={styles.statCell}>
+                <span className={styles.statLabel}>Phase</span>
+                <span className={styles.statValue}>{phase === "submission" ? "open" : phase === "ended" ? "closed" : phase}</span>
+            </div>
             {/* ----- STATS ----- */}
-
-            <div className={styles.stats}>
-                {/* {phase === "finished" && (
-                    <div className={styles.stat}>
-                        <span className={styles.statLabel}>Host</span>
-                        <span className={styles.statValue}>
-                            {competition.owner?.username ?? "Deleted User"}
-                        </span>
-                    </div>
-                )} */}
-
-
-
-                {phase === "submission" && (
-                    <div className={styles.stat}>
+            <div className={styles.statCell}>
+                {phase === "submission" && (<>
                         <span className={styles.statLabel}>Voting begins</span>
-                        <span className={styles.statValue}>
-                            {formatCountdown(countdownTarget)}
-                        </span>
-                    </div>
-                )}
-
-                {phase === "voting" && (
-                    <div className={styles.stat}>
+                        <span className={styles.statValue}>{formatCountdown(countdownTarget)}</span>
+                </>)}
+                {phase === "voting" && (<>
                         <span className={styles.statLabel}>Ends in</span>
-                        <span className={styles.statValue}>
-                            {formatCountdown(countdownTarget)}
-                        </span>
-                    </div>
-                )}
-
-                {phase === "finished" && sorted.length > 0 && (
-                    <div className={styles.stat}>
+                        <span className={styles.statValue}>{formatCountdown(countdownTarget)}</span>
+                </>)}
+                {phase === "ended" && sorted.length > 0 && (<>
                         <span className={styles.statLabel}>Winner</span>
-                        <span className={styles.statValue}
-                            onClick={() => navigate(`/users/${sorted[0].user.username}`)}
-                            style= {{cursor: "pointer"}}>
+                        <span className={styles.statValue}onClick={() => navigate(`/users/${sorted[0].user.username}`)} style= {{cursor: "pointer"}}>
                             {sorted[0].user.username}
                         </span>
-                    </div>
-                )}
+                </>)}
+            </div>
+            {/* ----- participants ----- */}
+            <div className={styles.statCell}>
+                <span className={styles.statLabel}>Participants</span>
+                <span className={styles.statValue}>{competition.submissions.length}</span>
+            </div>
+        </div>
 
+        {/* VIEWS ----- submit & submissions */}
 
-                <div className={styles.stat}>
-                    <span className={styles.statLabel}>Participants</span>
-                    <span className={styles.statValue}>
-                        {competition.submissions.length}
-                    </span>
+        {/* ----- submit ----- */}
+        {phase === "submission" && !userSubmission && (
+            <div className={styles.cta}>
+                <p className={styles.ctaTitle}>Want to participate?</p>
+                <button className={styles.editSubmit} type="button" onClick={() => navigate(`/competitions/${id}/submit`)}>
+                    SUBMIT
+                </button>
+                <p className={styles.ctaSubtext}>Submit your entry before voting begins</p>
+            </div>
+        )}
+
+        {phase === "submission" && userSubmission && (
+            <div className={styles.submittedLayout}>
+                <img className={styles.ctaImage} src={userSubmission.signedImageUrl} alt="Your submission"/>
+                <div className={styles.submittedInfo}>
+                    <p className={styles.ctaTitle}>You have submitted!</p>
+                    <button className={styles.editSubmit} type="button" onClick={() => navigate(`/competitions/${id}/submit`)}>
+                        Edit your submission?
+                    </button>
                 </div>
             </div>
+        )}
+        {/* ----- submissions ----- */}
+        {(phase === "voting" || phase === "ended") && (
+            <section className={styles.submissionsGrid}>
+                    <>
+                        {sorted.map((sub, i) => (
+                            <div key={sub._id ?? i} className={styles.submissionCell} style={{animationDelay: `${i * 60}ms`}}>
+                                <img
+                                    className={styles.submissionImg}
+                                    src={sub.signedImageUrl}
+                                    alt=""
+                                    onClick={() => setFullscreenSubmission(sub)}
+                                />
+                                <div className={styles.submissionFooter}>
 
-            {/* ----- SUBMIT & SUBMISSIONS ----- */}
+                                    {phase === 'ended' && (<>
+                                        <p className={styles.submissionContributor}
+                                            onClick={() => {
+                                                setSelectedSubmission(sub);
+                                                navigate(`/users/${sub.user?.username}`);
+                                            }}
+                                        >{sub.user?.username ?? "Unknown"}</p>
 
-            {phase === "submission" && !userSubmission && (
-                <div className={styles.cta}>
-                    <p className={styles.ctaTitle}>Want to participate?</p>
+                                        <div className={styles.placementContainer}>
+                                            <img src="/icons/medal.svg" alt="medal" className={styles.medalIcon}/>
+                                            <span>
+                                                {getIndicator(sub, phase, i, user?._id) === "gold" ? "1"
+                                                : getIndicator(sub, phase, i, user?._id) === "silver" ? "2"
+                                                : "3"}
+                                            </span>
+                                        </div>
+                                    </>)}
 
-                    <button
-                        className={mixins.uploadSubmit}
-                        type="button"
-                        onClick={() => navigate(`/competitions/${id}/submit`)}
-                    >
-                        <img src="/submit-upload.svg" alt="icon upload image" className={mixins.uploadSubmitIcon} />
-                    </button>
-                    <p className={styles.ctaSubtext}>
-                        Submit your entry before voting begins
-                    </p>
+                                    {phase === 'voting' && (<>
+                                        <VoteButton
+                                            submission={sub}
+                                            phase={phase}
+                                            userId={user?._id}
+                                            onClose={() => setSelectedSubmission(null)}
+                                            onVoteChange={handleVoteChange}/>
+                                    </>)}
+                                </div>
+                            </div>
+                        ))}
+                    </>
+            </section>
+        )}
+
+        {showLogoModal && (
+            <div className={modalStyles.modalOverlay} onClick={() => setShowLogoModal(false)}>
+                <div className={modalStyles.modalContent} onClick={(e) => e.stopPropagation()}>
+                    <button className={modalStyles.closeBtn} onClick={() => setShowLogoModal(false)}>✕</button>
+                    <ImageUploadForm
+                        pictureType="logo"
+                        competitionId={id}
+                        onUploadSuccess={handleLogoUploadSuccess}
+                    />
                 </div>
-            )}
+            </div>
+        )}
 
-            {phase === "submission" && userSubmission && (
-                <div className={styles.cta}>
-                    {userSubmission.signedImageUrl && (
-                        <img
-                            className={styles.ctaImage}
-                            src={userSubmission.signedImageUrl}
-                            alt="Your submission"
-                        />
-                    )}
-                    <p className={styles.ctaTitle}>You have submitted!</p>
-
-                    <button
-                        className={mixins.editSubmit}
-                        type="button"
-                        onClick={() => navigate(`/competitions/${id}/submit`)}
-                    >
-                        <img src="/submit-edit.svg" alt="icon upload image" className={mixins.editSubmitIcon} />
-                    </button>
-                    <p className={styles.ctaSubtext}>
-                        Edit your submission?
-                    </p>
-                </div>
-            )}
-
-            {(phase === "voting" || phase === "finished") && (
-                <div className={styles.gridWrapper}>
-                    {selectedSubmission ? (
-                        <SubmissionExpanded
-                            submission={selectedSubmission}
+        {fullscreenSubmission && (
+            <div className={styles.fullscreenModal} onClick={() => setFullscreenSubmission(null)}>
+                <div className={styles.fullscreenContent} onClick={(e) => e.stopPropagation()}>
+                    <img
+                        src={fullscreenSubmission.signedImageUrl}
+                        className={styles.fullscreenImage}
+                        alt="Submission"
+                    />
+                    <div className={styles.fullscreenActions}>
+                        <button className={styles.closeFullscreenBtn}>Report</button>
+                        <button className={styles.closeFullscreenBtn} onClick={() => setFullscreenSubmission(null)}>Close</button>
+                        {phase === 'voting' && (
+                        <VoteButton
+                            submission={fullscreenSubmission}
                             phase={phase}
                             userId={user?._id}
                             onClose={() => setSelectedSubmission(null)}
                             onVoteChange={handleVoteChange}
-                        />
-                    ) : (
-                        <div className={styles.grid}>
-                            {sorted.map((sub, i) => (
-                                <SubmissionCard
-                                    key={sub._id ?? i}
-                                    submission={sub}
-                                    indicator={getIndicator(sub, phase, i, user?._id)}
-                                    onClick={() => setSelectedSubmission(sub)}
-                                />
-                            ))}
-                        </div>
-                    )}
-                </div>
-            )}
-            {showLogoModal && (
-                <div className={mixins.modalOverlay} onClick={() => setShowLogoModal(false)}>
-                    <div className={mixins.modalContent} onClick={(e) => e.stopPropagation()}>
-                        <button
-                            className={mixins.closeBtn}
-                            onClick={() => setShowLogoModal(false)}
-                        >
-                            ✕
-                        </button>
-                        <ImageUploadForm
-                            pictureType="logo"
-                            competitionId={id}
-                            onUploadSuccess={handleLogoUploadSuccess}
-                        />
+                            variant="fullscreen"/>
+                        )}
                     </div>
                 </div>
-            )}
-        </div>
-        </div>
+            </div>
+        )}
+    </div>
     );
 }

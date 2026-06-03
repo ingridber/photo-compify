@@ -11,7 +11,7 @@
     background: none;
     border: none;
     cursor: pointer;
-    height: 100%;
+    height: 2rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -22,7 +22,9 @@
 /* 🖼️ Klockikonen */
 .notificationIcon {
     height: 100%;
-    filter: var(--back-btn-icon);
+    filter: var(--iconToggleTheme);
+    opacity: 0.8;
+
 }
 
 /* 🔴 Den röda badge-bubblan för antal */
@@ -90,4 +92,15 @@
     margin: 0;
     font-size: 0.8rem;
     opacity: 0.8;
+}
+
+
+/* ----------------------------------- */
+/* ---------- MOBILE LAYOUT ---------- */
+/* ----------------------------------- */
+@media (max-width: 600px) {
+  .notificationBtn {
+    height: 1.8rem;
+  }
+
 }

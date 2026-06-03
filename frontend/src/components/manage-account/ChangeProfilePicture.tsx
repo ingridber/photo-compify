@@ -1,120 +1,123 @@
-import mixins from "../../styles/mixins.module.css";
-import styles from "../../styles/manage-account.module.css";
-import ImageUploadForm from "../images/ImageUploadForm";
-import { DisplayProfilePicture } from "../display-profile-picture/DisplayProfilePicture";
-import { useUser } from "../../hooks/useUser";
-import { useNavigate } from "react-router";
 import { useState } from "react";
+import { useUser } from "../../hooks/useUser";
 import { deleteProfilePicture } from "../../services/api";
+import ImageUploadForm from "../images/ImageUploadForm";
 
-export function ChangeProfilePicture(){
-    const navigate = useNavigate();
-    const { user, setUser} = useUser();
+import styles from "../../styles/form.module.css";
+import modalStyles from "../../styles/upload-overlay.module.css";
+
+export function ChangeProfilePicture() {
+    const { user, setUser } = useUser();
+
     const [openModal, setOpenModal] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(false);
 
-    const handleDeleteProfilePicture= async () => {
+    const handleDeleteProfilePicture = async () => {
         try {
             const res = await deleteProfilePicture();
 
-            if(!res.ok) {
-                throw new Error("Failed to delete profile picture");
-            };
+            if (!res.ok) {
+                throw new Error(
+                    "Failed to delete profile picture"
+                );
+            }
 
-            setUser(prev => {
-                if(!prev) return null;
+            setUser((prev) => {
+                if (!prev) return null;
 
                 return {
                     ...prev,
-                    profilePicture: null
+                    profilePicture: null,
                 };
             });
-        } catch (err){
-            console.log('delete profile pic, changeProfilePicture.tsx : ', err);
-        };
+        } catch (err) {
+            console.log(
+                "delete profile picture:",
+                err
+            );
+        }
 
         setConfirmDelete(false);
     };
 
     return (
         <>
-        <section className={mixins.headerContainer}>
-            {/* BACK BUTTON */}
-            <button 
-                onClick={()=> navigate(-1)}
-                className={mixins.backBtn}>
-                <img src="/arrow-left.svg" alt="icon of arrow pointing left" className={mixins.backBtnIcon} />
-            </button>
+            <section className={styles.changePanel}>
+                <h1 className={styles.title}>Profile Picture</h1>
 
-            {/* PROFILE PICTURE & USER NAME */}
-            <p className={mixins.username}>{user? user.username : "USER"}</p>
-            <div style= {{width: "7rem", margin: "auto"}}>
-                <DisplayProfilePicture src={user?.profilePicture?.url} />
-            </div>
-        </section>
-
-        <section className={mixins.contentContainer}>
-
-
-            <button
-                style={{marginTop: '3.7rem'}}
-                className={styles.changePageBtn}
-                onClick={() => setOpenModal(true)}>
-                    {user?.profilePicture ? "Change " : "Upload "} Picture
-            </button>
-
-
-            {user?.profilePicture && (
-                <>
-                <article>
-                    {!confirmDelete ? (
-                    <button 
-                        className={styles.changePageBtn}
-                        onClick={() => setConfirmDelete(true)}>
-                            Delete Picture
+                <div className={styles.actions}>
+                    <button
+                        className={styles.saveBtn}
+                        onClick={() => setOpenModal(true)}
+                    >
+                        {user?.profilePicture
+                            ? "Change Picture"
+                            : "Upload Picture"}
                     </button>
-                    ) : (
+                </div>
+
+                {user?.profilePicture && (
                     <>
-                    <p className={`${styles.signOutTitle} ${styles.space}`}>
-                    {confirmDelete ? "Are you sure?" : "Need a break?"}
-                    </p>
-                    <div className={styles.confirmBtnContainer}>
-                        <button
-                        onClick={handleDeleteProfilePicture}
-                        className={styles.confirmBtnYes}>
-                            Yes
-                        </button>
-                        <button
-                        onClick={() => setConfirmDelete(false)}
-                        className={styles.confirmBtnNo}
-                        >
-                        No
-                        </button>
-                    </div>
+                        {!confirmDelete ? (
+                            <div
+                                className={styles.actions}
+                                style={{marginTop: "1rem",}}
+                            >
+                                <button
+                                    className={styles.deleteBtn}
+                                    onClick={() => setConfirmDelete(true)}
+                                >
+                                    Delete Picture
+                                </button>
+                            </div>
+                        ) : (
+                            <>
+                                <p className={styles.warningText}>Are you sure you want to remove your profile picture?</p>
+
+                                <div className={styles.buttonContainer}>
+                                    <button
+                                        className={styles.cancelBtn}
+                                        onClick={() => setConfirmDelete(false)}
+                                    >
+                                        Cancel
+                                    </button>
+
+                                    <button
+                                        className={styles.deleteBtn}
+                                        onClick={handleDeleteProfilePicture}
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
+                            </>
+                        )}
                     </>
-                    )}
-                </article>
-            </>
-            )}
+                )}
+            </section>
 
             {openModal && (
-                <div className={mixins.modalOverlay} onClick={() => setOpenModal(false)}>
-                    <div 
-                    className={mixins.modalContent} 
-                    onClick={(e) => e.stopPropagation()}>
-                        <button 
-                            className={mixins.closeBtn}
-                            onClick={() => setOpenModal(false)}>
-                                ✕
+                <div
+                    className={modalStyles.modalOverlay}
+                    onClick={() => setOpenModal(false)}
+                >
+                    <div
+                        className={modalStyles.modalContent}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <button
+                            className={modalStyles.closeBtn}
+                            onClick={() => setOpenModal(false)}
+                        >
+                            ✕
                         </button>
 
-                        <ImageUploadForm 
+                        <ImageUploadForm
                             pictureType="profile"
-                            onUploadSuccess={() => setOpenModal(false)}/>
+                            onUploadSuccess={() => setOpenModal(false)}
+                        />
                     </div>
                 </div>
             )}
-        </section>
         </>
     );
-};
+}

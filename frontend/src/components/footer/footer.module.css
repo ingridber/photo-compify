@@ -1,0 +1,176 @@
+.footer {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    column-gap: 3rem;
+    background-color: var(--nav-bg);
+    border-top: 1px solid var(--text);
+    backdrop-filter: blur(12px);
+}
+
+.wrapperLeft,
+.wrapperCenter,
+.wrapperRight {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 0;
+}
+
+.wrapperLeft {
+    flex: 2;
+    align-items: flex-start;
+    padding-left: 2rem;
+}
+
+.wrapperCenter,
+.wrapperRight {
+    flex: 1;
+    align-items: center;
+}
+
+.appName,
+.footerTitle {
+    margin: 0 0 1rem 0;
+    min-height: 2rem;
+    display: flex;
+    align-items: center;
+}
+
+.appName {
+    font: 200 clamp(1.4rem, 2.5vw, 1.8rem) / 1.1 var(--heading);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text);
+}
+
+.footerTitle {
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text);
+}
+
+.appText,
+.appTextSmall {
+    margin: 0;
+    color: var(--text);
+    opacity: 0.8;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+}
+
+.appText {
+    font-size: 0.8rem;
+    line-height: 1.6;
+}
+
+.appTextSmall {
+    margin-top: 0.5rem;
+    font-size: 0.65rem;
+}
+
+.appText span {
+    margin-bottom: 0.2rem;
+    font-size: 0.65rem;
+    opacity: 0.7;
+}
+
+.navLink {
+    position: relative;
+    text-decoration: none;
+    margin-bottom: 0.75rem;
+}
+
+.navTitle {
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 0.8rem;
+    font-weight: 300;
+    transition: all 0.25s ease;
+}
+
+.navLink::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -4px;
+    width: 30px;
+    height: 2px;
+    background: #bfa48c;
+    transform: translateX(-50%) scaleX(0);
+    transform-origin: center;
+    transition: transform 0.25s ease;
+}
+
+.navLink:hover::after,
+.active::after {
+    transform: translateX(-50%) scaleX(1);
+}
+
+.navLink:hover .navTitle {
+    opacity: 1;
+}
+
+.active .navTitle {
+    font-weight: 600;
+}
+
+.copy {
+    width: 100%;
+    text-align: center;
+    padding: 1rem 0;
+    opacity: 0.6;
+}
+
+/* ----- MOBILE LAYOUT ----- */
+/* ------------------------- */
+@media (max-width: 768px) {
+    .footer {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+
+        gap: .5rem;
+        padding: 1rem .5rem 5rem;
+    }
+
+    .wrapperLeft,
+    .wrapperCenter,
+    .wrapperRight {
+        width: 100%;
+        align-items: center;
+        padding: 0;
+    }
+
+    .appName,
+    .footerTitle,
+    .navLink {
+        justify-content: center;
+        margin-bottom: 0;
+    }
+
+    .appText,
+    .appTextSmall {
+        text-align: center;
+        font-size: 0.65rem;
+        margin-top: 0;
+    }
+
+    .copy {
+        padding: 0;
+    }
+
+    .hide {
+        display: none;
+    }
+
+    .navLink::after {
+        display: none;
+    }
+}

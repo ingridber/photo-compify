@@ -1,11 +1,11 @@
-import { useState, useRef, type SubmitEvent } from 'react';
+import { useState, useRef } from 'react';
 import styles from './createCompetitionForm.module.css';
-import mixins from "../styles/mixins.module.css";
+import formStyles from '../styles/form.module.css';
 import { uploadImage } from "../services/imageApi";
 import FileSizeValidation from "./images/FileSizeValidation";
 import FileFormatValidation from "./images/FileFormatValidation";
 import { useNavigate } from 'react-router';
-import  AVAILABLE_THEMES  from '../constants/availableThemes';
+import AVAILABLE_THEMES from '../constants/availableThemes';
 import Select from 'react-select';
 import type { MultiValue } from 'react-select';
 import type { ThemeOption } from '../types/competitions';
@@ -20,8 +20,8 @@ type Props = {
 };
 
 const AVAILABLE_THEMES_OBJ = AVAILABLE_THEMES.map((theme) => ({
-  value: theme,
-  label: theme,
+    value: theme,
+    label: theme,
 }));
 
 export default function CreateCompetitionForm({ onSuccess }: Props) {
@@ -40,13 +40,11 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
     const fileSizeRules = FileSizeValidation();
     const fileFormatRules = FileFormatValidation();
 
-    const handleSelectThemes = (
-        selected: MultiValue<ThemeOption>
-        ) => {
+    const handleSelectThemes = (selected: MultiValue<ThemeOption>) => {
         if (selected.length <= 5) {
             setThemes([...selected]);
         }
-        };
+    };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -94,7 +92,7 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
         description.length <= DESC_MAX &&
         themes.length > 0;
 
-    const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!isValid || submitting) return;
 
@@ -154,9 +152,9 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
             onSuccess?.();
 
             const competitionId = data?._id;
-            if(!competitionId) {
-                setError({ code: "NO_ID", message: "Competition created but no id returned"});
-                return ;
+            if (!competitionId) {
+                setError({ code: "NO_ID", message: "Competition created but no id returned" });
+                return;
             }
             navigate(`/competitions/${competitionId}`);
 
@@ -168,103 +166,155 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
     };
 
     return (
-        <form className={styles.form} onSubmit={handleSubmit} noValidate>
-            <label>
-                <span>Title</span>
-                <div className={mixins.inputFieldContainer}>
-                    <input
-                        type="text"
-                        value={title}
-                        maxLength={TITLE_MAX}
-                        onChange={(e) => setTitle(e.target.value)}
-                        required
-                        className={mixins.inputField}
-                        placeholder='Title'
-                    />
-                </div>
-                <small className={styles.counter}>
-                    {title.length}/{TITLE_MAX}
-                </small>
-            </label>
+        <div className={styles.pageContent}>
+            {/* ── HERO – mirrors CompetitionDetail exactly ── */}
+            <header className={styles.header}>
+                {/* <h1 className={styles.pageTitle}>Create New Competition</h1> */}
 
-            <label>
-                <span>Description</span>
-                <div className={mixins.inputFieldContainer}>
-                    <textarea
-                        value={description}
-                        maxLength={DESC_MAX}
-                        rows={4}
-                        onChange={(e) => setDescription(e.target.value)}
-                        required
-                        className={mixins.inputField}
-                        placeholder='Description'
-                    />
-                </div>
-                <small className={styles.counter}>
-                    {description.length}/{DESC_MAX}
-                </small>
-            </label>
+                <div className={styles.hero}>
 
-            {/* ----- THEMES ----- */}
-            <fieldset className={styles.fieldset}>
-                <div className={styles.themesTitleContainer}>
-                    <legend className={styles.themesTitle}>Themes</legend>
-                    <small className={themes.length === 0 ? `${styles.counterTheme}` : `${styles.counterTheme} ${styles.counterThemeHide}`}>Pick at least one</small>
-                </div>
-                <div className={styles.themesGrid}>
-                    <Select
-                        options={AVAILABLE_THEMES_OBJ}
-                        value={themes}
-                        onChange={handleSelectThemes}
-                        isMulti
-                        placeholder="Select max 5 themes"
-                        closeMenuOnSelect={false}
-                        isOptionDisabled={() => themes.length >= 5}
+                    {/* Logo */}
+                    <div className={styles.logo}>
+                        <div className={styles.logoContainer}
+                            onClick={() => fileInputRef.current?.click()}>
+                            {previewUrl ? (
+                                <img className={styles.logoPic} src={previewUrl} alt="Logo preview" />
+                            ) : (
+                                <img className={styles.noLogo} src="/icons/competitions.svg" alt="Competition icon" />
+                            )}
+                        </div>
+                        <button
+                            type="button"
+                            className={styles.uploadLogoBtn}
+                            onClick={() => fileInputRef.current?.click()}
+                        >
+                            {previewUrl ? 'Change Logo' : 'Upload Logo'}
+                        </button>
+
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/png,image/jpeg,image/webp"
+                            onChange={handleFileChange}
+                            style={{ display: 'none' }}
                         />
-                </div>
-            </fieldset>
-
-            <label>
-                <div className={styles.logoTitleContainer}>
-                    <span className={styles.logoTitle}>Logo / Banner (optional)</span>
-                </div>
-                <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/png,image/jpeg,image/webp"
-                    onChange={handleFileChange}
-                />
-                <small className={styles.counter}>PNG, JPEG, or WebP. Max 1MB.</small>
-                {fileError && (
-                    <div className={styles.error} role="alert">
-                        {fileError}
                     </div>
-                )}
-                {previewUrl && (
-                    <div className={styles.preview}>
-                        <img src={previewUrl} alt="Preview" />
-                        <button type="button" onClick={clearFile} className={styles.clearBtn}>
-                            ✕
+
+                    {/* Title + themes */}
+                    <div className={styles.heroMeta}>
+                        <input
+                            type="text"
+                            value={title}
+                            maxLength={TITLE_MAX}
+                            onChange={(e) => setTitle(e.target.value)}
+                            placeholder="Enter a title"
+                            className={styles.titleInput}
+                            required
+                        />
+
+                        <small className={styles.counterSmall}>
+                            {title.length}/{TITLE_MAX}
+                        </small>
+
+                        <div className={formStyles.field}>
+                        <span className={styles.label}>
+                            Themes
+                                <span className={styles.counterTheme}
+                                    style={{visibility: themes.length === 0 ? "visible" : "hidden"}}> — pick at least one</span>
+           
+                        </span>
+                    
+                        <Select
+                            inputId="cc-themes"
+                            options={AVAILABLE_THEMES_OBJ}
+                            value={themes}
+                            onChange={handleSelectThemes}
+                            isMulti
+                            placeholder="Select up to 5 themes"
+                            closeMenuOnSelect={false}
+                            isOptionDisabled={() => themes.length >= 5}
+                            classNamePrefix="ccSelect"
+                            styles={{
+                                   option: (base, state) => ({
+                                        ...base,
+                                        color: state.isDisabled ? "#999" : "black"
+                                    }),}}
+                        />
+                    </div>
+                    </div>
+                </div>
+            </header>
+
+            {/* ── FORM SECTION ── */}
+            <div className={styles.formSection}>
+                <form
+                    className={styles.form}
+                    onSubmit={handleSubmit}
+                    noValidate
+                >
+                    
+                    {/* Description */}
+                    <div className={formStyles.field}>
+                        <label className={styles.label} htmlFor="cc-description">
+                            Description
+                        </label>
+                        <textarea
+                            id="cc-description"
+                            value={description}
+                            maxLength={DESC_MAX}
+                            rows={4}
+                            onChange={(e) => setDescription(e.target.value)}
+                            placeholder="What is this competition about?"
+                            className={styles.input}
+                            required
+                        />
+                        <small className={styles.counter}>
+                            {description.length}/{DESC_MAX}
+                        </small>
+                    </div>
+
+                    {/* Logo errors / helpers */}
+                    {fileError && (
+                        <p className={formStyles.error} role="alert">{fileError}</p>
+                    )}
+                    {previewUrl && (
+                        <div className={styles.previewRow}>
+                            <small className={styles.previewHint}>
+                                PNG, JPEG or WebP · max 1 MB
+                            </small>
+                            <button
+                                type="button"
+                                onClick={clearFile}
+                                className={formStyles.cancelBtn}
+                            >
+                                Remove logo
+                            </button>
+                        </div>
+                    )}
+
+                    {/* API errors / success */}
+                    {error && (
+                        <p className={formStyles.error} role="alert">
+                            <strong>{error.code}:</strong> {error.message}
+                        </p>
+                    )}
+                    {success && (
+                        <p className={formStyles.success} role="status">
+                            Competition created.
+                        </p>
+                    )}
+
+                    <div className={formStyles.actions}>
+                        <button
+                            type="submit"
+                            className={formStyles.saveBtn}
+                            disabled={!isValid || submitting}
+                        >
+                            {submitting ? 'Creating…' : 'Create competition'}
                         </button>
                     </div>
-                )}
-            </label>
-
-            {error && (
-                <div className={styles.error} role="alert">
-                    <strong>{error.code}:</strong> {error.message}
-                </div>
-            )}
-
-            {success && (
-                <div className={styles.success} role="status">
-                    Competition created.
-                </div>
-            )}
-
-            <button type="submit" className={`${mixins.submitBtn} ${styles.submit}`} disabled={!isValid || submitting}>
-                {submitting ? 'Creating...' : 'Create'}
-            </button>
-        </form>
+                </form>
+            </div>
+        </div>
     );
 }

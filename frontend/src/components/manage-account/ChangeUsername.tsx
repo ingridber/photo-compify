@@ -1,93 +1,97 @@
-import mixins from "../../styles/mixins.module.css";
+import styles from "../../styles/form.module.css";
 import { useState } from "react";
 import { updateUsername } from "../../services/api";
-import { useNavigate } from "react-router";
 import { useUser } from "../../hooks/useUser";
-import { DisplayProfilePicture } from "../display-profile-picture/DisplayProfilePicture";
+import { Throbber } from "../user-feedback/Throbber";
 
 export function ChangeUsername() {
-    const [username, setUsername] = useState('');
-    const [message, setMessage] = useState('');
-    const {user, setUser} = useUser();
+    const [username, setUsername] = useState("");
+    const [message, setMessage] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
-    const navigate = useNavigate();
+    const { setUser } = useUser();
 
-    const handleUpdateUsername = async (e: React.SubmitEvent) => {
+    const handleUpdateUsername = async (
+        e: React.FormEvent<HTMLFormElement>
+    ) => {
         e.preventDefault();
+
+        setIsLoading(true);
 
         try {
             const data = await updateUsername(username);
-            setUser(prev => prev ? {...prev, username: data.username} : null);
-            setMessage(data.message || "Username updated successfully")
-            setUsername('');
-        } catch (err: unknown) {
-            if(err instanceof Error) {
-                setMessage(err.message)
-            } else {
-                setMessage('Something went wrong')
-            }
-        }
 
+            setUser((prev) =>
+                prev
+                    ? {
+                          ...prev,
+                          username: data.username,
+                      }
+                    : null
+            );
+
+            setMessage(
+                data.message || "Username updated successfully"
+            );
+
+            setUsername("");
+        } catch (err) {
+            if (err instanceof Error) {
+                setMessage(err.message);
+            } else {
+                setMessage("Something went wrong");
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    if (isLoading) {
+        return (
+            <Throbber message="Updating username" action="Please wait"/>
+        );
     }
 
     return (
-        <>
-        <section className={mixins.headerContainer}>
-            {/* BACK BUTTON */}
-            <button 
-                onClick={()=> navigate(-1)}
-                className={mixins.backBtn}>
-                <img src="/arrow-left.svg" alt="icon of arrow pointing left" className={mixins.backBtnIcon} />
-            </button>
+        <section className={styles.changePanel}>
+            <h1 className={styles.title}>Change Username</h1>
 
-            {/* PROFILE PICTURE & USER NAME */}
-            <p className={mixins.username}>{user? user.username : "USER"}</p>
-            <div style= {{width: "7rem", margin: "auto"}}>
-                <DisplayProfilePicture src={user?.profilePicture?.url} />
-            </div>
-        </section>
+            <form
+                onSubmit={handleUpdateUsername}
+                className={styles.form}
+            >
+                <div className={styles.field}>
+                    <label className={styles.label}>New Username</label>
 
-        <section className={mixins.contentContainer}>
-
-            {/* CHANGE PASSWORD FORM  */}
-            <form onSubmit={handleUpdateUsername}>
-
-            {/* FIELD GROUP: NEW USERNAME */}
-            <div className={mixins.fieldGroup} style={{paddingTop: '2.5rem'}}>
-
-                <label htmlFor="username" className={mixins.labelForInput}>
-                    New username</label>
-
-                <div className={mixins.inputFieldContainer}>
-                    <input 
-                        id="username"
-                        className={mixins.inputField}
+                    <input
+                        className={styles.input}
                         required
-                        type="text" 
-                        placeholder="New username" 
-                        value={username} 
+                        type="text"
+                        placeholder="New username"
+                        value={username}
                         onChange={(e) => {
                             setUsername(e.target.value);
-                            setMessage('')
-                        }}/>
+                            setMessage("");
+                        }}
+                    />
                 </div>
-            </div>
 
-            {/* UX MESSAGE */}
-            {message && 
-                <p className={mixins.message}>{message}</p>
-            }
+                {message && (
+                    <p className={message.toLowerCase().includes("success") ? styles.success : styles.error}>
+                        {message}
+                    </p>
+                )}
 
-            {/* SUBMIT BUTTON */}
-            <button
-                className={mixins.submitBtn}
-                type="submit"
-                disabled={!username}>
-                    <img src="/check.svg" alt="icon of arrow pointing left" className={mixins.submitBtnIcon} />
-            </button>
-
+                <div className={styles.actions}>
+                    <button
+                        className={styles.saveBtn}
+                        type="submit"
+                        disabled={!username}
+                    >
+                        Save Changes
+                    </button>
+                </div>
             </form>
         </section>
-    </>
     );
-};
+}

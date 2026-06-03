@@ -5,14 +5,31 @@
   --main-margin: 100px;
 
   /* ----- COLORS ----- */
-  --text: #001F45;
+  --text: #171616;
   --text-light: #F2F1EB;
   --text-dark: #171616;
-  --bg: #F2F1EB;
+  /* --bg: #F2F1EB; */
+  --bg: #F3EEE5;
+
   --bg-dark: #001F45;
   --bg-light: #F2F1EB;
   --comp-card-bg: #F2F1EB;
   --border: #2C2F4A;
+  --nav-bg: #F2F1EB;
+
+  --card-header-border-size: 1px;  
+  --card-header-border-style: outset;  
+  --card-header-border: #D9CAB8;
+  --card-header-bg: 
+    linear-gradient(
+    -135deg,
+      #F3EEE5 0%,
+      #F3EEE5 25%,
+      #E8DED0 58%,
+      #D7C8B5 100%
+    );
+
+  --image-bg: url("images/background_light.png");
 
 
   /* ----- TEXT THEMES ----- */
@@ -68,17 +85,38 @@
   }
 
 
+  html,
+body,
+#root {
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+#root {
+    display: flex;
+}
+
+.app {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.mainContent {
+    flex: 1;
+}
+
 }
 
 
 
 
 
-
-
-
 [data-theme="dark"] {
-  --bg: #0D0C0C;
+  /* --bg: #0D0C0C; */
+  --bg: #000000;
   --text: #F2F1EB;
   --shadow: none;
   --input-placeholder: #B0CBC1;
@@ -86,6 +124,25 @@
   --bg-dark: #001229;
   --comp-card-bg: #171616;
   --border: #4A4A4A;
+
+  --nav-bg: #171616;
+  --image-bg: url("images/background_dark.png");
+
+  --card-header-border-size: 2px;  
+  --card-header-border-style: solid;  
+  --card-header-border: #171616;  
+  --card-header-bg:     
+    linear-gradient(
+      135deg,
+      #0D0C0C 0%,
+      #0D0C0C 25%,
+      #0b1220 58%,
+      #08152b 100%
+    );
+
+
+    
+
   
 
   --submission: lightblue;

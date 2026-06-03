@@ -1,7 +1,6 @@
 import styles from "./competitions-card.module.css";
 import { useNavigate } from "react-router";
 import type { Competition } from "../../types/competitions";
-import { getCompetitionPhase } from "../../utils/competitions";
 
 // Props for component
 type Props = {
@@ -9,7 +8,7 @@ type Props = {
 };
 
 export default function CompetitionsCard({ competition }: Props) {
-  const phase = getCompetitionPhase(competition);
+  const phase = competition.phase;
   const navigate = useNavigate();
 
   function handleClick() {
@@ -23,15 +22,19 @@ export default function CompetitionsCard({ competition }: Props) {
     <div 
       className={`${styles.cardHeader} ${competition.signedLogoUrl ? styles.cardLogo : styles.cardNoLogo}`}
       style={competition.signedLogoUrl
-        ? {backgroundImage: 
-          `linear-gradient(
-                to top,
-                rgba(0,0,0,0.82),
-                rgba(0,0,0,0.45),
-                rgba(0,0,0,0.18)
-              ),
-              url(${competition.signedLogoUrl})`}
-        : undefined}>
+        ? {
+          backgroundImage: `
+            linear-gradient(
+              to top,
+              rgba(0,0,0,0.82),
+              rgba(0,0,0,0.45),
+              rgba(0,0,0,0.18)
+            ),
+            url(${competition.signedLogoUrl})
+          `,
+          color: 'var(--text-light)',}
+        : undefined}
+    >
 
       <div
         className={styles.phasePill}

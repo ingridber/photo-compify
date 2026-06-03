@@ -1,23 +1,29 @@
-.container {
-  height: 100%;
+
+.navbar {
   display: flex;
   align-items: center;
 }
 
-.hamburger {
-  height: 42px;
+.profileContainer {
+  height: 2rem;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  cursor: pointer;
+}
+
+.hamburger {
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
 }
 
 .hamburgerIcon {
   height: 100%;
-  filter: var(--back-btn-icon);
-  margin-right: 1rem;
+  opacity: 0.8;
+  filter: var(--iconToggleTheme);
 }
 
 .dropdown {
@@ -28,50 +34,80 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  margin-top: 1px;
-  background-color: var(--navigate-menu);
-  border-bottom: 1px solid var(--text);
-  opacity: 0.955;
-  padding: 1.5rem 0;
-  z-index: 1000;
+  gap: 1.2rem;
+  padding: 2rem 0;
+  border-top: 1px solid var(--text);
+  background:
+    linear-gradient(
+      to left,
+      var(--bg) 0%,
+      var(--bg) 30%,
+      transparent 70%
+    );
+  opacity: 0;
+  transform:
+    translateY(-8px);
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 260ms ease,
+    transform 260ms ease,
+    visibility 260ms ease;
 }
 
-.username {
-  margin-right: 1rem;
-  color: var(--text-light);
-  opacity: 0.8;
-  font-size: 0.8rem;
-  margin-bottom: 1rem;
+.dropdownOpen {
+  opacity: 1;
+  transform:
+    translateY(0);
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .menuBtn {
   all: unset;
   cursor: pointer;
+  color: var(--text);
   text-transform: uppercase;
-  font-size: 1.4rem;
+  letter-spacing: 0.18em;
+  font-size: 0.9rem;
   font-weight: 500;
-  color: var(--text-light);
-  letter-spacing: 0.05rem;
+
   margin-right: 1rem;
-  margin-bottom: 1rem;
-  opacity: 1;
-  border-bottom: 1px solid var(--navigate-menu);
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.menuBtn::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  transform-origin: center;
+  width: 32px;
+  height: 2px;
+  background: #bfa48c;
+  transition: transform 0.2s ease;
+}
+
+.menuBtn:hover::after {
+  transform: translateX(-50%) scaleX(1);
 }
 
 .menuBtn:hover {
-  border-bottom: 1px solid var(--text-light);
-  color: white;
+  opacity: 0.8;
 }
 
-/* ----------------------------------- */
-/* ---------- MOBILE LAYOUT ---------- */
-/* ----------------------------------- */
 @media (max-width: 600px) {
   .navbar {
     height: 50px;
   }
+
+  .profileContainer {
+    height: 1.8rem;
+  }
+
   .hamburger {
-    height: 35px;
-    width: 35px;
+    height: 1.8rem;
   }
 }

@@ -1,15 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router";
 import styles from "./HamburgerMenu.module.css";
-import { useTheme } from "../../hooks/useTheme";
 import { useUser } from "../../hooks/useUser";
+import { DisplayProfilePicture } from "../display-profile-picture/DisplayProfilePicture";
 
 export default function HamburgerMenu() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const { theme, toggleTheme } = useTheme();
   const { user } = useUser();
-
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -37,28 +35,30 @@ export default function HamburgerMenu() {
   return (
     <nav className={styles.navbar} ref={menuRef}>
         {/* HAMBURGER */}
-        <button
-          className={styles.hamburger}
-          onClick={() => setOpen(prev => !prev)}
-        >
-          {open ? (
-            <img
-              src="/close.svg"
-              alt=""
-              className={styles.hamburgerIcon}
-            />
-          ) : (
-            <img
-              src="/menu.svg"
-              alt=""
-              className={styles.hamburgerIcon}
-            />
-          )}
-        </button>
+          <button
+            className={styles.hamburger}
+            onClick={() => setOpen(prev => !prev)}
+          >
+            {open ? (
+              <img
+                src="/icons/close.svg"
+                alt=""
+                className={styles.hamburgerIcon}
+              />
+            ) : (
+              <div className={styles.profileContainer}>
+                <DisplayProfilePicture src={user?.profilePicture?.url}/>
+              </div>
+            )}
+          </button>
 
       {/* DROPDOWN */}
-      {open && (
-        <div className={styles.dropdown}>
+        <div
+          className={`
+            ${styles.dropdown}
+            ${open ? styles.dropdownOpen : ""}
+          `}
+        >
           {!user ? (
             <>
               <button
@@ -68,24 +68,12 @@ export default function HamburgerMenu() {
                 Sign in
               </button>
 
-              <button
-                onClick={toggleTheme}
-                className={styles.menuBtn}
-              >
-                {theme === "light"
-                  ? "Dark Mode"
-                  : "Light Mode"}
-              </button>
             </>
           ) : (
             <>
-              <span className={styles.username}>
-                Signed in as:{" "}
-                {user?.username?.toLocaleUpperCase()}
-              </span>
 
               <button
-                onClick={() => goTo("/manage-account")}
+                onClick={() => goTo("/profile/account")}
                 className={styles.menuBtn}
               >
                 Manage account
@@ -98,19 +86,10 @@ export default function HamburgerMenu() {
               >
                 My Competitions
               </button>
-
-              <button
-                onClick={toggleTheme}
-                className={styles.menuBtn}
-              >
-                {theme === "light"
-                  ? "Dark Mode"
-                  : "Light Mode"}
-              </button>
             </>
           )}
         </div>
-      )}
+      
     </nav>
   );
 }

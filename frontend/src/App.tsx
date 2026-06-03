@@ -3,9 +3,10 @@ import { Routes, Route } from 'react-router';
 import { useEffect } from 'react';
 import type { ComponentType } from 'react';
 
-import Header from './header/Header';
-import { NavBar } from './components/nav-bar/NavBar';
+import Header from './components/header/Header';
+import { NavBarMobile } from './components/nav-bar/NavBarMobile';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import Footer from './components/footer/Footer';
 
 import { useUser } from './hooks/useUser';
 import { getCurrentUser } from './services/api';
@@ -22,7 +23,10 @@ import ImageUpload from './pages/ImageUpload';
 import { ManageAccount } from './pages/ManageAccount';
 import { ProfilePage } from './pages/ProfilePage';
 import PublicProfilePage from './pages/PublicProfilePage';
-import { DeleteAccount } from './pages/DeleteAccount';
+import { DeleteAccount } from './components/manage-account/DeleteAccount';
+import Faq from './pages/Faq';
+import Admin from './pages/Admin';
+import Gdpr from './pages/Gdpr';
 
 // Components
 import { ChangeUsername } from './components/manage-account/ChangeUsername';
@@ -31,6 +35,7 @@ import { ChangeProfilePicture } from './components/manage-account/ChangeProfileP
 import ProfileSubmissions from './components/profile/ProfileSubmissions';
 import ProfileCompetitions from './components/profile/ProfileCompetitions';
 import { SignOut } from './components/SignOut';
+import SignOutDeleteAccount from './components/manage-account/SignOutPage';
 
 const protectedElement = (Component: ComponentType) => (
   <ProtectedRoute>
@@ -54,52 +59,63 @@ function App() {
   }, []);
 
   return (
-    <>
-      <Header />
+  <div className="app">
+    <Header />
 
+    <main className="mainContent">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<SignIn />} />
-        <Route path="/logout" element={<SignOut />} />
+        <Route path="logging-out" element={protectedElement(SignOut)} />
         <Route path="/register" element={<Register />} />
-        <Route path="/delete-account" element={<DeleteAccount />} />
+        <Route path="/image-upload" element={<ImageUpload />} />
 
+        {/* competitions */}
         <Route path="/competitions" element={<CompetitionsPage />} />
         <Route path="/competitions/:id" element={<CompetitionPage />} />
         <Route
           path="/competitions/:id/submit"
           element={protectedElement(SubmitToCompetition)}
         />
-
         <Route
           path="/create-competition"
           element={protectedElement(CreateCompetitionPage)}
         />
 
-        <Route path="/image-upload" element={<ImageUpload />} />
-
-        {/* Manage account */}
-        <Route path="/manage-account">
-          <Route index element={protectedElement(ManageAccount)} />
-          <Route path="change-username" element={protectedElement(ChangeUsername)} />
-          <Route path="change-password" element={protectedElement(ChangePassword)} />
-          <Route path="change-picture" element={protectedElement(ChangeProfilePicture)} />
-        </Route>
-
-        {/* Profile */}
+        {/* profile */}
         <Route path="/profile" element={protectedElement(ProfilePage)}>
           <Route index element={<ProfileSubmissions />} />
           <Route path="competitions" element={<ProfileCompetitions />} />
           <Route path="wins" element={<ProfileSubmissions showOnlyWins />} />
         </Route>
 
-        {/* Public users */}
         <Route path="/users/:username" element={<PublicProfilePage />} />
-      </Routes>
 
-      <NavBar />
-    </>
-  );
+        {/* account */}
+        <Route path="/profile/account" element={protectedElement(ManageAccount)}>
+          <Route path="change-username" element={protectedElement(ChangeUsername)} />
+          <Route path="change-password" element={protectedElement(ChangePassword)} />
+          <Route path="change-picture" element={protectedElement(ChangeProfilePicture)} />
+          <Route path="logout" element={protectedElement(SignOutDeleteAccount)} />
+          <Route path="delete-account" element={protectedElement(DeleteAccount)} />
+        </Route>
+
+        {/* footer */}
+        <Route path="/faq" element={<Faq />} />
+        <Route path="/gdpr" element={<Gdpr />} />
+
+        {/* admin  */}
+        <Route path="/admin" element={<Admin />}>
+          <Route path="reports" />
+        </Route>
+
+      </Routes>
+    </main>
+
+    <NavBarMobile />
+    <Footer />
+  </div>
+);
 }
 
 export default App;

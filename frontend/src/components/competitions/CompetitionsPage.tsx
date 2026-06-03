@@ -1,11 +1,12 @@
 import styles from "./competitions-page.module.css";
-import mixins from "../../styles/mixins.module.css";
 import { useEffect, useState, useRef } from "react";
 import { fetchCompetitions } from "../../services/api";
 import CompetitionsCard from "./CompetitionsCard";
 import Pagination from "./Pagination";
 import { useSearchParams } from "react-router";
 import AVAILABLE_THEMES from "../../constants/availableThemes";
+import Select from "react-select";
+import type { MultiValue } from "react-select";
 
 type Competition = {
   _id: string;
@@ -25,166 +26,208 @@ type Competition = {
   participantCount: number;
 };
 
-export default function CompetitionsPage() {
-  const [competitions, setCompetitions] = useState<Competition[]>([]); // Stores fetched competitions
-  const inputRef = useRef<HTMLInputElement>(null); // Ref for focusing search input field
-  const [page, setPage] = useState(1); // Current pagination page
-  const [totalPages, setTotalPages] = useState(1); // Total number of pages
-  const [selectedThemes, setSelectedThemes] = useState<string[]>([]); // Stores selected theme filters
-  const [view, setView] = useState<"submission" | "voting" | "ended">("submission"); // Current competition status view filter
-  const [searchParams] = useSearchParams(); // Reads URL search parameters
-  const [search, setSearch] = useState(searchParams.get("search") || ""); // Search input state
-  const [showFilters, setShowFilters] = useState(false);
+type ThemeOption = {
+  value: string;
+  label: string;
+};
 
-  useEffect(() => { // Fetch competitions whenever dependencies change
+const AVAILABLE_THEMES_OBJ: ThemeOption[] =
+  AVAILABLE_THEMES.map((theme) => ({
+    value: theme,
+    label: theme,
+  }));
+
+export default function CompetitionsPage() {
+  const [competitions, setCompetitions] = useState<Competition[]>([]);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [showFilters, setShowFilters] = useState(false);
+  const [selectedThemes, setSelectedThemes] = useState<string[]>([]);
+  const [view, setView] = useState<"submission" | "voting" | "ended">("submission");
+  const [searchParams] = useSearchParams();
+  const [search, setSearch] = useState(searchParams.get("search") || "");
+
+  useEffect(() => {
     async function load() {
       try {
-        const result = await fetchCompetitions({
-          page,
-          limit: 5,
-          status: view,
-          search,
-          themes: selectedThemes,
-        });
+        const result =
+          await fetchCompetitions({
+            page,
+            limit: 5,
+            status: view,
+            search,
+            themes: selectedThemes,
+          });
 
-        setCompetitions(result.competitions); // Store fetched competitions
-        setTotalPages(result.pagination.totalPages); // Store pagination info
+        setCompetitions(
+          result.competitions
+        );
+
+        setTotalPages(
+          result.pagination.totalPages
+        );
       } catch (err) {
         console.log(err);
       }
     }
 
     load();
-  }, [page, view, search, selectedThemes]); // Re-run when page, view, or search changes
+  }, [page, view, search, selectedThemes]);
 
-  useEffect(() => { // Auto-focus search input when search is opened
-    if (showFilters) {
-      inputRef.current?.focus();
-    }
-  }, [showFilters]);
-
-  const toggleTheme = (theme: string) => { // Toggle theme selection in filter
-    setSelectedThemes((prev) =>
-      prev.includes(theme)
-        ? prev.filter((t) => t !== theme) // Remove theme if already selected
-        : [...prev, theme] // Add theme if not selected
+  const handleSelectThemes = (
+    selected: MultiValue<ThemeOption>
+  ) => {
+    setSelectedThemes(
+      selected.map((theme) => theme.value)
     );
-    setPage(1); // Reset to first page when filter changes
+
+    setPage(1);
   };
 
-  
-
   return (
-    <div className={`${styles.competitionsPage} ${mixins.main}`}>
-      <h1>Competitions</h1>
+    <div className={styles.competitionsPage}>
 
-      {/* BUTTON CONTAINER */}
-      <div className={styles.buttonContainer}>
-        <button
-          className={view === "submission" ? styles.active : ""}
-          onClick={() => {
-            setView("submission");
-            setPage(1);
-          }}
-        >
-          Submission
-        </button>
-
-        <button
-          className={view === "voting" ? styles.active : ""}
-          onClick={() => {
-            setView("voting");
-            setPage(1);
-          }}
-        >
-          Voting
-        </button>
-
-        <button
-          className={view === "ended" ? styles.active : ""}
-          onClick={() => {
-            setView("ended");
-            setPage(1);
-          }}
-        >
-          Ended
-        </button>
-
-        <button
-          className={showFilters ? styles.active : ""}
-          onClick={() => {
-            setShowFilters((prev) => !prev);
-          }}
-        >
-          Search
-        </button>
+      {/* title */}
+      <div className={styles.pageHeader}>
+        <h1 className={styles.pageTitle}>All Competitions</h1>
+        <p className={styles.pageDescription}>Discover and join photography competitions</p>
       </div>
 
-      {/* THEME DROPDOWN */}
-      {showFilters && (
-        <div className={styles.filterContainer}>
-          <div className={styles.themeList}>
-            {AVAILABLE_THEMES.map((theme) => {
-              const isSelected = selectedThemes.includes(theme); // Check if theme is selected
-
-              return (
-                <button
-                  key={theme}
-                  type="button"
-                  onClick={() => toggleTheme(theme)}
-                  className={`${styles.themeChip} ${
-                    isSelected ? styles.themeChipActive : ""
-                  }`}
-                >
-                  {theme}
-                </button>
-              );
-            })}
-          </div>
+      {/* select views */}
+      <div className={styles.optionsRow}>
+        <div
+          className={`${styles.optionCell} ${styles.optionClickable} ${view === "submission" ? styles.activeOption : ""}`}
+          onClick={() => {
+            setView("submission");
+            setPage(1);}}
+        >
+          <span className={styles.small}>Open for</span>
+          <span className={styles.large}>Submission</span>
         </div>
-      )}
 
-      {/* SEARCH INPUT */}
+        <div
+          className={`${styles.optionCell} ${styles.optionClickable} ${view === "voting" ? styles.activeOption : ""}`}
+          onClick={() => {
+            setView("voting");
+            setPage(1);}}
+        >
+          <span className={styles.small}>Start</span>
+          <span className={styles.large}>Voting</span>
+        </div>
+
+        <div
+          className={`${styles.optionCell} ${styles.optionClickable} ${view === "ended" ? styles.activeOption : ""}`}
+          onClick={() => {
+            setView("ended");
+            setPage(1);}}
+        >
+          <span className={styles.small}>Explore</span>
+          <span className={styles.large}>Ended</span>
+        </div>
+
+        <div
+          className={`${styles.optionCell} ${styles.optionClickable} ${showFilters ? styles.activeOption : ""}`}
+          onClick={() => setShowFilters((prev) => !prev)}
+        >
+          <span className={styles.small}>Search &</span>
+          <span className={styles.large}>Filter</span>
+        </div>
+      </div>
+
+      {/* filter */}
       {showFilters && (
-        <div className={styles.searchFieldContainer}>
-          <div
-            className={`${mixins.inputFieldContainer} ${styles.inputFieldContainer}`}
+        <div className={styles.filterPanel}>
+
+          {/* search  */}
+          <div className={styles.searchContainer}>
+            <label className={styles.label}>Search</label>
+
+            <div className={styles.inputWrapper}>
+                <input
+                    ref={inputRef}
+                    className={styles.input}
+                    type="text"
+                    placeholder="Competition title or username"
+                    value={search}
+                    onChange={(e) => {
+                        setSearch(e.target.value);
+                        setPage(1);
+                    }}
+                />
+
+                {search && (
+                    <button
+                        type="button"
+                        className={styles.clearBtn}
+                        onClick={() => {
+                            setSearch("");
+                            setPage(1);
+                            inputRef.current?.focus();
+                        }}
+                    >
+                        ✕
+                    </button>
+                )}
+            </div>
+          </div>
+
+          {/* themes */}
+          <div className={styles.themeContainer}>
+            <label className={styles.label}>Themes</label>
+            <div className={styles.selectWrapper}>
+              <Select
+                classNamePrefix="cinema-select"
+                options={AVAILABLE_THEMES_OBJ}
+                value={AVAILABLE_THEMES_OBJ.filter(
+                  (theme) =>
+                    selectedThemes.includes(theme.value)
+                )}
+                onChange={handleSelectThemes}
+                isMulti
+                placeholder="Select themes..."
+                closeMenuOnSelect={false}
+                styles={{
+                  option: (base) => ({
+                      ...base,
+                      color: "black"
+                  }),}}
+              />
+            </div>
+          </div>
+
+          <button
+            onClick={() => {
+              setShowFilters(!showFilters);
+              setSearch("");
+              setSelectedThemes([]);}}
+            className={styles.closeBtn}
+            aria-label="Close filters"
           >
-            <input
-              ref={inputRef}
-              className={mixins.inputField}
-              type="text"
-              placeholder="Search competition title or username"
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-              }}
-            />
-
-            <button
-              className={styles.clearInput}
-              onClick={() => {
-                setSearch("");
-                setPage(1);
-              }}
-            >
-              ✕
-            </button>
-          </div>
+            Close
+          </button>
         </div>
       )}
 
-      {/* LIST */}
+      {/* MATTIAS SLIDER */}
       {competitions.length === 0 ? (
-        <p className={styles.noContent}>No competitions found</p>
+        <p className={styles.noContent}>
+          No competitions found
+        </p>
       ) : (
         competitions.map((comp) => (
-          <CompetitionsCard key={comp._id} competition={comp} />
+          <CompetitionsCard
+            key={comp._id}
+            competition={comp}
+          />
         ))
       )}
 
-      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        onPageChange={setPage}
+      />
     </div>
   );
 }

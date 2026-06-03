@@ -6,7 +6,6 @@ import type { Submission, Competition } from "../types/competitions";
 import type { PublicProfile } from "../types/user";
 import { Throbber } from "../components/user-feedback/Throbber";
 import profileStyle from "../components/profile/profile.module.css";
-import { getCompetitionPhase } from "../utils/competitions";
 
 export default function PublicProfilePage() {
     const { username } = useParams();
@@ -84,7 +83,7 @@ export default function PublicProfilePage() {
                     )}
                 </div>
                 <p className={profileStyle.cameraLine}>
-                    <img src="/camera-detail.svg" alt="camera" className={profileStyle.cameraIcon}/>
+                    <img src="/icons/camera-detail.svg" alt="camera" className={profileStyle.cameraIcon}/>
                     {profile.user.camera ? profile.user.camera : "Camera not specified"}
                 </p>
             </div>
@@ -153,7 +152,7 @@ export default function PublicProfilePage() {
                                 </p>
                                 { view === 'submissions' &&
                                     <div className={profileStyle.placementContainer}>
-                                        <img src="/medal.svg" alt="medal" className={profileStyle.medalIcon}/>
+                                        <img src="/icons/medal.svg" alt="medal" className={profileStyle.medalIcon}/>
                                         <span>
                                             {submission.indicator === "gold" ? "1"
                                             : submission.indicator === "silver" ? "2"
@@ -194,8 +193,8 @@ export default function PublicProfilePage() {
                             ended: 2,
                         };
 
-                        const phaseA = getCompetitionPhase(a);
-                        const phaseB = getCompetitionPhase(b);
+                        const phaseA = a.phase;
+                        const phaseB = b.phase;
 
                         return phaseOrder[phaseA] - phaseOrder[phaseB];
                     })

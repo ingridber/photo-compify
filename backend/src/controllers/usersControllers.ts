@@ -73,18 +73,18 @@ export async function changeUsername(req: Request, res: Response) {
 
 const changePasswordSchema = z.object({
     password: z
-        .string()
+        .string( {required_error: "Password is requiered" })
         .min(1, {message: "Please provide current password for validation"}),
     newPassword: z
-        .string()
+        .string({required_error: "New password is requiered" })
         .min(8, { message: "Password must be between 8 and 120 characters"})
         .max(120, { message: "Password must be between 8 and 120 characters"})
         .refine((val) => verifyPassword(val), {
             message: "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character."
         }),
     confirmPassword: z
-        .string()
-        .min(1, { message: "Need to fill both fields"})
+        .string({required_error: "Please Confirm your new password" })
+        .min(1, { message: "Please Confirm your new password"})
 })
 .refine((data) => data.password !== data.newPassword, {
     message: "New password may not be the same as the old password",
@@ -387,7 +387,7 @@ export async function getUserCompetitions(req: Request, res: Response) {
             owner: user._id
         })
         .populate("owner", "username")
-        .populate("logoBanner");
+        .populate("logoBanner");;
 
         // ---------- ADD SIGNED URL ----------
         await Promise.all(
@@ -434,7 +434,7 @@ export async function getUserSubmissions(
         .populate("image")
         .populate({
             path: "competition",
-            select: "title endDate votingStartDate submissions",
+            select: "title endDate votingStartDate submissions phase",
             populate: {
                 path: "submissions"
             }
@@ -602,7 +602,8 @@ export async function getPublicProfile(
                                 competition.submissions,
                             owner:
                                 competition.owner,
-
+                            phase:
+                                competition.phase,
                             logoBanner:
                                 competition.logoBanner,
 

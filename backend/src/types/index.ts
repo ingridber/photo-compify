@@ -17,7 +17,7 @@ export interface InterfaceUser extends Document {
 export interface CompetitionInterface extends Document {
     owner: Types.ObjectId;
     title: string;
-    logoBanner?: Types.ObjectId;
+    logoBanner?: LogoBanner;
     description: string;
     themes: string[];
     startDate: Date;
@@ -27,7 +27,13 @@ export interface CompetitionInterface extends Document {
     totalVoteCount: number;
     phase: 'submission' | 'voting' | 'ended';
     winners: Types.ObjectId[];
+    signedLogoUrl?: string;
 };
+
+interface LogoBanner {
+    id: Types.ObjectId;
+    getSignedUrl(): Promise<string>;
+}
 
 export interface CompetitionSubmissionInterface extends Document {
     competition: Types.ObjectId;
