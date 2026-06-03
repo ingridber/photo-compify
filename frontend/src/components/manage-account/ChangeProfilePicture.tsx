@@ -4,7 +4,7 @@ import { deleteProfilePicture } from "../../services/api";
 import ImageUploadForm from "../images/ImageUploadForm";
 
 import styles from "../../styles/form.module.css";
-import modalStyles from "../../styles/mixins.module.css";
+import modalStyles from "../../styles/upload-overlay.module.css";
 
 export function ChangeProfilePicture() {
     const { user, setUser } = useUser();

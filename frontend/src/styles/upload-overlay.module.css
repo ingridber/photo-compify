@@ -1,0 +1,39 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  position: relative;
+  max-width: 400px;
+  width: 90%;
+  color: var(--text-light);
+}
+
+.closeBtn {
+  text-transform: uppercase;
+  font-family: var(--sans);
+  padding: .8rem 1.6rem;
+  border: none;
+  border-radius: 1rem;
+  background: #d9d9d9;
+  font-size: .72rem;
+  letter-spacing: .14em;
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+}
+
+@media (max-width: 600px) { 
+    .modalContent {
+        width: 85%;
+    }
+} 
