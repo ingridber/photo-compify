@@ -33,7 +33,7 @@ export const NotificationMenu = () => {
             {isOpen && (
                 <ul className={styles.notificationDropdown}>
                     {latestNotifications.length === 0 ? (
-                        <li className={styles.noNotifications}>Inga nya notiser</li>
+                        <li className={styles.noNotifications}>No new notifications</li>
                     ) : (
                         latestNotifications.map((notification) => (
                             <li 

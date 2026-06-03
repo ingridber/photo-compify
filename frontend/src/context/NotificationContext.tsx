@@ -1,5 +1,4 @@
 import React, { createContext, useState, useEffect } from 'react';
-import axios from 'axios';
 
 interface Notification {
     _id: string;        
@@ -26,12 +25,17 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
     useEffect(() => {
         const fetchNotifications = async () => {
             try {
-                const response = await axios.get(API_URL, {
-                    withCredentials: true 
+                const response = await fetch(API_URL, {
+                    method: "GET",
+                    credentials: "include" 
                 });
-                setNotifications(response.data);
+
+                if (!response.ok) throw new Error("Failed to fetch notifications");
+
+                const data = await response.json();
+                setNotifications(data);
             } catch (error) {
-                console.error("Kunde inte hämta riktiga notiser från backend:", error);
+                console.error("Could not fetch notifications from backend:", error);
             }
         };
 
@@ -40,9 +44,13 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
 
     const markAsRead = async (id: string) => {
         try {
-            await axios.patch(`${API_URL}/${id}/read`, {}, {
-                withCredentials: true
+            const response = await fetch(`${API_URL}/${id}/read`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include"
             });
+
+            if (!response.ok) throw new Error("Failed to update notification status");
 
             setNotifications(prevNotifications =>
                 prevNotifications.map(notis => {
@@ -53,7 +61,7 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
                 })
             );
         } catch (error) {
-            console.error("Kunde inte markera notisen som läst i backend:", error);
+            console.error("Could not mark notification as read in backend:", error);
         }
     };
 
