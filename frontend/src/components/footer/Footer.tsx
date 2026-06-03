@@ -34,6 +34,17 @@ export default function Footer() {
                 </NavLink>
 
                 <NavLink
+                    to="/gdpr" /* GDPR ROUTE HERE*/
+                    className={({ isActive }) =>
+                        isActive
+                            ? `${styles.navLink} ${styles.active}`
+                            : styles.navLink
+                    }
+                >
+                    <span className={styles.navTitle}>GDPR</span>
+                </NavLink>
+
+                <NavLink
                     to="/contact"
                     className={({ isActive }) =>
                         isActive
