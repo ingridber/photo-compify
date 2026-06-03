@@ -25,6 +25,8 @@ import { ProfilePage } from './pages/ProfilePage';
 import PublicProfilePage from './pages/PublicProfilePage';
 import { DeleteAccount } from './components/manage-account/DeleteAccount';
 import Faq from './pages/Faq';
+import Admin from './pages/Admin';
+import Gdpr from './pages/Gdpr';
 
 // Components
 import { ChangeUsername } from './components/manage-account/ChangeUsername';
@@ -100,6 +102,13 @@ function App() {
 
         {/* footer */}
         <Route path="/faq" element={<Faq />} />
+        <Route path="/gdpr" element={<Gdpr />} />
+
+        {/* admin  */}
+        <Route path="/admin" element={<Admin />}>
+          <Route path="reports" />
+        </Route>
+
       </Routes>
     </main>
 

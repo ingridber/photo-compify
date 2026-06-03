@@ -5,13 +5,13 @@
     letter-spacing: .07em;
     text-transform: uppercase;
     color: var(--text);
-    text-align: center;
+    padding-left: 0.5rem;
 }
 
 .faqContainer {
     max-width: 900px;
     margin: 0 auto;
-    padding: 3rem 1.5rem;
+    padding: 3rem 1.5rem 40rem 1.5rem;
 }
 
 .faqItem {
@@ -56,7 +56,7 @@
     aspect-ratio: 1/1;
     flex-shrink: 0;
     padding-right: 0.5rem;
-    /* transition: transform 0.25s ease; */
+    filter: var(--iconToggleTheme);
     transform-origin: center;
 }
 
