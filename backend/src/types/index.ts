@@ -56,3 +56,10 @@ export interface CompetitionVoteInterface extends Document {
     competition: Types.ObjectId;
     submissions: Types.ObjectId[];
 };
+
+export interface NotificationInterface extends Document {
+    title: string;
+    description: string;
+    user: Types.ObjectId;
+    phase: 'submission' | 'voting' | 'ended';
+}

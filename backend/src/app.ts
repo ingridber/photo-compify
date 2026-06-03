@@ -9,6 +9,7 @@ import { errorHandler } from "./middleware/errorHandler";
 import { RateLimit } from "./middleware/rateLimiter";
 import cors from "cors";
 import { submissionRouter } from "./routes/submissions";
+import  notificationRouter  from "./routes/notificationRoutes"
 
 
 const app = express();
@@ -31,6 +32,7 @@ app.use('/api/v1/auth', authRouter);
 app.use("/api/v1/images", imagesRoutes);
 app.use("/api/v1/user", routerProfile);
 app.use("/api/v1/user", routerUser);
+app.use("/api/v1/notifications", notificationRouter);
 
 app.use((req, res) => {
     res.status(404).json({

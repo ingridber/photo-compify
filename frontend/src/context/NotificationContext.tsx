@@ -1,80 +1,65 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
+import axios from 'axios';
 
 interface Notification {
-    id: string;
+    _id: string;        
+    competition: string; 
     title: string;
-    message: string;
-    isRead: boolean;
+    description: string; 
+    read: boolean;       
+    phase: string;
+    createdAt: string;
 }
 
 interface NotificationContextType {
     notifications: Notification[];
-    markAsRead: (id: string) => void;
+    markAsRead: (id: string) => Promise<void>; 
 }
-
 
 export const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
-export const NotificationProvider = ({ children }: { children: React.ReactNode }) => {
-    
-    const [notifications, setNotifications] = useState<Notification[]>([]);
-    const [mockCompetition, setMockCompetition] = useState({
-    title: "Bästa naturbilden",
-    phase: "submission"
-});
+const API_URL = "http://localhost:3000/api/v1/notifications";
 
-    const markAsRead = (id: string) => {
-        setNotifications(prevNotifications =>
-            prevNotifications.map(notis => {
-                if (notis.id === id) {
-                    return {...notis, isRead: true};
-                }
-                return notis;
-            })
-        );
-    };
+export const NotificationProvider = ({ children }: { children: React.ReactNode }) => {
+    const [notifications, setNotifications] = useState<Notification[]>([]);
 
     useEffect(() => {
-    const timer = setInterval(() => {
-        if (mockCompetition.phase === "submission") {
-            setMockCompetition({
-                ...mockCompetition,
-                phase: "voting"
-            });
-            
-            const newNotification: Notification = {
-                id: Date.now().toString(),
-                title: mockCompetition.title,
-                message: "Tävlingen har nu gått i röstningsfasen!",
-                isRead: false
-            };
+        const fetchNotifications = async () => {
+            try {
+                const response = await axios.get(API_URL, {
+                    withCredentials: true 
+                });
+                setNotifications(response.data);
+            } catch (error) {
+                console.error("Kunde inte hämta riktiga notiser från backend:", error);
+            }
+        };
 
-            setNotifications(prev => [...prev, newNotification]);
+        fetchNotifications();
+    }, []);
 
-        } else if (mockCompetition.phase === "voting") {
-            setMockCompetition({
-                ...mockCompetition,
-                phase: "ended"
+    const markAsRead = async (id: string) => {
+        try {
+            await axios.patch(`${API_URL}/${id}/read`, {}, {
+                withCredentials: true
             });
 
-            const newNotification: Notification = {
-                id: Date.now().toString(),
-                title: mockCompetition.title,
-                message: "Tävlingen är nu avslutad.",
-                isRead: false
-            };
-
-            setNotifications(prev => [...prev, newNotification]);
+            setNotifications(prevNotifications =>
+                prevNotifications.map(notis => {
+                    if (notis._id === id) {
+                        return { ...notis, read: true };
+                    }
+                    return notis;
+                })
+            );
+        } catch (error) {
+            console.error("Kunde inte markera notisen som läst i backend:", error);
         }
-    }, 30000);
+    };
 
-    return () => clearInterval(timer);
-}, [mockCompetition]);
-
-
-return (
-    <NotificationContext.Provider value={{ notifications, markAsRead}}>
-        {children}
-    </NotificationContext.Provider>
-    )
+    return (
+        <NotificationContext.Provider value={{ notifications, markAsRead }}>
+            {children}
+        </NotificationContext.Provider>
+    );
 };

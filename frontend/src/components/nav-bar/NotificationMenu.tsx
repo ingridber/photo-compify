@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import notificationBlack from '../../assets/images/notification_black.png';
 import styles from './NotificationMenu.module.css'; 
 import { useNotifications } from '../../hooks/useNotifications';
@@ -6,20 +7,21 @@ import { useNotifications } from '../../hooks/useNotifications';
 export const NotificationMenu = () => {
     const { notifications, markAsRead } = useNotifications();
     const [isOpen, setIsOpen] = useState(false);
-    const count = notifications.filter(n => n.isRead === false).length;
-    const latestNotifications = [...notifications].reverse().slice(0, 5);
+    const navigate = useNavigate();
+
+    const count = notifications.filter(n => n.read === false).length;
+    const latestNotifications = notifications.slice(0, 5);
 
     const handleToggleMenu = () => {
-
-
-        if (isOpen === true) {
-            notifications.forEach(notification => {
-                if (!notification.isRead) {
-                    markAsRead(notification.id);
-                }
-            });
-        }
         setIsOpen(!isOpen);
+    };
+
+    const handleNotificationClick = (notification: any) => {
+        if (!notification.read) {
+            markAsRead(notification._id);
+        }
+        setIsOpen(false);
+        navigate(`/competitions/${notification.competition}`);
     };
 
     return (
@@ -31,12 +33,20 @@ export const NotificationMenu = () => {
 
             {isOpen && (
                 <ul className={styles.notificationDropdown}>
-                    {latestNotifications.map((notification) => (
-                        <li key={notification.id} className={styles.notificationItem}>
-                            <h4>{notification.title}</h4>
-                            <p>{notification.message}</p>
-                        </li>
-                    ))}
+                    {latestNotifications.length === 0 ? (
+                        <li className={styles.noNotifications}>Inga nya notiser</li>
+                    ) : (
+                        latestNotifications.map((notification) => (
+                            <li 
+                                key={notification._id}
+                                onClick={() => handleNotificationClick(notification)}
+                                className={`${styles.notificationItem} ${!notification.read ? styles.unread : ''}`}
+                            >
+                                <h4>{notification.title}</h4>
+                                <p>{notification.description}</p> 
+                            </li>
+                        ))
+                    )}
                 </ul>
             )}
         </div>
