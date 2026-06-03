@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import notificationBlack from '../../assets/images/notification_black.png';
 import styles from './NotificationMenu.module.css'; 
 import { useNotifications } from '../../hooks/useNotifications';
 
