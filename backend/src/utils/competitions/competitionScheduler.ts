@@ -5,7 +5,7 @@ import { competitionPhaseHandler } from "./competitionPhaseHandler";
 const INTERVAL_MS = 60_000;
 
 async function runSchedulerTick(): Promise<void> {
-    const competitions = await Competition.find({ phase: { $ne: 'ended' } });
+    const competitions = await Competition.find({ phase: { $ne: 'ended' } }).populate('submissions');
 
     for (const comp of competitions) {
         const result = await checkPhaseAndUpdate(comp);

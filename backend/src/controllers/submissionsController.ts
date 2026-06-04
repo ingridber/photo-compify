@@ -35,7 +35,6 @@ const createSubmissionSchema = z.object({
 })
 
 export async function createSubmission(req: AuthRequest, res: Response) {
-
     const validation = createSubmissionSchema.safeParse(req.body);
 
     if(!validation.success){
@@ -154,7 +153,7 @@ export async function voteOnSubmission(req: AuthRequest, res: Response) {
             user: { $ne: req.user!.id },
         });
 
-        const maxVotesAllowed = submissionsCount < 6 ? 1 : 3; //if the amount of submissions is lower than 6 you only get one vote
+        const maxVotesAllowed = submissionsCount < 6 ? 1 : 3;
 
         await CompetitionVote.findOneAndUpdate(
             {
@@ -305,7 +304,6 @@ const updateSubmissionSchema = z.object ({
 })
 
 export async function updateSubmission(req: AuthRequest, res: Response) {
-
     const validation = updateSubmissionSchema.safeParse(req.body);
 
     if(!validation.success){
@@ -361,6 +359,7 @@ export async function updateSubmission(req: AuthRequest, res: Response) {
             const newImageDoc = await Image.create({
                 filename: data.path,
                 uploadedAt: new Date(),
+                uploadedBy: req.user!.id,
                 fileSize: req.file.size,
                 fileFormat: req.file.mimetype,
             });
