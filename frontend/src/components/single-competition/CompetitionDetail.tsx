@@ -312,7 +312,7 @@ export default function CompetitionDetail() {
                     <ReportForm
                         submissionId={fullscreenSubmission._id}
                         competitionId={competition._id}
-                        userId={fullscreenSubmission.user?._id}
+                        reportedUserId={fullscreenSubmission.user?._id}
                     />
 
                 </div>

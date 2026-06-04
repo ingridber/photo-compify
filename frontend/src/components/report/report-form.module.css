@@ -5,10 +5,10 @@
 }
 
 .label {
-    font: 500 1rem var(--sans);
+    font: 300 0.8rem var(--sans);
   letter-spacing: .25em;
   text-transform: uppercase;
-  color: var(--text);
+  color: var(--text-light);
   margin-top: 1rem;
 
 }
@@ -38,10 +38,36 @@
 }
 
 
+.submitBtn {
+  text-transform: uppercase;
+  font-family: var(--sans);
+  padding: .6rem 1.4rem;
+  border: none;
+  border-radius: 1rem;
+  background: #d9d9d9;
+  font-size: .72rem;
+  letter-spacing: .14em;
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  margin-top: 0.8rem;
+}
+
+.submitBtn:disabled {
+  cursor: not-allowed;
+}
 
 
 .error {
   margin: 0;
   color: var(--abort-btn);
   font: .75rem var(--sans);
+}
+
+
+.responseContainer {
+  margin-top: 1rem;
+}
+
+.responseContainer span {
+  font-weight: 600;
 }

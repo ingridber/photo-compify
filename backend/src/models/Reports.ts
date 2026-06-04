@@ -2,8 +2,22 @@ import { Schema, model } from "mongoose";
 import { ReportInterface } from "../types/index";
 
 
-const reportSchema = new Schema<ReportInterface>({
-    submissionId: {
+const reportSchema = new Schema<ReportInterface>(
+    
+    {
+        reportId: {
+            type: String,
+            required: true,
+            unique: true,
+        },
+
+        reportedUserId: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+        },
+
+        submissionId: {
             type: Schema.Types.ObjectId,
             ref: "Submission",
             required: true,
@@ -12,12 +26,6 @@ const reportSchema = new Schema<ReportInterface>({
         competitionId: {
             type: Schema.Types.ObjectId,
             ref: "Competition",
-            required: true,
-        },
-
-        userId: {
-            type: Schema.Types.ObjectId,
-            ref: "User",
             required: true,
         },
 
@@ -38,13 +46,15 @@ const reportSchema = new Schema<ReportInterface>({
             maxlength: 250,
         },
 
-        evidenceImageId: {
+        evidenceImg: {
             type: Schema.Types.ObjectId,
             ref: "Image",
             default: null,
         },
     },
+        {
+            timestamps: true,
+        }
+);
 
-});
-
-export const User = model<ReportInterface>("Report", reportSchema);
+export const Report = model<ReportInterface>("Report", reportSchema);

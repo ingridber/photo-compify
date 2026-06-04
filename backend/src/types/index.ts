@@ -71,13 +71,15 @@ export interface NotificationInterface extends Document {
 }
 
 export interface ReportInterface {
-    id: string;
-    submissionId: string;
-    competitionId: string;
-    userId: string;
+    _id: Types.ObjectId;
+    reportId: string;
+    reportedUserId: Types.ObjectId;
+    submissionId: Types.ObjectId;
+    competitionId: Types.ObjectId;
     name?: string;
     email: string;
     description: string;
-    evidenceImageId?: string | null;
+    evidenceImg: string | null;
     createdAt: Date;
+    updatedAt: Date;
 }

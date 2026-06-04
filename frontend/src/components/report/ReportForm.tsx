@@ -3,13 +3,14 @@ import { useRef, useState, useEffect } from "react";
 import { uploadImage } from "../../services/imageApi";
 import FileFormatValidation from "../images/FileFormatValidation";
 import FileSizeValidation from "../images/FileSizeValidation";
+import { createReport } from "../../services/reportApi";
 
 const DESC_MAX = 250;
 
 interface ReportFormProps {
     submissionId: string;
     competitionId: string;
-    userId: string;
+    reportedUserId: string;
 }
 
 interface FormErrors {
@@ -17,10 +18,15 @@ interface FormErrors {
     confirmation?: string;
 }
 
+interface apiErrors {
+    message: string;
+    reportId?: string;
+}
+
 export default function ReportForm({
     submissionId,
     competitionId,
-    userId,
+    reportedUserId,
 }: ReportFormProps) {
 
     const [name, setName] = useState("");
@@ -33,7 +39,9 @@ export default function ReportForm({
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [fileError, setFileError] = useState<string | null>(null);
-    const [success, setSuccess] = useState(false);
+    const [showResult, setshowResult] = useState(false);
+    const [apiResponse, setApiResponse] = useState('');
+    const [reportId, setReportId] = useState('');
 
     const fileSizeRules = FileSizeValidation();
     const fileFormatRules = FileFormatValidation();
@@ -128,7 +136,8 @@ export default function ReportForm({
         ) => {
             e.preventDefault();
 
-            setSuccess(false);
+
+            setshowResult(false);
             const newErrors: FormErrors = {};
 
             if (email !== confirmEmail) {
@@ -147,10 +156,9 @@ export default function ReportForm({
             }
 
             const reportData = {
-                reportId: crypto.randomUUID(),
                 submissionId,
                 competitionId,
-                userId,
+                reportedUserId,
                 name: name.trim() || "Not provided",
                 email,
                 description,
@@ -186,42 +194,61 @@ export default function ReportForm({
     }
 
 
-    const response = await fetch("/api/report", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            ...reportData,
-            evidenceImage: evidenceImageId,
-        }),
-    });
+            const res = await createReport({
+                ...reportData,
+                evidenceImg: evidenceImageId,
+            })
 
-                if (!response.ok) {
-                    throw new Error("Failed to submit report");
+            setApiResponse(res.message);
+            setReportId(res.reportId);
+            setshowResult(true);
+
+            setName("");
+            setEmail("");
+            setConfirmEmail("");
+            setDescription("");
+            setConfirmed(false);
+
+            clearFile();
+
+            setErrors({});
+
+            } catch (error: unknown) {
+                const apiError = error as apiErrors;
+
+                setApiResponse(apiError.message)
+
+                if (apiError.reportId) {
+                    setReportId(apiError.reportId);
                 }
 
-                
-
-                setName("");
-                setEmail("");
-                setConfirmEmail("");
-                setDescription("");
-                setConfirmed(false);
-
-                clearFile();
-
-                setErrors({});
-            } catch (error) {
-                console.error(error);
-                alert("Failed to submit report");
+                setshowResult(true);
             }
 
-            setSuccess(true);
         };
+
+
+
+
+
 
     return (
         <>
+
+        { showResult ? (
+            <div className={styles.responseContainer}>
+            <p className={styles.response}>
+                {apiResponse }
+            </p>
+            { reportId && (
+                <p>Report ID: <span>{reportId}</span></p>
+            )}
+            </div>
+
+        ) : (
+
+      
+       
         <form onSubmit={handleSubmit}>
 
             {/* NAME */}
@@ -372,11 +399,10 @@ export default function ReportForm({
             </button>
         </form>
 
-        {success && (
-            <p className={styles.success}>
-                Report submitted successfully.
-            </p>
-        )}
+         )
+
+
+        }
 </>
     );
 }
