@@ -260,8 +260,6 @@ export default function CompetitionDetail() {
             </div>
         )}
 
-
-
         {fullscreenSubmission && (
             <div className={styles.fullscreenModal} onClick={() => setFullscreenSubmission(null)}>
                 <div className={styles.fullscreenContent} onClick={(e) => e.stopPropagation()}>
@@ -295,32 +293,19 @@ export default function CompetitionDetail() {
 
         {/* REPORT  */}
         {showReportModal && fullscreenSubmission && (
-            <div
-                className={modalStyles.modalOverlay}
-            >
-                <div
-                    className={modalStyles.modalContent}
-                    onClick={(e) => e.stopPropagation()}
-                >
-                    <button
-                        className={modalStyles.closeBtn}
-                        onClick={() => setShowReportModal(false)}
-                    >
+            <div className={modalStyles.modalOverlay}>
+                <div className={modalStyles.modalContent} onClick={(e) => e.stopPropagation()}>
+                    <button className={modalStyles.closeBtn}onClick={() => setShowReportModal(false)}>
                         ✕
                     </button>
-
                     <ReportForm
                         submissionId={fullscreenSubmission._id}
                         competitionId={competition._id}
                         reportedUserId={fullscreenSubmission.user?._id}
                     />
-
                 </div>
             </div>
         )}
-
-
-
     </div>
     );
 }
