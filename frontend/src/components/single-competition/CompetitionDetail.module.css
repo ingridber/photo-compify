@@ -343,13 +343,23 @@
   font-size: 0.72rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  backdrop-filter: blur(10px);
   cursor: pointer;
 }
 
 .closeFullscreenBtn {
   min-width: 120px;
   justify-self: center;
+}
+
+.reportBtn {
+  min-width: unset;
+  width: 48px;
+}
+
+.reportBtnIcon {
+  height: 60%;
+  filter: brightness(0)invert(1);
+  opacity: 0.8;
 }
 
 /* ----- RESPONSIVE ----- */

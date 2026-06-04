@@ -270,10 +270,10 @@ export default function CompetitionDetail() {
                     />
                     <div className={styles.fullscreenActions}>
                         <button
-                            className={styles.closeFullscreenBtn}
+                            className={`${styles.closeFullscreenBtn} ${styles.reportBtn}`}
                             onClick={() => {setShowReportModal(true)}}
                         >
-                            Report
+                            <img src="/icons/report.svg" alt="report picture" className={styles.reportBtnIcon} />
                         </button>
 
                         <button className={styles.closeFullscreenBtn} onClick={() => setFullscreenSubmission(null)}>Close</button>
