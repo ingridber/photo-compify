@@ -9,32 +9,14 @@ const mongoIdSchema = z.object({
 
 export const getUserNotifications = async (req: Request, res: Response): Promise<void> => {
     try {
-        // Hämta ID från user-objektet
         const userObj = (req as any).user;
         const userId = userObj?.id || userObj?._id;
-
-        console.log("DEBUG: Försöker hämta notiser för användare:", userId);
 
         if (!userId) {
             res.status(401).json({ message: "Unauthorized." });
             return;
         }
 
-        // --- DEBUG-SEKTION ---
-        // Hämta ALLA notiser för att se vad som faktiskt finns i DB
-        const allNotifications = await Notification.find({});
-        console.log("DEBUG: Totalt antal notiser i DB:", allNotifications.length);
-        
-        // Hitta notiser som faktiskt matchar som sträng (ifall ObjectId spökar)
-        const matchFound = allNotifications.filter(n => n.user.toString() === userId.toString());
-        console.log("DEBUG: Antal notiser som matchar ID", userId, ":", matchFound.length);
-        
-        if (matchFound.length === 0 && allNotifications.length > 0) {
-            console.log("DEBUG: Exempel på användar-ID i första notisen:", allNotifications[0].user.toString());
-        }
-        // ---------------------
-
-        // Använd en sökning som matchar korrekt
         const objectId = new mongoose.Types.ObjectId(userId);
         const notifications = await Notification.find({ user: objectId }).sort({ createdAt: -1 });
         
