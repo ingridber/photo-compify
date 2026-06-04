@@ -16,7 +16,7 @@ export default function Faq() {
             In case of a tiebreak, the winners are determined based on randomization.`,
         },{
             question: "I want to report a photo",
-            answer: 'Navigate to the photo you want to report and open it in full-screen mode. Tap the button marked "Report" and complete the report form. Once our administrators have reviewed the report, you will be notified of the outcome using the contact information you provided in the form.',
+            answer: 'Navigate to the photo you want to report and open it in full-screen mode. Tap the button with an exclamation mark and complete the report form. Once our administrators have reviewed the report, you will be notified of the outcome using the contact information you provided in the form.',
         },{
             question: "Where can i access my data?",
             answer: 'In the footer at the bottom of this page, you will find a link to "GDPR". Please navigate there to learn more about our data protection practices and how to collect your data.',
