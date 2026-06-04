@@ -23,12 +23,7 @@ interface apiErrors {
     reportId?: string;
 }
 
-export default function ReportForm({
-    submissionId,
-    competitionId,
-    reportedUserId,
-}: ReportFormProps) {
-
+export default function ReportForm({submissionId, competitionId, reportedUserId,}: ReportFormProps) {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [confirmEmail, setConfirmEmail] = useState("");
@@ -42,14 +37,11 @@ export default function ReportForm({
     const [showResult, setshowResult] = useState(false);
     const [apiResponse, setApiResponse] = useState('');
     const [reportId, setReportId] = useState('');
-
     const fileSizeRules = FileSizeValidation();
     const fileFormatRules = FileFormatValidation();
 
     function validateConfirmEmail(value: string): string | undefined {
-        if (value !== email) {
-            return "Email addresses do not match";
-        }
+        if (value !== email) {return "Email addresses do not match";}
     }
 
     function handleBlur(value: string) {
@@ -62,23 +54,18 @@ export default function ReportForm({
     }
 
     useEffect(() => {
-    return () => {
-        if (previewUrl) {
-            URL.revokeObjectURL(previewUrl);
-        }
-    };
-    }, [previewUrl]);
+        return () => {
+            if (previewUrl) {
+                URL.revokeObjectURL(previewUrl);
+            }
+        };
+        }, [previewUrl]);
 
-    const handleFileChange = (
-        e: React.ChangeEvent<HTMLInputElement>
-    ) => {
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-
         setFileError(null);
 
-        if (previewUrl) {
-            URL.revokeObjectURL(previewUrl);
-        }
+        if (previewUrl) {URL.revokeObjectURL(previewUrl);}
 
         if (!file) {
             setSelectedFile(null);
@@ -86,9 +73,7 @@ export default function ReportForm({
             return;
         }
 
-        const formatError =
-            fileFormatRules.validateFileFormat(file);
-
+        const formatError = fileFormatRules.validateFileFormat(file);
         if (formatError) {
             setFileError(formatError);
             setSelectedFile(null);
@@ -96,9 +81,7 @@ export default function ReportForm({
             return;
         }
 
-        const sizeError =
-            fileSizeRules.validateFileSize(file);
-
+        const sizeError = fileSizeRules.validateFileSize(file);
         if (sizeError) {
             setFileError(sizeError);
             setSelectedFile(null);
@@ -111,17 +94,13 @@ export default function ReportForm({
     };
 
     const clearFile = () => {
-        if (previewUrl) {
-            URL.revokeObjectURL(previewUrl);
-        }
+        if (previewUrl) {URL.revokeObjectURL(previewUrl);}
 
         setSelectedFile(null);
         setPreviewUrl(null);
         setFileError(null);
 
-        if (fileInputRef.current) {
-            fileInputRef.current.value = "";
-        }
+        if (fileInputRef.current) {fileInputRef.current.value = "";}
     };
 
 
@@ -131,67 +110,47 @@ export default function ReportForm({
         description.trim().length > 0 &&
         confirmed;
 
-        const handleSubmit = async (
-            e: React.FormEvent<HTMLFormElement>
-        ) => {
-            e.preventDefault();
+    // ---------- HANDLE SUBMIT ----------
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
 
+        setshowResult(false);
+        const newErrors: FormErrors = {};
 
-            setshowResult(false);
-            const newErrors: FormErrors = {};
+        if (email !== confirmEmail) {newErrors.confirmEmail = "Email addresses do not match";}
+        if (!confirmed) {newErrors.confirmation = "You must confirm this report before submitting.";}
 
-            if (email !== confirmEmail) {
-                newErrors.confirmEmail =
-                    "Email addresses do not match";
-            }
-
-            if (!confirmed) {
-                newErrors.confirmation =
-                    "You must confirm this report before submitting.";
-            }
-
-            if (Object.keys(newErrors).length > 0) {
-                setErrors(newErrors);
-                return;
-            }
-
-            const reportData = {
-                submissionId,
-                competitionId,
-                reportedUserId,
-                name: name.trim() || "Not provided",
-                email,
-                description,
-            };
-
-    let evidenceImageId: string | null = null;
-
-            try {
-
-    if (selectedFile) {
-        const imgFormData = new FormData();
-
-        imgFormData.append(
-            "image",
-            selectedFile
-        );
-
-        const uploadRes =
-            await uploadImage(imgFormData);
-
-        const uploadData =
-            await uploadRes.json();
-
-        if (!uploadRes.ok) {
-            throw new Error(
-                uploadData.message ||
-                "Image upload failed"
-            );
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            return;
         }
 
-        evidenceImageId =
-            uploadData.data._id;
-    }
+        const reportData = {
+            submissionId,
+            competitionId,
+            reportedUserId,
+            name: name.trim() || "Not provided",
+            email,
+            description,
+        };
+
+        let evidenceImageId: string | null = null;
+
+        try {
+            if (selectedFile) {
+                const imgFormData = new FormData();
+
+                imgFormData.append("image",selectedFile);
+
+                const uploadRes = await uploadImage(imgFormData);
+                const uploadData = await uploadRes.json();
+
+                if (!uploadRes.ok) {
+                    throw new Error( uploadData.message || "Image upload failed");
+                }
+
+                evidenceImageId = uploadData.data._id;
+            }
 
 
             const res = await createReport({
@@ -202,20 +161,16 @@ export default function ReportForm({
             setApiResponse(res.message);
             setReportId(res.reportId);
             setshowResult(true);
-
             setName("");
             setEmail("");
             setConfirmEmail("");
             setDescription("");
             setConfirmed(false);
-
             clearFile();
-
             setErrors({});
 
             } catch (error: unknown) {
                 const apiError = error as apiErrors;
-
                 setApiResponse(apiError.message)
 
                 if (apiError.reportId) {
@@ -224,7 +179,6 @@ export default function ReportForm({
 
                 setshowResult(true);
             }
-
         };
 
 
@@ -233,24 +187,14 @@ export default function ReportForm({
 
 
     return (
-        <>
-
-        { showResult ? (
-            <div className={styles.responseContainer}>
-            <p className={styles.response}>
-                {apiResponse }
-            </p>
-            { reportId && (
-                <p>Report ID: <span>{reportId}</span></p>
-            )}
-            </div>
-
-        ) : (
-
-      
-       
+    <>
+    { showResult ? (
+        <div className={styles.responseContainer}>
+            <p className={styles.response}> {apiResponse} </p>
+            { reportId && (<p>Report ID: <span>{reportId}</span></p>)}
+        </div>
+    ) : (
         <form onSubmit={handleSubmit}>
-
             {/* NAME */}
             <div className={styles.field}>
                 <label className={styles.label}> Name (optional)</label>
@@ -262,7 +206,6 @@ export default function ReportForm({
                     onChange={(e) => setName(e.target.value)}
                 />
             </div>
-
             {/* EMAIL */}
             <div className={styles.field}>
                 <label className={styles.label}>Email</label>
@@ -275,15 +218,10 @@ export default function ReportForm({
                     onChange={(e) => setEmail(e.target.value)}
                 />
             </div>
-
             {/* CONFIRM EMAIL */}
             <div className={styles.field}>
                 <label className={styles.label}>Confirm Email</label>
-
-                {errors.confirmEmail && (
-                    <p className={styles.error}>{errors.confirmEmail}</p>
-                )}
-
+                {errors.confirmEmail && (<p className={styles.error}>{errors.confirmEmail}</p>)}
                 <input
                     className={styles.input}
                     required
@@ -350,24 +288,12 @@ export default function ReportForm({
                     style={{ display: "none" }}
                 />
 
-                {fileError && (
-                    <p className={styles.error}>
-                        {fileError}
-                    </p>
-                )}
+                {fileError && (<p className={styles.error}>{fileError}</p>)}
 
                 {previewUrl && (
                     <div className={styles.previewRow}>
-                        <small className={styles.previewHint}>
-                            PNG, JPEG or WebP · max 1 MB
-                        </small>
-
-                        <button
-                            type="button"
-                            onClick={clearFile}
-                        >
-                            Remove Image
-                        </button>
+                        <small className={styles.previewHint}>PNG, JPEG or WebP · max 1 MB</small>
+                        <button type="button" onClick={clearFile}>Remove Image</button>
                     </div>
                 )}
             </div>
@@ -375,11 +301,7 @@ export default function ReportForm({
             {/* CONFIRMATION */}
             <div className={styles.field}>
                 <label className={styles.label}>Confirmation</label>
-
-                {errors.confirmation && (
-                    <p className={styles.error}>{errors.confirmation}</p>
-                )}
-
+                {errors.confirmation && (<p className={styles.error}>{errors.confirmation}</p>)}
                 <div>
                     <input
                         type="checkbox"
@@ -398,11 +320,7 @@ export default function ReportForm({
                 Submit Report
             </button>
         </form>
-
-         )
-
-
-        }
-</>
+    )}
+    </>
     );
 }
