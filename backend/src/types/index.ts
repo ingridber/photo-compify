@@ -69,3 +69,17 @@ export interface NotificationInterface extends Document {
     user: Types.ObjectId;
     phase: 'submission' | 'voting' | 'ended';
 }
+
+export interface ReportInterface {
+    _id: Types.ObjectId;
+    reportId: string;
+    reportedUserId: Types.ObjectId;
+    submissionId: Types.ObjectId;
+    competitionId: Types.ObjectId;
+    name?: string;
+    email: string;
+    description: string;
+    evidenceImg: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+}

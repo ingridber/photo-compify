@@ -9,6 +9,7 @@ import modalStyles from "../../styles/upload-overlay.module.css";
 import { Throbber } from "../user-feedback/Throbber.tsx";
 import ImageUploadForm from "../images/ImageUploadForm.tsx";
 import { getIndicator, sortSubmissions } from "../../utils/submissionIndicators.ts";
+import ReportForm from "../report/ReportForm.tsx";
 
 function formatCountdown(target: string): string {
     const diff = new Date(target).getTime() - Date.now();
@@ -33,6 +34,7 @@ export default function CompetitionDetail() {
     const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
     const [showLogoModal, setShowLogoModal] = useState(false);
     const [fullscreenSubmission, setFullscreenSubmission] = useState<Submission | null>(null);
+    const [showReportModal, setShowReportModal] = useState(false);
 
     const loadCompetition = useCallback(() => {
         if (!id) return;
@@ -267,7 +269,13 @@ export default function CompetitionDetail() {
                         alt="Submission"
                     />
                     <div className={styles.fullscreenActions}>
-                        <button className={styles.closeFullscreenBtn}>Report</button>
+                        <button
+                            className={`${styles.closeFullscreenBtn} ${styles.reportBtn}`}
+                            onClick={() => {setShowReportModal(true)}}
+                        >
+                            <img src="/icons/report.svg" alt="report picture" className={styles.reportBtnIcon} />
+                        </button>
+
                         <button className={styles.closeFullscreenBtn} onClick={() => setFullscreenSubmission(null)}>Close</button>
                         {phase === 'voting' && (
                         <VoteButton
@@ -279,6 +287,22 @@ export default function CompetitionDetail() {
                             variant="fullscreen"/>
                         )}
                     </div>
+                </div>
+            </div>
+        )}
+
+        {/* REPORT  */}
+        {showReportModal && fullscreenSubmission && (
+            <div className={modalStyles.modalOverlay}>
+                <div className={modalStyles.modalContent} onClick={(e) => e.stopPropagation()}>
+                    <button className={modalStyles.closeBtn}onClick={() => setShowReportModal(false)}>
+                        ✕
+                    </button>
+                    <ReportForm
+                        submissionId={fullscreenSubmission._id}
+                        competitionId={competition._id}
+                        reportedUserId={fullscreenSubmission.user?._id}
+                    />
                 </div>
             </div>
         )}
