@@ -7,10 +7,10 @@ import { routerUser } from "./routes/users";
 import { authRouter } from "./routes/auth";
 import { errorHandler } from "./middleware/errorHandler";
 import { RateLimit } from "./middleware/rateLimiter";
+import { routerReport } from "./routes/report";
 import cors from "cors";
 import { submissionRouter } from "./routes/submissions";
 import  notificationRouter  from "./routes/notificationRoutes"
-
 
 const app = express();
 
@@ -33,6 +33,7 @@ app.use("/api/v1/images", imagesRoutes);
 app.use("/api/v1/user", routerProfile);
 app.use("/api/v1/user", routerUser);
 app.use("/api/v1/notifications", notificationRouter);
+app.use('/api/v1/report', routerReport)
 
 app.use((req, res) => {
     res.status(404).json({
