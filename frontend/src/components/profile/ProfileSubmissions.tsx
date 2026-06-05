@@ -48,7 +48,10 @@ export default function ProfileSubmissions({showOnlyWins = false}: Props) {
 
     // ---------- FILTER WINS ----------
     const filteredSubmissions = showOnlyWins
-        ? submissions.filter((submission) => submission.indicator === "gold")
+        ? submissions.filter((submission) => 
+            submission.indicator === "gold" &&
+            typeof submission.competition !== "string" &&
+            submission.competition.phase === "ended")
         : submissions;
 
     return (
