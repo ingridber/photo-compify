@@ -7,7 +7,7 @@ const routerComps = express.Router()
 
 routerComps.get('/', getAllCompetitions);
 routerComps.get('/:id', extractUser, getCompetitionById);
-routerComps.post('/', authenticateToken, upload.single("logoBaner"), createCompetition);
+routerComps.post('/', authenticateToken, upload.single("logoBanner"), createCompetition);
 routerComps.patch('/:id', authenticateToken,  updateCompetition);
 routerComps.delete('/:id', authenticateToken,  deleteCompetition);
 

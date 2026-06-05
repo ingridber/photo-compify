@@ -144,6 +144,7 @@ export async function createCompetition(req: AuthRequest, res: Response) {
 
   const now = Date.now();
   setTimeout(() => {
+      // TODO: korkat ha inte separat timeout och du saknar 1 av 2 arg i funkzionen. (review 4)
       competitionPhaseHandler(competition);
   }, competition.votingStartDate.getTime() - now)
 

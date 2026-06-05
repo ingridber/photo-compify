@@ -1,5 +1,16 @@
 import type { Competition, Submission } from "../types/competitions";
 
+// TODO: github issus - hardcoded urls - fix function to fetch calls to avoid upprepningar 
+// stödfunktion till: 
+    //     const res = await fetch("http://localhost:3000/api/v1/{PATH-HERE}", {
+    //     method: "POST",
+    //     headers: {
+    //         "Content-Type": "application/json",
+    //     },
+    //     credentials: "include",
+    //     body: JSON.stringify({ username: username, password: password }),
+    // });
+
 const BASE_URL: string = "http://localhost:3000/api/v1";
 
 // ---------- LOG IN ----------

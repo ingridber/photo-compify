@@ -10,7 +10,7 @@ import { z } from "zod";
 import { CompetitionSubmissionInterface } from "../types";
 import { calculateUserStats } from "../services/userStats";
 import { submissionsIndicator } from "../services/submissionIndicator";
-
+import { AuthRequest } from "../types";
 
 
 
@@ -24,8 +24,8 @@ const changeUsernameSchema = z.object({
         .max(80, "Username must be between 3 and 80 characters")
     });
 
-export async function changeUsername(req: Request, res: Response) {
-    const userId = (req as any).user.id;
+export async function changeUsername(req: AuthRequest, res: Response) {
+    const userId = req.user?.id;
 
     const validation = changeUsernameSchema.safeParse(req.body);
 
@@ -96,8 +96,8 @@ const changePasswordSchema = z.object({
 });
 
 
-export async function changePassword(req: Request, res: Response) {
-    const userId = (req as any).user.id;
+export async function changePassword(req: AuthRequest, res: Response) {
+    const userId = req.user?.id;
     const validation = changePasswordSchema.safeParse(req.body);
 
     if (!validation.success) {
@@ -152,8 +152,8 @@ const changeProfilePictureSchema = z.object({
         .optional()
 });
 
-export async function changeProfilePicture(req: Request, res: Response) {
-    const userId = (req as any).user.id;
+export async function changeProfilePicture(req: AuthRequest, res: Response) {
+    const userId = req.user?.id;
     const validation = changeProfilePictureSchema.safeParse(req.body);
 
     if(!validation.success) {
@@ -207,8 +207,8 @@ export async function changeProfilePicture(req: Request, res: Response) {
 
 // ---------- DELETE PROFILE PICTURE ----------
 // --------------------------------------------
-export async function deleteProfilePicture(req: Request, res: Response) {
-    const userId = (req as any).user.id;
+export async function deleteProfilePicture(req: AuthRequest, res: Response) {
+    const userId = req.user?.id;
 
     try {
         // ---------- GET USER ----------
@@ -274,8 +274,8 @@ const deleteUserSchema = z.object({
         .min(1, {message: "please provide current password for validation"})
 });
 
-export async function deleteUser(req: Request, res: Response) {
-    const userId = (req as any).user.id;
+export async function deleteUser(req: AuthRequest, res: Response) {
+    const userId = req.user?.id;
     const validation = deleteUserSchema.safeParse(req.body);
 
     if (!validation.success) {
@@ -369,8 +369,8 @@ export async function deleteUser(req: Request, res: Response) {
 
 // ---------- USER COMPS ----------
 // --------------------------------
-export async function getUserCompetitions(req: Request, res: Response) {
-    const userId = (req as any).user.id;
+export async function getUserCompetitions(req: AuthRequest, res: Response) {
+    const userId = req.user?.id;
 
     try {
         // ---------- GET USER ----------
@@ -420,11 +420,8 @@ export async function getUserCompetitions(req: Request, res: Response) {
 
 // ---------- USER SUBMITS ----------
 // ----------------------------------
-export async function getUserSubmissions(
-    req: Request,
-    res: Response
-) {
-    const userId = (req as any).user.id;
+export async function getUserSubmissions(req: AuthRequest,res: Response) {
+    const userId = req.user!.id;
 
     try {
 
@@ -651,9 +648,9 @@ export async function getPublicProfile(
 
 // ---------- USER STATS ----------
 // --------------------------------
-export async function getUserStats(req: Request, res: Response) {
+export async function getUserStats(req: AuthRequest, res: Response) {
 
-    const userId = (req as any).user.id;
+    const userId = req.user!.id;
 
     try {
 

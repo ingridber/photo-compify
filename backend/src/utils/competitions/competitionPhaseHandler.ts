@@ -50,7 +50,7 @@ export async function competitionPhaseHandler(
         const endedNotifications = comp.submissions
             .filter((sub: any) => sub && sub.user && sub.user.toString() !== comp.owner.toString())
             .map((sub: any) => {
-                const isWinner = winners.includes(sub._id.toString());
+                const isWinner = winners.includes(sub.user._id.toString());
                 return {
                     user: sub.user,
                     competition: comp._id,

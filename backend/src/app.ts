@@ -29,6 +29,7 @@ app.use('/api/v1/competitions', routerComps);
 app.use('/api/v1/competitions/:competitionId/submissions', submissionRouter);
 app.use('/api/v1/submissions', submissionRouter);
 app.use('/api/v1/auth', authRouter);
+// TODO: image routes unprotected, rensa test-routes (review 2)
 app.use("/api/v1/images", imagesRoutes);
 app.use("/api/v1/user", routerProfile);
 app.use("/api/v1/user", routerUser);

@@ -3,11 +3,12 @@ import { User } from "../models/User";
 import { Submission } from "../models/Submission";
 import { CompetitionVote } from "../models/CompetitionVote";
 import { Competition } from "../models/Competition";
+import { AuthRequest } from "../types";
 
-export async function exportUserData(req: Request, res: Response) {
+export async function exportUserData(req: AuthRequest, res: Response) {
   try {
     // Extract user ID from authenticated request (added by auth middleware)
-    const userId = (req as any).user?.id;
+    const userId = req.user?.id;
 
     if (!userId) {
       return res.status(401).json({ message: "Not authenticated" });

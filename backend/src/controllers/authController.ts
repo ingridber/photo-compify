@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import verifyPassword from "../utils/passwordVerifier";
 import { verifyRecaptcha } from "../utils/verifyRecaptcha";
 import z from "zod";
+import { AuthRequest } from "../types";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
@@ -157,6 +158,7 @@ export async function login(req: Request, res: Response): Promise<Response> {
 
         // ---------- SKAPA OCH SPARA TOKEN ----------
         const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN } as any);
+        // TODO: change to secure: true when in production
         res.cookie("token", token, { httpOnly: true, secure: false, sameSite: "lax" });
 
         // ---------- RESET ATTEMPTS VID SUCCESS ----------
@@ -196,9 +198,9 @@ export async function login(req: Request, res: Response): Promise<Response> {
 // --------------------------------------
 // ---------- GET CURRENT USER ----------
 // --------------------------------------
-export async function getCurrentUser(req: Request, res: Response): Promise<Response> {
+export async function getCurrentUser(req: AuthRequest, res: Response): Promise<Response> {
     try {
-        const userId = (req as any).user.id;
+        const userId = req.user?.id;
 
         const user = await User.findById(userId).populate("profilePicture");
 

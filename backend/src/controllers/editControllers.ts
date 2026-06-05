@@ -1,14 +1,15 @@
 import { Request, Response } from "express";
 import { User } from "../models/User";
 import z from "zod";
+import { AuthRequest } from "../types";
 
 const editProfileDetailsSchema = z.object({
     camera: z.string().optional(),
     themes: z.array(z.string()).optional()
 })
 
-export async function editProfileDetails(req: Request, res: Response) {
-    const userId = (req as any).user.id;
+export async function editProfileDetails(req: AuthRequest, res: Response) {
+    const userId = req.user?.id;
     const validation = editProfileDetailsSchema.safeParse(req.body);
 
     if(!validation.success) {

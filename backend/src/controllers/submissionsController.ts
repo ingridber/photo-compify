@@ -107,6 +107,7 @@ export async function createSubmission(req: AuthRequest, res: Response) {
     }
 }
 
+// TODO: review 6
 export async function voteOnSubmission(req: AuthRequest, res: Response) {
     const id = req.params.id;
     let submission;
@@ -171,6 +172,8 @@ export async function voteOnSubmission(req: AuthRequest, res: Response) {
             { $addToSet: { votes: req.user!.id } }
         );
 
+        // TODO: någonting kan hända här review 6 ?, totalCount kan drifta med increase - 
+        // samma limits på comp som på submissions
         await Competition.updateOne(
             { _id: submission.competition },
             { $inc: { totalVoteCount: 1 } }
@@ -336,6 +339,7 @@ export async function updateSubmission(req: AuthRequest, res: Response) {
         if (req.file) {
             const oldImageDoc = await Image.findById(submission.image);
 
+            // TODO: move delete old pic after new one is uploaded to avoid image loss (review 9)
             if (oldImageDoc) {
                 await supabase.storage.from("images").remove([oldImageDoc.filename]);
                 await Image.findByIdAndDelete(oldImageDoc._id);
