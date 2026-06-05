@@ -7,10 +7,9 @@ import verifyPassword from "../utils/passwordVerifier";
 import { Image } from "../models/Image";
 import { supabase } from "../config/supabase";
 import { z } from "zod";
-import { CompetitionSubmissionInterface } from "../types";
 import { calculateUserStats } from "../services/userStats";
 import { submissionsIndicator } from "../services/submissionIndicator";
-import type { AuthRequest } from "../types";
+import { CompetitionInterface, CompetitionSubmissionInterface, ImageInterface, type AuthRequest } from "../types";
 
 
 
@@ -19,7 +18,7 @@ import type { AuthRequest } from "../types";
 
 const changeUsernameSchema = z.object({
     newUsername: z
-        .string({ required_error: "Need to provide a username"})
+        .string({ error: "Need to provide a username"})
         .min(3, "Username must be between 3 and 80 characters")
         .max(80, "Username must be between 3 and 80 characters")
     });
@@ -73,17 +72,17 @@ export async function changeUsername(req: AuthRequest, res: Response) {
 
 const changePasswordSchema = z.object({
     password: z
-        .string( {required_error: "Password is requiered" })
+        .string( {error: "Password is requiered" })
         .min(1, {message: "Please provide current password for validation"}),
     newPassword: z
-        .string({required_error: "New password is requiered" })
+        .string({error: "New password is requiered" })
         .min(8, { message: "Password must be between 8 and 120 characters"})
         .max(120, { message: "Password must be between 8 and 120 characters"})
         .refine((val) => verifyPassword(val), {
             message: "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character."
         }),
     confirmPassword: z
-        .string({required_error: "Please Confirm your new password" })
+        .string({error: "Please Confirm your new password" })
         .min(1, { message: "Please Confirm your new password"})
 })
 .refine((data) => data.password !== data.newPassword, {
@@ -146,7 +145,7 @@ export async function changePassword(req: AuthRequest, res: Response) {
 
 const changeProfilePictureSchema = z.object({
     profilePicture: z
-        .string({ required_error: "User not found"}),
+        .string({ error: "User not found"}),
     oldProfilePicture: z
         .string()
         .optional()
@@ -260,7 +259,7 @@ export async function deleteProfilePicture(req: AuthRequest, res: Response) {
 
 // ---------- LOGOUT SESSION ----------
 // ------------------------------------
-export function logout(req: Request, res: Response) {
+export function logout(_req: Request, res: Response) {
     res.clearCookie("token");
     res.status(200).json({ message: "Logged out" });
 }
@@ -270,17 +269,17 @@ export function logout(req: Request, res: Response) {
 
 const deleteUserSchema = z.object({
     password: z 
-        .string({ required_error: "please provide current password for validation"})
+        .string({ error: "please provide current password for validation"})
         .min(1, {message: "please provide current password for validation"})
 });
 
 export async function deleteUser(req: AuthRequest, res: Response) {
-    const userId = req.user?.id;
+    const userId = req.user!.id;
     const validation = deleteUserSchema.safeParse(req.body);
 
     if (!validation.success) {
         return res.status(400).json({
-            message: validation.error.issues[0].message
+            message: validation.error.issues[0]!.message
         });
     }
 
@@ -320,7 +319,7 @@ export async function deleteUser(req: AuthRequest, res: Response) {
 
         const submissions = await Submission.find({ user: userId });
         const submissionIds = submissions.map(s => s._id);
-        const submissionImageIds = submissions.map(s => s.image);
+        const submissionImageIds = submissions.map(s => s.image.id);
 
         const submissionImages = await Image.find({ _id: { $in: submissionImageIds } });
         const filenames = submissionImages.map(img => img.filename);
@@ -392,14 +391,9 @@ export async function getUserCompetitions(req: AuthRequest, res: Response) {
         // ---------- ADD SIGNED URL ----------
         await Promise.all(
 
-            competitions.map(async (competition: any) => {
-
-                if (competition.logoBanner?.getSignedUrl) {
-
-                    const url =
-                        await competition.logoBanner.getSignedUrl();
-
-                    competition._doc.signedLogoUrl = url;
+            competitions.map(async (competition: CompetitionInterface) => {
+                if (competition.logoBanner && "getSignedUrl" in competition.logoBanner) {
+                    competition.signedLogoUrl = await competition.logoBanner.getSignedUrl();
                 }
             })
         );
@@ -441,7 +435,7 @@ export async function getUserSubmissions(req: AuthRequest,res: Response) {
             await submissionsIndicator(submissions);
 
         const enrichedSubmissions =
-            formattedSubmissions.map((submission: any) => ({
+            formattedSubmissions.map((submission: CompetitionSubmissionInterface) => ({
                 ...submission,
 
                 competitionTitle:
@@ -479,6 +473,9 @@ export async function getPublicProfile(
     const { username } = req.params;
 
     try {
+        if (!username || typeof username !== "string") {
+            return res.status(400).json({ code: "INVALID_PARAMS", message: "username required" });
+        }
 
         // ---------- GET USER ----------
         const user = await User.findOne({
@@ -497,15 +494,12 @@ export async function getPublicProfile(
         let profilePicture = null;
 
         if (
-            user.profilePicture &&
-            typeof user.profilePicture !== "string" &&
-            user.profilePicture.getSignedUrl
+            user.profilePicture
         ) {
-
+            const pic = user.profilePicture as ImageInterface;
             profilePicture = {
-                _id: user.profilePicture._id,
-                url:
-                    await user.profilePicture.getSignedUrl()
+                _id: pic._id,
+                url: await pic.getSignedUrl()
             };
         }
 
@@ -524,17 +518,12 @@ export async function getPublicProfile(
 
         // ---------- ONLY FINISHED SUBMISSIONS ----------
         const finishedSubmissions = submissions.filter(
-            (submission: any) => {
+            (submission: CompetitionSubmissionInterface) => {
 
-                if (!submission.competition?.endDate) {
+                if (!submission.competition || !("endDate" in submission.competition)) {
                     return false;
                 }
-
-                return (
-                    new Date(
-                        submission.competition.endDate
-                    ).getTime() < Date.now()
-                );
+                return new Date(submission.competition.endDate).getTime() < Date.now();
             }
         );
 
@@ -546,13 +535,14 @@ export async function getPublicProfile(
 
         const enrichedSubmissions =
             formattedSubmissions.map(
-                (submission: any, index: number) => ({
+                (submission: CompetitionSubmissionInterface, index: number) => ({
 
                     ...submission,
 
                     competitionTitle:
                         finishedSubmissions[index]?.competition &&
-                        typeof finishedSubmissions[index].competition === "object"
+                        typeof finishedSubmissions[index].competition === "object" &&
+                        "title" in finishedSubmissions[index].competition
                             ? finishedSubmissions[index].competition.title
                             : null
                 })
@@ -570,21 +560,11 @@ export async function getPublicProfile(
             await Promise.all(
 
                 competitions.map(
-                    async (competition: any) => {
-
+                    async (competition: CompetitionInterface) => {
                         let signedLogoUrl = "";
-
-                        if (
-                            competition.logoBanner &&
-                            competition.logoBanner.getSignedUrl
-                        ) {
-
-                            signedLogoUrl =
-                                await competition
-                                    .logoBanner
-                                    .getSignedUrl();
+                        if (competition.logoBanner && "getSignedUrl" in competition.logoBanner) {
+                            signedLogoUrl = await competition.logoBanner.getSignedUrl();
                         }
-
                         return {
                             _id: competition._id,
                             title: competition.title,
@@ -603,7 +583,6 @@ export async function getPublicProfile(
                                 competition.phase,
                             logoBanner:
                                 competition.logoBanner,
-
                             signedLogoUrl
                         };
                     }
