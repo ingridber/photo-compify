@@ -266,7 +266,10 @@ export async function deleteSubmission(req: AuthRequest, res: Response) {
             })
         };
 
-        if (submission.user.toString() !== req.user!.id) {
+         const isOwner = submission.user.toString() === req.user!.id;
+         const isAdmin = req.user!.role === "admin";
+
+        if (!isOwner && !isAdmin) {
             return res.status(403).json({
                 code: 'FORBIDDEN',
                 message: 'You are not the owner of this submission',
@@ -326,7 +329,10 @@ export async function updateSubmission(req: AuthRequest, res: Response) {
             })
         };
 
-        if (submission.user.toString() !== req.user!.id) {
+        const isOwner = submission.user.toString() === req.user!.id;
+        const isAdmin = req.user!.role === "admin";
+
+        if (!isOwner && !isAdmin) {
             return res.status(403).json({
                 code: 'FORBIDDEN',
                 message: 'You are not the owner of this submission',

@@ -2,11 +2,14 @@ import {Document, Types} from "mongoose";
 import { Request } from "express";
 import { ZodTupleItems } from "zod/v3";
 
+export type UserRole = | "user" | "moderator" | "admin";
+
 export interface InterfaceUser extends Document {
     name: string;
     email?: string;
     username: string;
     password: string;
+    role: UserRole;
     profilePicture?: Types.ObjectId | null;
     warnings: number;
     loginAttempts: number;
@@ -60,7 +63,8 @@ export interface ImageInterface {
 
 export interface AuthRequest extends Request {
     user?: {
-        id: string
+        id: string;
+        role: "user" | "moderator" | "admin";
     }
 }
 

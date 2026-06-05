@@ -36,7 +36,10 @@ export function authenticateToken(req : AuthRequest, res: Response, next: NextFu
     // ---------- VERIFIERA TOKEN ----------
     // -------------------------------------
     try {
-        const decoded = jwt.verify(token, JWT_SECRET) as {id: string};
+        const decoded = jwt.verify(token, JWT_SECRET) as {
+            id: string;
+            role: "user" | "moderator" | "admin";
+        };
         req.user = decoded;
 
         next();
@@ -58,11 +61,14 @@ export function extractUser(req: AuthRequest, _res: Response, next: NextFunction
   if (!token) return next();
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as { id: string };
+    const decoded = jwt.verify(token, JWT_SECRET) as {
+         id: string;
+        role: "user" | "moderator" | "admin";
+        };
     req.user = decoded;
+    
   } catch {
     // invalid token — continue without user
   }
-
   next();
 }
