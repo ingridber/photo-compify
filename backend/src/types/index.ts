@@ -6,7 +6,7 @@ export interface InterfaceUser extends Document {
     email?: string;
     username: string;
     password: string;
-    profilePicture?: Types.ObjectId | null;
+    profilePicture?: Types.ObjectId | ImageInterface | null;
     warnings: number;
     loginAttempts: number;
     lockUntil: Date | undefined;
@@ -50,6 +50,7 @@ interface SubmissionImage {
 }
 
 export interface ImageInterface {
+    _id: Types.ObjectId;
     filename: string;
     fileSize: number;
     fileFormat: string;
