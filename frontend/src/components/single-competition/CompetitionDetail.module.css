@@ -327,12 +327,17 @@
   width: 100%;
   margin-top: 0.5rem;
   display: grid;
-  grid-template-columns: 120px 1fr 120px;
+  grid-template-columns: 48px 1fr 48px;
+  gap: .5rem;
   align-items: center;
+  justify-items: center;
 }
 
+.reportBtn,
 .closeFullscreenBtn {
+  width: 48px;
   height: 48px;
+  min-width: unset;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -340,26 +345,34 @@
   border-radius: 999px;
   background: rgba(255,255,255,.08);
   color: white;
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
   cursor: pointer;
 }
 
 .closeFullscreenBtn {
-  min-width: 120px;
-  justify-self: center;
+  width: 100%;
+  min-width: unset;
+  max-width: 120px;
+}
+
+.closeFullscreenBtn:hover {
+  background: rgba(255,255,255,.15);
 }
 
 .reportBtn {
   min-width: unset;
   width: 48px;
+  min-width: 48px;
 }
 
 .reportBtnIcon {
   height: 60%;
   filter: brightness(0)invert(1);
   opacity: 0.8;
+}
+
+.closeFullscreenBtnIcon {
+  height: 50%;
+  filter: brightness(0)invert(1);
 }
 
 /* ----- RESPONSIVE ----- */

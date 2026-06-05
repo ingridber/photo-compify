@@ -8,7 +8,7 @@ interface VoteButtonProps {
     phase: "submission" | "voting" | "ended";
     userId?: string;
     onClose: () => void;
-    onVoteChange: () => void;
+    onVoteChange: ( submissionId: string, voted: boolean) => void;
     variant?: "card" | "fullscreen"
 }
 
@@ -25,11 +25,12 @@ async function handleVote() {
     try {
         if (hasVoted) {
             await removeVote(submission._id);
+            onVoteChange(submission._id, false)
         } else {
             await voteOnSubmission(submission._id);
+            onVoteChange(submission._id, true)
         }
 
-        onVoteChange();
     } catch (err: unknown) {
         const message =
             err instanceof Error

@@ -2,21 +2,17 @@
   position: absolute;
   bottom: 1rem;
   right: 1rem;
-
   padding: 0.55rem 0.8rem;
   border-radius: 999px;
-
   font-family: var(--sans);
   font-size: 0.55rem;
   font-weight: 600;
   line-height: 1;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-
   border: 1px solid var(--text);
   box-shadow: var(--shadow);
   cursor: pointer;
-
   transition:
     background-color 200ms ease,
     color 200ms ease,
@@ -32,20 +28,14 @@
   position: absolute;
   bottom: 3rem;
   right: 1rem;
-
   max-width: 220px;
-
   padding: 0.5rem 0.75rem;
   border-radius: 0.5rem;
-
   background: #c0392b;
   color: white;
-
   font-size: 0.7rem;
   line-height: 1.4;
-
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-
   animation: fadeIn 0.2s ease;
   z-index: 100;
 }
@@ -66,16 +56,12 @@
   position: fixed;
   inset: 0;
   z-index: 9999;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   padding: 3rem;
-
   background: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(8px);
-
   animation: fadeUp 180ms ease;
 }
 
@@ -90,28 +76,21 @@
   max-width: 100%;
   max-height: 75vh;
   object-fit: contain;
-
   box-shadow: 0 20px 80px rgba(0, 0, 0, 0.45);
 }
 
 .closeFullscreenBtn {
   border: none;
   border-radius: 999px;
-
   padding: 0.8rem 1.6rem;
-
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(10px);
-
   color: white;
-
   font-family: var(--sans);
   font-size: 0.72rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-
   cursor: pointer;
-
   transition:
     background 200ms ease,
     transform 200ms ease;
@@ -123,29 +102,22 @@
 
 .voteButtonFullscreen {
   height: 48px;
-  width: 120px;
-
+  width: 100%;
+  min-width: 170px;
+  max-width: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
-
   padding: 0 1.6rem;
-
   border: none;
   border-radius: 999px;
-
   background: rgba(255,255,255,.08);
-  backdrop-filter: blur(10px);
-
   color: white;
-
   font-family: var(--sans);
   font-size: .72rem;
   letter-spacing: .14em;
   text-transform: uppercase;
-
   cursor: pointer;
-
   transition:
     background 200ms ease,
     transform 200ms ease;
