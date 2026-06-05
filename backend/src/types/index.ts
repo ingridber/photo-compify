@@ -1,6 +1,5 @@
 import {Document, Types} from "mongoose";
 import { Request } from "express";
-import { ZodTupleItems } from "zod/v3";
 
 export interface InterfaceUser extends Document {
     name: string;
@@ -74,7 +73,9 @@ export interface NotificationInterface extends Document {
     title: string;
     description: string;
     user: Types.ObjectId;
+    competition?: Types.ObjectId;
     phase: 'submission' | 'voting' | 'ended';
+    read: boolean;
 }
 
 export interface ReportInterface {
