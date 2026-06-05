@@ -1,8 +1,8 @@
 import { useRef, useState } from "react";
 import "./ImageUploadForm.css";
 import { uploadImage } from "../../services/imageApi";
-import FileSizeValidation from "./FileSizeValidation";
-import FileFormatValidation from "./FileFormatValidation";
+import FileSizeValidation from "../../utils/FileSizeValidation";
+import FileFormatValidation from "../../utils/FileFormatValidation";
 import { updateProfilePicture, createSubmission } from "../../services/api";
 import { getCurrentUser } from "../../services/api";
 import { useUser } from "../../hooks/useUser";

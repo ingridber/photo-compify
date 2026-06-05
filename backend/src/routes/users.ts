@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { Response } from "express";
 import { 
     changeUsername, 
     changePassword, 
@@ -13,15 +13,13 @@ import {
 } from "../controllers/usersControllers";
 import { editProfileDetails } from "../controllers/editControllers";
 import { authenticateToken } from "../middleware/auth";
-import { get } from "http";
-import { getSubmission } from "../controllers/submissionsController";
 import { exportUserData } from "../controllers/ExportUserDataController";
-import { AuthRequest } from "../types";
+import type { AuthRequest } from "../types";
 
 
 const routerUser = express.Router();
 
-routerUser.get("/export-my-data", (req, res, next) => {
+routerUser.get("/export-my-data", (req: AuthRequest, res: Response, next) => {
     console.log("User data downloaded");
     next();
 }, authenticateToken, exportUserData);

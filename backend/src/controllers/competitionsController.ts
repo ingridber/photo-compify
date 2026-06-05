@@ -1,10 +1,7 @@
-import { CompetitionInterface, AuthRequest, CompetitionSubmissionInterface, ImageInterface } from "../types/index";
-import { Request, Response } from "express";
+import type { CompetitionInterface, AuthRequest } from "../types/index";
+import type { Request, Response } from "express";
 import { Competition } from "../models/Competition";
-import { getPagination } from "../utils/competitions/pagination";
 import { User } from "../models/User";
-import { getCompetitionFilter } from "../utils/competitions/competitionFilter";
-import { Document } from "mongoose";
 import { buildCompetitionQuery } from "./competitionsQuery";
 import { competitionPhaseHandler} from "../utils/competitions/competitionPhaseHandler";
 import z from "zod";

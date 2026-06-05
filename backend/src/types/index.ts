@@ -1,5 +1,6 @@
 import {Document, Types} from "mongoose";
 import { Request } from "express";
+import { ZodTupleItems } from "zod/v3";
 
 export interface InterfaceUser extends Document {
     name: string;
@@ -36,12 +37,18 @@ interface LogoBanner {
 }
 
 export interface CompetitionSubmissionInterface extends Document {
-    competition: Types.ObjectId;
+    competition: Types.ObjectId | CompetitionInterface ;
     user: Types.ObjectId;
-    image: Types.ObjectId;
+    image: SubmissionImage;
     description?: string;
     votes: Types.ObjectId[];
 };
+
+interface SubmissionImage {
+    id: Types.ObjectId;
+    filename: string;
+    getSignedUrl(): Promise<string>;
+}
 
 export interface ImageInterface {
     filename: string;

@@ -50,8 +50,7 @@ export async function getCurrentUser() {
         return data;
 
     } catch (err) {
-        console.log(err);
-        return null;
+        throw new Error('Something went wrong')
     };
 };
 

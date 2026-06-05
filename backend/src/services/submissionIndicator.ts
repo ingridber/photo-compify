@@ -1,5 +1,5 @@
 import { supabase } from "../config/supabase";
-
+import type { CompetitionSubmissionInterface } from "../types";
 
 type Indicator =
     | "none"
@@ -9,13 +9,10 @@ type Indicator =
     | "voted";
 
 
-export async function submissionsIndicator(
-    submissions: any[]
-) {
+export async function submissionsIndicator(submissions: CompetitionSubmissionInterface[]) {
 
     return await Promise.all(
-
-        submissions.map(async (submission: any) => {
+        submissions.map(async (submission: CompetitionSubmissionInterface) => {
 
             let imageUrl = null;
 
@@ -39,13 +36,13 @@ export async function submissionsIndicator(
                 submission.competition?.submissions ?? [];
 
             const sorted = [...competitionSubmissions].sort(
-                (a: any, b: any) =>
+                (a: CompetitionSubmissionInterface, b: CompetitionSubmissionInterface) =>
                     (b.votes?.length ?? 0) -
                     (a.votes?.length ?? 0)
             );
 
             const index = sorted.findIndex(
-                (s: any) =>
+                (s: CompetitionSubmissionInterface) =>
                     s._id.toString() ===
                     submission._id.toString()
             );

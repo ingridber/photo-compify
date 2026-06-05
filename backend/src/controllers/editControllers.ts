@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { User } from "../models/User";
 import z from "zod";
-import { AuthRequest } from "../types";
+import type { AuthRequest } from "../types";
 
 const editProfileDetailsSchema = z.object({
     camera: z.string().optional(),

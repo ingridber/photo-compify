@@ -1,8 +1,8 @@
 import styles from "./report-form.module.css";
 import { useRef, useState, useEffect } from "react";
 import { uploadImage } from "../../services/imageApi";
-import FileFormatValidation from "../images/FileFormatValidation";
-import FileSizeValidation from "../images/FileSizeValidation";
+import FileFormatValidation from "../../utils/FileFormatValidation";
+import FileSizeValidation from "../../utils/FileSizeValidation";
 import { createReport } from "../../services/reportApi";
 
 const DESC_MAX = 250;

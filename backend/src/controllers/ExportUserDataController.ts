@@ -3,7 +3,7 @@ import { User } from "../models/User";
 import { Submission } from "../models/Submission";
 import { CompetitionVote } from "../models/CompetitionVote";
 import { Competition } from "../models/Competition";
-import { AuthRequest } from "../types";
+import type { AuthRequest } from "../types";
 
 export async function exportUserData(req: AuthRequest, res: Response) {
   try {

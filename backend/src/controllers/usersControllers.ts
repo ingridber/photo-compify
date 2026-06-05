@@ -10,7 +10,7 @@ import { z } from "zod";
 import { CompetitionSubmissionInterface } from "../types";
 import { calculateUserStats } from "../services/userStats";
 import { submissionsIndicator } from "../services/submissionIndicator";
-import { AuthRequest } from "../types";
+import type { AuthRequest } from "../types";
 
 
 

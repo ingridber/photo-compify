@@ -2,8 +2,8 @@ import { useState, useRef } from 'react';
 import styles from './createCompetitionForm.module.css';
 import formStyles from '../styles/form.module.css';
 import { uploadImage } from "../services/imageApi";
-import FileSizeValidation from "./images/FileSizeValidation";
-import FileFormatValidation from "./images/FileFormatValidation";
+import FileSizeValidation from "../utils/FileSizeValidation";
+import FileFormatValidation from "../utils/FileFormatValidation";
 import { useNavigate } from 'react-router';
 import AVAILABLE_THEMES from '../constants/availableThemes';
 import Select from 'react-select';
@@ -167,10 +167,7 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
 
     return (
         <div className={styles.pageContent}>
-            {/* ── HERO – mirrors CompetitionDetail exactly ── */}
             <header className={styles.header}>
-                {/* <h1 className={styles.pageTitle}>Create New Competition</h1> */}
-
                 <div className={styles.hero}>
 
                     {/* Logo */}

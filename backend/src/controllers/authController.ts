@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 import verifyPassword from "../utils/passwordVerifier";
 import { verifyRecaptcha } from "../utils/verifyRecaptcha";
 import z from "zod";
-import { AuthRequest } from "../types";
+import type { AuthRequest } from "../types";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;

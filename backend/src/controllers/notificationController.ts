@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import mongoose from "mongoose";
 import { Notification } from "../models/Notification";
 import { z } from "zod";
-import { AuthRequest } from "../types";
+import type { AuthRequest } from "../types";
 
 const mongoIdSchema = z.object({
     id: z.string().length(24, { message: "Invalid Notification ID format" })

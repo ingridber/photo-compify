@@ -1,5 +1,5 @@
-import { AuthRequest } from "../types/index";
-import { Request, Response } from "express";
+import type { AuthRequest } from "../types/index";
+import type { Request, Response } from "express";
 import { Submission } from "../models/Submission";
 import { Competition } from "../models/Competition";
 import { supabase } from "../config/supabase";

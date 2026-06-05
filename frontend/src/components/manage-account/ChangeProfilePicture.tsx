@@ -8,7 +8,6 @@ import modalStyles from "../../styles/upload-overlay.module.css";
 
 export function ChangeProfilePicture() {
     const { user, setUser } = useUser();
-
     const [openModal, setOpenModal] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(false);
 
@@ -31,10 +30,7 @@ export function ChangeProfilePicture() {
                 };
             });
         } catch (err) {
-            console.log(
-                "delete profile picture:",
-                err
-            );
+            throw new Error(`Something went wrong, ${err}`);
         }
 
         setConfirmDelete(false);
