@@ -33,7 +33,7 @@ const registerSchema = z.object({
     .transform((email) => email.trim().toLowerCase()),
     recaptchaToken: z.string({required_error: "RecaptchaToken is missing"}),
     name: z.string().optional(),
-    profilePicture: z.string().optional()
+    profilePicture: z.string().optional(),
 })
 .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -65,7 +65,8 @@ export async function register(req: Request, res: Response): Promise<Response> {
 
     
     const { name, email, profilePicture, username, password } = validation.data;
-    const isHuman = await verifyRecaptcha(validation.data.recaptchaToken);
+    //const isHuman = await verifyRecaptcha(validation.data.recaptchaToken);
+    const isHuman = process.env.NODE_ENV === "production" ? await verifyRecaptcha(validation.data.recaptchaToken): true;
 
     if (!isHuman) {
         return res.status(400).json({
@@ -90,7 +91,8 @@ export async function register(req: Request, res: Response): Promise<Response> {
         email: email,
         profilePicture: profilePicture,
         username: username,
-        password: passwordHash
+        password: passwordHash,
+        role: "user",
     });
     await user.save();
 
@@ -157,7 +159,7 @@ export async function login(req: Request, res: Response): Promise<Response> {
         }
 
         // ---------- SKAPA OCH SPARA TOKEN ----------
-        const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN } as any);
+        const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN } as any);
         // TODO: change to secure: true when in production
         res.cookie("token", token, { httpOnly: true, secure: false, sameSite: "lax" });
 
@@ -181,6 +183,7 @@ export async function login(req: Request, res: Response): Promise<Response> {
             status: 200,
             _id: user._id,
             username: user.username,
+            role: user.role,
             profilePicture: profilePicture,
             camera: user.camera,
             themes: user.themes,
@@ -228,6 +231,7 @@ export async function getCurrentUser(req: AuthRequest, res: Response): Promise<R
                 profilePicture,
                 camera: user.camera,
                 themes: user.themes,
+                role: user.role,
             }
         });
 
