@@ -8,7 +8,6 @@ import { Image } from "../models/Image";
 import { supabase } from "../config/supabase";
 import { z } from "zod";
 import { calculateUserStats } from "../services/userStats";
-import { submissionsIndicator } from "../services/submissionIndicator";
 import { CompetitionInterface, CompetitionSubmissionInterface, ImageInterface, type AuthRequest } from "../types";
 
 
@@ -416,42 +415,52 @@ export async function getUserCompetitions(req: AuthRequest, res: Response) {
 // ----------------------------------
 export async function getUserSubmissions(req: AuthRequest,res: Response) {
     const userId = req.user!.id;
-
     try {
-
-        const submissions = await Submission.find({
-            user: userId
-        })
+        const submissions = await Submission.find({user: userId})
         .populate("image")
         .populate({
             path: "competition",
-            select: "title endDate votingStartDate submissions phase",
+            select: "title endDate votingStartDate submissions phase winners",
             populate: {
                 path: "submissions"
             }
         });
 
-        const formattedSubmissions =
-            await submissionsIndicator(submissions);
+        const enrichedSubmissions = await Promise.all(
+            submissions.map(async (submission) => {
 
-        const enrichedSubmissions =
-            formattedSubmissions.map((submission: CompetitionSubmissionInterface) => ({
-                ...submission,
+                let imageUrl = null;
+                const image = submission.image as ImageInterface;
 
-                competitionTitle:
-                    submission.competition &&
-                    typeof submission.competition === "object" &&
-                    "title" in submission.competition
-                        ? submission.competition.title
-                        : null
-            }));
+                if (image?.filename) {
+                    const { data } = await supabase.storage
+                        .from("images")
+                        .createSignedUrl(
+                            image.filename,
+                            60 * 60
+                        );
+
+                    imageUrl = data?.signedUrl ?? null;
+                }
+
+                return {
+                    ...submission.toObject(),
+                    imageUrl,
+                    competitionTitle:
+                        submission.competition &&
+                        typeof submission.competition === "object" &&
+                        "title" in submission.competition
+                            ? submission.competition.title
+                            : null
+                };
+            })
+        );
 
         return res.status(200).json({
             submissions: enrichedSubmissions
         });
 
     } catch (err) {
-
         return res.status(500).json({
             message: "Server error",
             err
@@ -459,43 +468,27 @@ export async function getUserSubmissions(req: AuthRequest,res: Response) {
     }
 }
 
-
-
 // ------------------------------------
 // ---------- PUBLIC PROFILE ----------
 // ------------------------------------
-
-export async function getPublicProfile(
-    req: Request,
-    res: Response
-) {
-
+export async function getPublicProfile(req: Request,res: Response) {
     const { username } = req.params;
 
     try {
-        if (!username || typeof username !== "string") {
-            return res.status(400).json({ code: "INVALID_PARAMS", message: "username required" });
-        }
+        if (!username || typeof username !== "string") {return res.status(400).json({ code: "INVALID_PARAMS", message: "username required" });}
 
         // ---------- GET USER ----------
-        const user = await User.findOne({
-            username
-        })
+        const user = await User.findOne({username})
         .populate("profilePicture");
 
         if (!user) {
-
-            return res.status(404).json({
-                message: "User not found"
-            });
+            return res.status(404).json({message: "User not found"});
         }
 
         // ---------- FORMAT PROFILE PIC ----------
         let profilePicture = null;
 
-        if (
-            user.profilePicture
-        ) {
+        if (user.profilePicture) {
             const pic = user.profilePicture as ImageInterface;
             profilePicture = {
                 _id: pic._id,
@@ -503,14 +496,12 @@ export async function getPublicProfile(
             };
         }
 
-
         // ---------- GET USER SUBMISSIONS ----------
-        const submissions = await Submission.find({
-            user: user._id
-        })
+        const submissions = await Submission.find({user: user._id})
         .populate("image")
         .populate({
             path: "competition",
+            select: "title endDate phase winners",
             populate: {
                 path: "submissions"
             }
@@ -519,34 +510,40 @@ export async function getPublicProfile(
         // ---------- ONLY FINISHED SUBMISSIONS ----------
         const finishedSubmissions = submissions.filter(
             (submission: CompetitionSubmissionInterface) => {
-
-                if (!submission.competition || !("endDate" in submission.competition)) {
-                    return false;
-                }
+                if (!submission.competition || !("endDate" in submission.competition)) { return false; }
                 return new Date(submission.competition.endDate).getTime() < Date.now();
             }
         );
 
         // ---------- FORMAT SUBMISSIONS ----------
-        const formattedSubmissions =
-            await submissionsIndicator(
-                finishedSubmissions
-            );
+        const enrichedSubmissions = await Promise.all(
+            finishedSubmissions.map(async (submission) => {
 
-        const enrichedSubmissions =
-            formattedSubmissions.map(
-                (submission: CompetitionSubmissionInterface, index: number) => ({
+                let imageUrl = null;
+                const image = submission.image as ImageInterface;
 
-                    ...submission,
+                if (image?.filename) {
+                    const { data } = await supabase.storage
+                        .from("images")
+                        .createSignedUrl(
+                            image.filename,
+                            60 * 60
+                        );
+                    imageUrl = data?.signedUrl ?? null;
+                }
 
+                return {
+                    ...submission.toObject(),
+                    imageUrl,
                     competitionTitle:
-                        finishedSubmissions[index]?.competition &&
-                        typeof finishedSubmissions[index].competition === "object" &&
-                        "title" in finishedSubmissions[index].competition
-                            ? finishedSubmissions[index].competition.title
+                        submission.competition &&
+                        typeof submission.competition === "object" &&
+                        "title" in submission.competition
+                            ? submission.competition.title
                             : null
-                })
-            );
+                };
+            })
+        );
 
         // ---------- GET USER COMPETITIONS ----------
         const competitions = await Competition.find({
@@ -590,13 +587,10 @@ export async function getPublicProfile(
             );
 
         // ---------- GET STATS ----------
-        const stats = await calculateUserStats(
-            user._id.toString()
-        );
+        const stats = await calculateUserStats(user._id.toString());
 
         // ---------- RESPONSE ----------
         return res.status(200).json({
-
             user: {
                 _id: user._id,
                 username: user.username,
@@ -604,21 +598,16 @@ export async function getPublicProfile(
                 camera: user.camera,
                 themes: user.themes,
             },
-
             submissions: enrichedSubmissions,
-
             competitions: formattedCompetitions,
-
             stats
         });
 
     } catch (err) {
-
         console.log(
             "GET PUBLIC PROFILE ERROR:",
             err
         );
-
         return res.status(500).json({
             message: "Server error"
         });
