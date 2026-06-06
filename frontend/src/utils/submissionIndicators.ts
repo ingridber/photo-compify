@@ -49,3 +49,27 @@ export function sortSubmissions(
 
     return submissions;
 }
+
+export function getSubmissionIndicator(submission: Submission) {
+
+    if (typeof submission.competition === "string") {
+        return "none";
+    }
+
+    const sorted = [...submission.competition.submissions].sort(
+        (a, b) =>
+            (b.votes?.length ?? 0) -
+            (a.votes?.length ?? 0)
+    );
+
+    const rank = sorted.findIndex(
+        (s) => s._id === submission._id
+    );
+
+    return getIndicator(
+        submission,
+        submission.competition.phase,
+        rank,
+        undefined
+    );
+}
