@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import type { Response } from "express";
 import { User } from "../models/User";
 import z from "zod";
 import type { AuthRequest } from "../types";

@@ -1,4 +1,4 @@
-import type { AuthRequest } from "../types/index";
+import type { AuthRequest, CompetitionSubmissionInterface, InterfaceUser } from "../types/index";
 import type { Request, Response } from "express";
 import { Submission } from "../models/Submission";
 import { Competition } from "../models/Competition";
@@ -10,7 +10,7 @@ import z from "zod";
 
 export async function getSubmission(req: Request, res: Response) {
     try {
-        const submission = await Submission.findById(req.params.id).populate("user", "username");
+        const submission = await Submission.findById(req.params.id).populate<{user: Pick<InterfaceUser, "_id" | "username">}>("user", "username");
 
         if (!submission) {
             return res.status(404).json({
@@ -31,7 +31,7 @@ export async function getSubmission(req: Request, res: Response) {
 };
 
 const createSubmissionSchema = z.object({
-    imageId: z.string({ required_error: "No image ID provided"})
+    imageId: z.string({ error: "No image ID provided"})
 })
 
 export async function createSubmission(req: AuthRequest, res: Response) {
@@ -66,7 +66,7 @@ export async function createSubmission(req: AuthRequest, res: Response) {
         }
 
         const existingSubmission = await Submission.findOne({
-            _id: { $in: competition.submissions as Types.ObjectId[] },
+            competition: competition._id,
             user: req.user!.id,
         });
 
@@ -88,7 +88,7 @@ export async function createSubmission(req: AuthRequest, res: Response) {
             });
         }
 
-        const newSubmission = await Submission.create({
+        const newSubmission: CompetitionSubmissionInterface = await Submission.create({
             user: req.user!.id,
             image: imageDoc._id,
             competition: competition._id,
@@ -111,6 +111,7 @@ export async function createSubmission(req: AuthRequest, res: Response) {
 export async function voteOnSubmission(req: AuthRequest, res: Response) {
     const id = req.params.id;
     let submission;
+    let competition;
 
     try {
         submission = await Submission.findById(id);
@@ -130,7 +131,7 @@ export async function voteOnSubmission(req: AuthRequest, res: Response) {
             });
         };
 
-        const competition = await Competition.findById(submission.competition);
+        competition = await Competition.findById(submission.competition);
         if (!competition) {
             return res.status(404).json({
                 code: 'COMPETITION_NOT_FOUND',
@@ -150,7 +151,7 @@ export async function voteOnSubmission(req: AuthRequest, res: Response) {
         };
 
         const submissionsCount = await Submission.countDocuments({
-            competition: submission.competition,
+            competition: competition._id,
             user: { $ne: req.user!.id },
         });
 
@@ -159,7 +160,7 @@ export async function voteOnSubmission(req: AuthRequest, res: Response) {
         await CompetitionVote.findOneAndUpdate(
             {
                 user: req.user!.id,
-                competition: submission.competition,
+                competition: competition._id,
                 [`submissions.${maxVotesAllowed - 1}`]: { $exists: false },
                 submissions: { $ne: submission._id }
             },
@@ -175,7 +176,7 @@ export async function voteOnSubmission(req: AuthRequest, res: Response) {
         // TODO: någonting kan hända här review 6 ?, totalCount kan drifta med increase - 
         // samma limits på comp som på submissions
         await Competition.updateOne(
-            { _id: submission.competition },
+            { _id: competition._id },
             { $inc: { totalVoteCount: 1 } }
         );
 
@@ -186,7 +187,7 @@ export async function voteOnSubmission(req: AuthRequest, res: Response) {
         if (error.code === 11000 || error.codeName === 'DuplicateKey') {
             const existing = await CompetitionVote.findOne({
                 user: req.user!.id,
-                competition: submission!.competition,
+                competition: competition!._id,
             });
 
             if (existing?.submissions.some(s => s.toString() === id)) {
@@ -223,7 +224,7 @@ export async function removeVoteFromSubmission(req: AuthRequest, res: Response) 
         };
 
         const result = await CompetitionVote.updateOne(
-            { user: req.user!.id, competition: submission.competition },
+            { user: req.user!.id, competition: submission.competition as Types.ObjectId },
             { $pull: { submissions: submission._id } }
         );
 
@@ -239,7 +240,7 @@ export async function removeVoteFromSubmission(req: AuthRequest, res: Response) 
             { $pull: { votes: new Types.ObjectId(req.user!.id) } }
         );
         await Competition.updateOne(
-            { _id: submission.competition },
+            { _id: submission.competition as Types.ObjectId},
             { $inc: { totalVoteCount: -1 } }
         );
 

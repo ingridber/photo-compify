@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 import verifyPassword from "../utils/passwordVerifier";
 import { verifyRecaptcha } from "../utils/verifyRecaptcha";
 import z from "zod";
-import type { AuthRequest } from "../types";
+import type { AuthRequest, ImageInterface } from "../types";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
@@ -14,24 +14,24 @@ const NODE_ENV = process.env.NODE_ENV;
 
 const registerSchema = z.object({
     username: z
-        .string({ required_error: "Need to provide a username"})
+        .string({ error: "Need to provide a username"})
         .min(3, "Username must be between 3 and 80 characters")
         .max(80, "Username must be between 3 and 80 characters")
         .regex(/^[^\u0080-\uFFFF]+$/, "enter a valid username"),
     password: z
-        .string({ required_error: "Password is required"})
+        .string({ error: "Password is required"})
         .min(8, { message: "Password must be between 8 and 120 characters"})
         .max(120, { message: "Password must be between 8 and 120 characters"})
         .refine((val) => verifyPassword(val), {
             message: "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character."
         }),
     confirmPassword: z
-        .string({ required_error: "You must confirm your password"})
+        .string({ error: "You must confirm your password"})
         .min(1, { message: "Need to fill both fields"}),
     email: z
-    .email({ message: "Please enter a valid email adress"})
+    .email("Please enter a valid email adress")
     .transform((email) => email.trim().toLowerCase()),
-    recaptchaToken: z.string({required_error: "RecaptchaToken is missing"}),
+    recaptchaToken: z.string({error: "RecaptchaToken is missing"}),
     name: z.string().optional(),
     profilePicture: z.string().optional(),
 })
@@ -134,7 +134,7 @@ export async function login(req: Request, res: Response): Promise<Response> {
             });
         }
 
-        const dummyHash = "ijklmnopqrstuv$2b$10$abcdefgh";
+        const dummyHash = "$2b$10$pZ0Y2gAna1H5NxoXwKVCue7.QEbFInDkGRdpuTyeDvjzHyD5Vgooy";
         const hashToCheck = user ? user.password : dummyHash;
         const valid = await bcrypt.compare(password, hashToCheck);
 
@@ -161,7 +161,7 @@ export async function login(req: Request, res: Response): Promise<Response> {
         // ---------- SKAPA OCH SPARA TOKEN ----------
         const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN } as any);
         // TODO: change to secure: true when in production
-        res.cookie("token", token, { httpOnly: true, secure: false, sameSite: "lax" });
+        res.cookie("token", token, { httpOnly: true, secure: NODE_ENV === "production", sameSite: "lax" });
 
         // ---------- RESET ATTEMPTS VID SUCCESS ----------
         user.loginAttempts = 0;
@@ -171,9 +171,10 @@ export async function login(req: Request, res: Response): Promise<Response> {
         // ---------- HÄMTA PROFILE PICTURE ----------
         let profilePicture = null;
         if (user.profilePicture) {
+            const pic = user.profilePicture as ImageInterface;
             profilePicture = {
-                _id: user.profilePicture._id,
-                url: await user.profilePicture.getSignedUrl()
+                _id: pic._id,
+                url: await pic.getSignedUrl()
             };
         }
 
@@ -217,9 +218,10 @@ export async function getCurrentUser(req: AuthRequest, res: Response): Promise<R
         let profilePicture = null;
 
         if (user.profilePicture) {
+            const pic = user.profilePicture as ImageInterface;
             profilePicture = {
-                _id: user.profilePicture._id,
-                url: await user.profilePicture.getSignedUrl()
+                _id: pic._id,
+                url: await pic.getSignedUrl()
             };
         }
 

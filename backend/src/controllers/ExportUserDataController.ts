@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import type { Response } from "express";
 import { User } from "../models/User";
 import { Submission } from "../models/Submission";
 import { CompetitionVote } from "../models/CompetitionVote";
@@ -31,7 +31,7 @@ export async function exportUserData(req: AuthRequest, res: Response) {
       camera: userDoc.camera,
       themes: userDoc.themes,
       profilePicture: userDoc.profilePicture,
-      createdAt: userDoc.createdAt,
+//      createdAt: userDoc.createdAt,
     };
 
     // Fetch all submissions made by this user
@@ -45,7 +45,7 @@ export async function exportUserData(req: AuthRequest, res: Response) {
       competition: s.competition, // Related competition ID
       image: s.image, // Submission image data
       votesCount: Array.isArray(s.votes) ? s.votes.length : 0, // Count votes safely
-      createdAt: s.createdAt, // Submission timestamp
+ //     createdAt: s.createdAt, // Submission timestamp
     }));
 
     // Fetch all votes made by this user
@@ -57,7 +57,7 @@ export async function exportUserData(req: AuthRequest, res: Response) {
     const safeVotes = votes.map((v) => ({
       id: v._id, // Vote ID
       competition: v.competition, // Competition voted on
-      createdAt: v.createdAt, // When vote was made
+  //    createdAt: v.createdAt, // When vote was made
     }));
 
     // Fetch competitions created by this user
@@ -74,7 +74,7 @@ export async function exportUserData(req: AuthRequest, res: Response) {
       startDate: c.startDate, // Start date
       endDate: c.endDate, // End date
       phase: c.phase, // Current phase/status
-      createdAt: c.createdAt, // Creation timestamp
+   //   createdAt: c.createdAt, // Creation timestamp
     }));
 
     // Return full exported dataset as JSON response

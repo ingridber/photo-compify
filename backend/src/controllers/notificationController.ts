@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import type { Response } from "express";
 import mongoose from "mongoose";
 import { Notification } from "../models/Notification";
 import { z } from "zod";
@@ -19,7 +19,7 @@ export const getUserNotifications = async (req: AuthRequest, res: Response): Pro
 
         const objectId = new mongoose.Types.ObjectId(userId);
         const notifications = await Notification.find({ user: objectId }).sort({ createdAt: -1 });
-        
+
         res.status(200).json(notifications);
     } catch (error) {
         console.error("Error fetching notifications:", error);
@@ -31,7 +31,7 @@ export const markAsRead = async (req: AuthRequest, res: Response): Promise<void>
     try {
         const validation = mongoIdSchema.safeParse(req.params);
         if (!validation.success) {
-            res.status(400).json({ message: "Validation failed", errors: validation.error.errors });
+            res.status(400).json({ message: "Validation failed", errors: validation.error });
             return;
         }
 
