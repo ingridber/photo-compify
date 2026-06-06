@@ -44,7 +44,7 @@ export interface CompetitionSubmissionInterface extends Document {
     _id: Types.ObjectId;
     competition: Types.ObjectId | CompetitionInterface;
     user: Types.ObjectId;
-    image: Types.ObjectId;
+    image: Types.ObjectId | ImageInterface;
     description?: string;
     votes: Types.ObjectId[];
 };
