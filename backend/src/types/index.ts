@@ -2,6 +2,7 @@ import {Document, Types} from "mongoose";
 import { Request } from "express";
 
 export interface InterfaceUser extends Document {
+    _id: Types.ObjectId;
     name: string;
     email?: string;
     username: string;
@@ -15,6 +16,7 @@ export interface InterfaceUser extends Document {
 };
 
 export interface CompetitionInterface extends Document {
+    _id: Types.ObjectId;
     owner: Types.ObjectId;
     title: string;
     logoBanner?: Types.ObjectId | LogoBanner | null;
@@ -36,15 +38,17 @@ interface LogoBanner {
 }
 
 export interface CompetitionSubmissionInterface extends Document {
-    competition: Types.ObjectId | CompetitionInterface ;
+    _id: Types.ObjectId;
+    competition: Types.ObjectId | CompetitionInterface;
     user: Types.ObjectId;
-    image: SubmissionImage;
+    image: Types.ObjectId;
     description?: string;
     votes: Types.ObjectId[];
 };
 
 interface SubmissionImage {
-    id: Types.ObjectId;
+    _id: Types.ObjectId;
+    id?: Types.ObjectId;
     filename: string;
     getSignedUrl(): Promise<string>;
 }
@@ -55,6 +59,7 @@ export interface ImageInterface {
     fileSize: number;
     fileFormat: string;
     uploadedAt: Date;
+    uploadedBy?: Types.ObjectId;
     getSignedUrl(): Promise<string | null>;
 };
 
@@ -65,12 +70,14 @@ export interface AuthRequest extends Request {
 }
 
 export interface CompetitionVoteInterface extends Document {
+    _id: Types.ObjectId;
     user: Types.ObjectId;
     competition: Types.ObjectId;
     submissions: Types.ObjectId[];
 };
 
 export interface NotificationInterface extends Document {
+    _id: Types.ObjectId;
     title: string;
     description: string;
     user: Types.ObjectId;

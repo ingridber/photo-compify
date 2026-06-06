@@ -319,7 +319,7 @@ export async function deleteUser(req: AuthRequest, res: Response) {
 
         const submissions = await Submission.find({ user: userId });
         const submissionIds = submissions.map(s => s._id);
-        const submissionImageIds = submissions.map(s => s.image.id);
+        const submissionImageIds = submissions.map(s => s.image);
 
         const submissionImages = await Image.find({ _id: { $in: submissionImageIds } });
         const filenames = submissionImages.map(img => img.filename);
