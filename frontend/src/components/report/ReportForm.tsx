@@ -23,7 +23,7 @@ interface apiErrors {
     reportId?: string;
 }
 
-export default function ReportForm({submissionId, competitionId, reportedUserId,}: ReportFormProps) {
+export default function ReportForm({submissionId, competitionId, reportedUserId}: ReportFormProps) {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [confirmEmail, setConfirmEmail] = useState("");

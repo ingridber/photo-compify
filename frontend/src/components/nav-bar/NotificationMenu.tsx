@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import styles from './NotificationMenu.module.css'; 
 import { useNotifications } from '../../hooks/useNotifications';

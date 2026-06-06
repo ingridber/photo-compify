@@ -25,7 +25,7 @@ export default function ImageUploadForm({pictureType, competitionId, onUploadSuc
 
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+  const [_croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
 
   const fileSizeRules = FileSizeValidation();
   const fileFormatRules = FileFormatValidation();
@@ -101,7 +101,8 @@ export default function ImageUploadForm({pictureType, competitionId, onUploadSuc
         setUser({
           _id: currentUser.data._id,
           username: currentUser.data.username,
-          profilePicture: currentUser.data.profilePicture
+          profilePicture: currentUser.data.profilePicture,
+          role: currentUser.data.role
         })
 
         if(onUploadSuccess) {
