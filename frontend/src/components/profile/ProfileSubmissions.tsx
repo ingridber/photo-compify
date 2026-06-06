@@ -3,6 +3,7 @@ import { getUserSubmits } from "../../services/api";
 import { useNavigate } from "react-router";
 import type { Submission } from "../../types/competitions";
 import profileStyle from "./profile.module.css";
+import { getSubmissionIndicator } from "../../utils/submissionIndicators";
 
 type Props = {
     showOnlyWins?: boolean;
@@ -48,10 +49,7 @@ export default function ProfileSubmissions({showOnlyWins = false}: Props) {
 
     // ---------- FILTER WINS ----------
     const filteredSubmissions = showOnlyWins
-        ? submissions.filter((submission) => 
-            submission.indicator === "gold" &&
-            typeof submission.competition !== "string" &&
-            submission.competition.phase === "ended")
+        ? submissions.filter((submission) => getSubmissionIndicator(submission) === "gold")
         : submissions;
 
     return (
@@ -60,64 +58,69 @@ export default function ProfileSubmissions({showOnlyWins = false}: Props) {
             {filteredSubmissions.length > 0 ? (
                 [...filteredSubmissions]
                 .reverse()
-                .map((submission, i) => (
-            <div
-                key={submission._id}
-                className={profileStyle.submissionCell}
-                style={{ animationDelay: `${i * 60}ms` }}
-            >
-                <img
-                    src={submission.imageUrl}
-                    onClick={() => {
-                        if (submission.imageUrl) {
-                            setFullscreenImage(submission.imageUrl);
-                        }
-                    }}
-                    className={profileStyle.submissionImg}
-                />
+                .map((submission, i) => {
 
-                {/* CARD FOOTER ----- Comp Title, Phase indicator ----- */}
-                <div className={profileStyle.submissionFooter}>
-                    <p
-                        className={profileStyle.competitionTitle}
-                        onClick={() =>
-                            navigate(`/competitions/${typeof submission.competition === "string"
-                                ? submission.competition
-                                : submission.competition._id}`
-                            )}
-                    >
-                        {submission.competitionTitle}
-                    </p>
+                    const indicator = getSubmissionIndicator(submission);
 
-                    {typeof submission.competition !== "string" && (() => {
-                        const phase = submission.competition.phase;
-                        return (
-                            !showOnlyWins && (
-                                <div className={profileStyle.placementContainer}>
+                    return (
+                        <div
+                            key={submission._id}
+                            className={profileStyle.submissionCell}
+                            style={{ animationDelay: `${i * 60}ms` }}
+                        >
+                            <img
+                                src={submission.imageUrl}
+                                onClick={() => {
+                                    if (submission.imageUrl) {
+                                        setFullscreenImage(submission.imageUrl);
+                                    }
+                                }}
+                                className={profileStyle.submissionImg}
+                            />
 
-                                    {/* ÄNDRA FÄRG PÅ MEDALJ EFTER PLACERING?  */}
-                                    
-                                    <img
-                                        src={ 
-                                            phase === "ended" ? "/icons/medal.svg"
-                                            : phase === "submission" ? "/icons/edit.svg"
-                                            : "/icons/hourglass.svg"}
-                                        className={profileStyle.placementIcon}
-                                    />
-                                    <span>
-                                        {phase === "ended" ? 
-                                            submission.indicator === "gold" ? "1"
-                                            : submission.indicator === "silver" ? "2"
-                                            : "3"
-                                        : phase === "submission" ? "edit" : "vote"}
-                                    </span>
-                                </div>
-                            )
-                        );
-                    })()}
+                            {/* CARD FOOTER ----- Comp Title, Phase indicator ----- */}
+                            <div className={profileStyle.submissionFooter}>
+                                <p
+                                    className={profileStyle.competitionTitle}
+                                    onClick={() =>
+                                        navigate(`/competitions/${typeof submission.competition === "string"
+                                            ? submission.competition
+                                            : submission.competition._id}`
+                                        )}
+                                >
+                                    {submission.competitionTitle}
+                                </p>
 
-                </div>
-            </div>))
+                                {typeof submission.competition !== "string" && (() => {
+                                    const phase = submission.competition.phase;
+
+                                    return (
+                                        !showOnlyWins && (
+                                            <div className={profileStyle.placementContainer}>
+
+                                                {/* ÄNDRA FÄRG PÅ MEDALJ EFTER PLACERING?  */}
+                                                <img
+                                                    src={ 
+                                                        phase === "ended" ? "/icons/medal.svg"
+                                                        : phase === "submission" ? "/icons/edit.svg"
+                                                        : "/icons/hourglass.svg"}
+                                                    className={profileStyle.placementIcon}
+                                                />
+                                                <span>
+                                                    {phase === "ended" ? 
+                                                        indicator === "gold" ? "1"
+                                                        : indicator === "silver" ? "2"
+                                                        : "3"
+                                                    : phase === "submission" ? "edit" : "vote"}
+                                                </span>
+                                            </div>
+                                        )
+                                    );
+                                })()}
+
+                            </div>
+                        </div>);
+            })
             ) : (
                 <p className={profileStyle.emptyText}>{showOnlyWins ? "No wins yet" : "No submissions yet"}</p>
             )}

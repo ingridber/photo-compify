@@ -6,6 +6,7 @@ import type { Submission, Competition } from "../types/competitions";
 import type { PublicProfile } from "../types/user";
 import { Throbber } from "../components/user-feedback/Throbber";
 import profileStyle from "../components/profile/profile.module.css";
+import { getSubmissionIndicator } from "../utils/submissionIndicators";
 
 export default function PublicProfilePage() {
     const { username } = useParams();
@@ -44,6 +45,8 @@ export default function PublicProfilePage() {
     if (loading) return <Throbber />;
     if (error) return <p>{error}</p>;
     if (!profile) return <p>User not found</p>;
+
+    const getIndicatorForSubmission = (submission: Submission) => getSubmissionIndicator(submission);
 
     return (
     <>
@@ -118,17 +121,21 @@ export default function PublicProfilePage() {
 
             {profile.submissions.filter((submission) =>
                 view === "wins"
-                    ? submission.indicator === "gold"
+                    ? getSubmissionIndicator(submission) === "gold"
                     : true
             ).length > 0 ? (
                 profile.submissions
                     .reverse()
                     .filter((submission) =>
                         view === "wins"
-                            ? submission.indicator === "gold"
-                            : true
+                        ? getSubmissionIndicator(submission) === "gold"
+                        : true
                     )
-                    .map((submission: Submission, i: number) => (
+                    .map((submission: Submission, i: number) => {
+                        const indicator =
+                        getIndicatorForSubmission(submission);
+
+                        return (
                         <div key={submission._id} className={profileStyle.submissionCell} style={{animationDelay: `${i * 60}ms`,}}>
                             {/* ----- submission pic ----- */}
                             <img
@@ -154,15 +161,20 @@ export default function PublicProfilePage() {
                                     <div className={profileStyle.placementContainer}>
                                         <img src="/icons/medal.svg" alt="medal" className={profileStyle.medalIcon}/>
                                         <span>
-                                            {submission.indicator === "gold" ? "1"
-                                            : submission.indicator === "silver" ? "2"
-                                            : "3"}
+                                            {indicator === "gold"
+                                                ? "1"
+                                                : indicator === "silver"
+                                                    ? "2"
+                                                    : indicator === "bronze"
+                                                        ? "3"
+                                                        : ""}
                                         </span>
                                     </div>
                                 }
                             </div>
                         </div>
-                    ))
+                    );
+            })
             ) : (
                 <p className={profileStyle.emptyText}>{view === "wins" ? "No wins yet" : "No visible submissions yet"}</p>
             )}
