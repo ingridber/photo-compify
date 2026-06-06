@@ -63,7 +63,7 @@ export async function createImage(req: Request, res: Response) {
 
 // TODO: remove, not used after testing
 // GET ALL
-export async function getAllImages(req: Request, res: Response) {
+export async function getAllImages(_req: Request, res: Response) {
   try {
     const images = await Image.find();
 
@@ -194,7 +194,7 @@ export async function updateImage(req: Request, res: Response) {
 
 // TEST SUPABASE
 // TODO: remove
-export async function testSupabase(req: Request, res: Response) {
+export async function testSupabase(_req: Request, res: Response) {
   try {
     const { data, error } = await supabase.storage
       .from("images")
