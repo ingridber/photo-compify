@@ -14,10 +14,17 @@ export interface Competition {
   endDate: string;
   submissions: Submission[];
   totalVoteCount: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
   participantCount: number;
   phase: "submission" | "voting" | "ended";
+}
+
+export type Phase = "submission" | "voting" | "ended";
+
+type UserRef = {
+    _id: string;
+    username: string;
 }
 
 export interface Submission {
@@ -25,9 +32,7 @@ export interface Submission {
   competition: 
     | string 
     | Competition;
-  user: 
-    | string 
-    | {_id: string; username: string;};
+  user: UserRef;
   image: 
     | string 
     | {_id?: string; filename?: string};

@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router";
 import { useUser } from "../../hooks/useUser";
 import { useState, useEffect } from "react";
@@ -13,7 +12,7 @@ export function DeleteAccount() {
     const [showPassword, setShowPassword] = useState(false);
     const [deleteCheck, setDeleteCheck] = useState("");
     const [message, setMessage] = useState("");
-    const [redirect, setRedirect] = useState(false);
+    const [_redirect, setRedirect] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(false);
 
 

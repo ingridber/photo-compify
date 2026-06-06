@@ -31,7 +31,7 @@ export default function CompetitionDetail() {
     const [competition, setCompetition] = useState<Competition | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
-    const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
+    const [_selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
     const [showLogoModal, setShowLogoModal] = useState(false);
     const [fullscreenSubmission, setFullscreenSubmission] = useState<Submission | null>(null);
     const [showReportModal, setShowReportModal] = useState(false);
