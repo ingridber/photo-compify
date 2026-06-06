@@ -1,4 +1,4 @@
-import {Document, Types} from "mongoose";
+import {Document, Types, PopulatedDoc} from "mongoose";
 import { Request } from "express";
 
 export type UserRole = | "user" | "moderator" | "admin";
@@ -28,7 +28,7 @@ export interface CompetitionInterface extends Document {
     startDate: Date;
     votingStartDate: Date;
     endDate: Date;
-    submissions: Types.ObjectId[] | CompetitionSubmissionInterface[];
+    submissions: PopulatedDoc<CompetitionSubmissionInterface & Document>[];
     totalVoteCount: number;
     phase: 'submission' | 'voting' | 'ended';
     winners: Types.ObjectId[];
@@ -48,13 +48,6 @@ export interface CompetitionSubmissionInterface extends Document {
     description?: string;
     votes: Types.ObjectId[];
 };
-
-interface SubmissionImage {
-    _id: Types.ObjectId;
-    id?: Types.ObjectId;
-    filename: string;
-    getSignedUrl(): Promise<string>;
-}
 
 export interface ImageInterface {
     _id: Types.ObjectId;
