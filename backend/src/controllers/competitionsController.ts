@@ -192,7 +192,10 @@ export async function updateCompetition(req: AuthRequest, res: Response) {
       });
     }
 
-    if (competition.owner.toString() !== req.user!.id) {
+    const isOwner = competition.owner.toString() === req.user!.id;
+    const isAdmin = req.user!.role === "admin";
+
+    if (!isOwner && !isAdmin) {
       return res.status(403).json({
         code: "FORBIDDEN",
         message: "You are not the owner of the competition",
@@ -238,7 +241,10 @@ export async function deleteCompetition(req: AuthRequest, res: Response) {
       });
     }
 
-    if (competition.owner.toString() !== req.user!.id) {
+    const isOwner = competition.owner.toString() === req.user!.id;
+    const isAdmin = req.user!.role === "admin";
+
+    if (!isOwner && !isAdmin) {
       return res.status(403).json({
         code: "FORBIDDEN",
         message: "You are not the owner of the competition",
@@ -256,4 +262,46 @@ export async function deleteCompetition(req: AuthRequest, res: Response) {
       status: 500,
     });
   }
+}
+
+export async function adminSetCompetitionPhase(req: AuthRequest, res: Response) {
+  const isAdmin = req.user!.role === "admin";
+
+  if (!isAdmin) {
+    return res.status(403).json({
+      message: "Admin only",
+    });
+  }
+
+  const { id } = req.params;
+
+  const phaseSchema = z.object({
+    phase: z.enum(["submission", "voting", "ended"]),
+  });
+
+  const validation = phaseSchema.safeParse(req.body);
+
+  if (!validation.success) {
+    return res.status(400).json({
+      message: "Invalid phase",
+    });
+  }
+
+  const { phase } = validation.data;
+
+  const competition = await Competition.findById(id);
+
+  if (!competition) {
+    return res.status(404).json({
+      message: "Competition not found",
+    });
+  }
+
+  competition.phase = phase;
+  await competition.save();
+
+  return res.status(200).json({
+    message: "Phase updated",
+    competition,
+  });
 }

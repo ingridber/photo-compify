@@ -1,6 +1,8 @@
 import {Document, Types} from "mongoose";
 import { Request } from "express";
 
+export type UserRole = | "user" | "moderator" | "admin";
+
 export interface InterfaceUser extends Document {
     _id: Types.ObjectId;
     name: string;
@@ -8,6 +10,7 @@ export interface InterfaceUser extends Document {
     username: string;
     password: string;
     profilePicture?: Types.ObjectId | ImageInterface | null;
+    role: UserRole;
     warnings: number;
     loginAttempts: number;
     lockUntil: Date | undefined;
@@ -65,7 +68,8 @@ export interface ImageInterface {
 
 export interface AuthRequest extends Request {
     user?: {
-        id: string
+        id: string;
+        role: "user" | "moderator" | "admin";
     }
 }
 
