@@ -19,7 +19,7 @@ import type { AuthRequest } from "../types";
 
 const routerUser = express.Router();
 
-routerUser.get("/export-my-data", (req: AuthRequest, res: Response, next) => {
+routerUser.get("/export-my-data", (_req: AuthRequest, _res: Response, next) => {
     console.log("User data downloaded");
     next();
 }, authenticateToken, exportUserData);

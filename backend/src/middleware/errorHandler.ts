@@ -3,9 +3,9 @@ import { AppError } from "../errors/AppError";
 
 export const errorHandler = (
   err: unknown,
-  req: Request,
+  _req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ): void => {
 
   // Common Application Errors
