@@ -27,7 +27,7 @@ export async function calculateUserStats(userId: string) {
         if (submissions.length === 0) continue;
 
         submissions.sort(
-            (a: any, b: any) =>
+            (a: CompetitionSubmissionInterface, b: CompetitionSubmissionInterface) =>
                 (b.votes?.length ?? 0) -
                 (a.votes?.length ?? 0)
         );

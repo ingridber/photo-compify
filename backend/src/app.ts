@@ -7,10 +7,11 @@ import { routerUser } from "./routes/users";
 import { authRouter } from "./routes/auth";
 import { errorHandler } from "./middleware/errorHandler";
 import { RateLimit } from "./middleware/rateLimiter";
+import { routerReport } from "./routes/report";
 import cors from "cors";
 import { submissionRouter } from "./routes/submissions";
 import  notificationRouter  from "./routes/notificationRoutes"
-
+import adminRouter from "./routes/admin";
 
 const app = express();
 
@@ -29,10 +30,15 @@ app.use('/api/v1/competitions', routerComps);
 app.use('/api/v1/competitions/:competitionId/submissions', submissionRouter);
 app.use('/api/v1/submissions', submissionRouter);
 app.use('/api/v1/auth', authRouter);
+// TODO: image routes unprotected, rensa test-routes (review 2)
 app.use("/api/v1/images", imagesRoutes);
 app.use("/api/v1/user", routerProfile);
 app.use("/api/v1/user", routerUser);
 app.use("/api/v1/notifications", notificationRouter);
+app.use('/api/v1/report', routerReport)
+
+// Admin route
+app.use("/api/v1/admin", adminRouter)
 
 app.use((req, res) => {
     res.status(404).json({

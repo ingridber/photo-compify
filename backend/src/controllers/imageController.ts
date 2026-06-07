@@ -3,6 +3,8 @@ import { supabase } from "../config/supabase";
 import { Image } from "../models/Image";
 
 
+
+// TODO: ingen rollback ifall mongo failar, radera bild isf? 
 // POST - CREATE IMAGE
 export async function createImage(req: Request, res: Response) {
   try {
@@ -29,12 +31,16 @@ export async function createImage(req: Request, res: Response) {
       });
     }
 
+
+    // TODO: ta bort bilden om savedImage failar (review 3)
     const savedImage = await Image.create({
       filename: data.path,
       fileSize: imageFile.size,
       fileFormat: imageFile.mimetype,
       uploadedAt: new Date()
     });
+
+
     
     console.log("saved image id", savedImage._id);
     return res.status(201).json({
@@ -54,8 +60,10 @@ export async function createImage(req: Request, res: Response) {
     });
   }
 }
+
+// TODO: remove, not used after testing
 // GET ALL
-export async function getAllImages(req: Request, res: Response) {
+export async function getAllImages(_req: Request, res: Response) {
   try {
     const images = await Image.find();
 
@@ -185,7 +193,8 @@ export async function updateImage(req: Request, res: Response) {
 }
 
 // TEST SUPABASE
-export async function testSupabase(req: Request, res: Response) {
+// TODO: remove
+export async function testSupabase(_req: Request, res: Response) {
   try {
     const { data, error } = await supabase.storage
       .from("images")

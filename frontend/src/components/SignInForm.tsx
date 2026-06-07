@@ -46,6 +46,7 @@ export function SignInForm() {
                     profilePicture: data.profilePicture || null,
                     camera: data.camera,
                     themes: data.themes,
+                    role: data.role,
                 });
 
                 setErrors({});

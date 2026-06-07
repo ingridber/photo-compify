@@ -7,29 +7,7 @@ import { useSearchParams } from "react-router";
 import AVAILABLE_THEMES from "../../constants/availableThemes";
 import Select from "react-select";
 import type { MultiValue } from "react-select";
-
-type Competition = {
-  _id: string;
-  owner: {
-    _id: string;
-    username: string;
-  };
-  title: string;
-  logoBanner?: string;
-  description: string;
-  themes: string[];
-  startDate: string;
-  votingStartDate: string;
-  endDate: string;
-  submissions: string[];
-  totalVoteCount: number;
-  participantCount: number;
-};
-
-type ThemeOption = {
-  value: string;
-  label: string;
-};
+import type { Competition, ThemeOption } from "../../types/competitions"
 
 const AVAILABLE_THEMES_OBJ: ThemeOption[] =
   AVAILABLE_THEMES.map((theme) => ({

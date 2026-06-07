@@ -36,6 +36,7 @@ import ProfileSubmissions from './components/profile/ProfileSubmissions';
 import ProfileCompetitions from './components/profile/ProfileCompetitions';
 import { SignOut } from './components/SignOut';
 import SignOutDeleteAccount from './components/manage-account/SignOutPage';
+import ReportForm from './components/report/ReportForm';
 
 const protectedElement = (Component: ComponentType) => (
   <ProtectedRoute>
@@ -106,7 +107,7 @@ function App() {
 
         {/* admin  */}
         <Route path="/admin" element={<Admin />}>
-          <Route path="reports" />
+          <Route path="reports" element={<ReportForm />} />
         </Route>
 
       </Routes>

@@ -7,10 +7,8 @@ import verifyPassword from "../utils/passwordVerifier";
 import { Image } from "../models/Image";
 import { supabase } from "../config/supabase";
 import { z } from "zod";
-import { CompetitionSubmissionInterface } from "../types";
 import { calculateUserStats } from "../services/userStats";
-import { submissionsIndicator } from "../services/submissionIndicator";
-
+import { CompetitionInterface, CompetitionSubmissionInterface, ImageInterface, type AuthRequest } from "../types";
 
 
 
@@ -19,13 +17,13 @@ import { submissionsIndicator } from "../services/submissionIndicator";
 
 const changeUsernameSchema = z.object({
     newUsername: z
-        .string({ required_error: "Need to provide a username"})
+        .string({ error: "Need to provide a username"})
         .min(3, "Username must be between 3 and 80 characters")
         .max(80, "Username must be between 3 and 80 characters")
     });
 
-export async function changeUsername(req: Request, res: Response) {
-    const userId = (req as any).user.id;
+export async function changeUsername(req: AuthRequest, res: Response) {
+    const userId = req.user?.id;
 
     const validation = changeUsernameSchema.safeParse(req.body);
 
@@ -73,17 +71,17 @@ export async function changeUsername(req: Request, res: Response) {
 
 const changePasswordSchema = z.object({
     password: z
-        .string( {required_error: "Password is requiered" })
+        .string( {error: "Password is requiered" })
         .min(1, {message: "Please provide current password for validation"}),
     newPassword: z
-        .string({required_error: "New password is requiered" })
+        .string({error: "New password is requiered" })
         .min(8, { message: "Password must be between 8 and 120 characters"})
         .max(120, { message: "Password must be between 8 and 120 characters"})
         .refine((val) => verifyPassword(val), {
             message: "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character."
         }),
     confirmPassword: z
-        .string({required_error: "Please Confirm your new password" })
+        .string({error: "Please Confirm your new password" })
         .min(1, { message: "Please Confirm your new password"})
 })
 .refine((data) => data.password !== data.newPassword, {
@@ -96,8 +94,8 @@ const changePasswordSchema = z.object({
 });
 
 
-export async function changePassword(req: Request, res: Response) {
-    const userId = (req as any).user.id;
+export async function changePassword(req: AuthRequest, res: Response) {
+    const userId = req.user?.id;
     const validation = changePasswordSchema.safeParse(req.body);
 
     if (!validation.success) {
@@ -146,14 +144,14 @@ export async function changePassword(req: Request, res: Response) {
 
 const changeProfilePictureSchema = z.object({
     profilePicture: z
-        .string({ required_error: "User not found"}),
+        .string({ error: "User not found"}),
     oldProfilePicture: z
         .string()
         .optional()
 });
 
-export async function changeProfilePicture(req: Request, res: Response) {
-    const userId = (req as any).user.id;
+export async function changeProfilePicture(req: AuthRequest, res: Response) {
+    const userId = req.user?.id;
     const validation = changeProfilePictureSchema.safeParse(req.body);
 
     if(!validation.success) {
@@ -207,8 +205,8 @@ export async function changeProfilePicture(req: Request, res: Response) {
 
 // ---------- DELETE PROFILE PICTURE ----------
 // --------------------------------------------
-export async function deleteProfilePicture(req: Request, res: Response) {
-    const userId = (req as any).user.id;
+export async function deleteProfilePicture(req: AuthRequest, res: Response) {
+    const userId = req.user?.id;
 
     try {
         // ---------- GET USER ----------
@@ -260,7 +258,7 @@ export async function deleteProfilePicture(req: Request, res: Response) {
 
 // ---------- LOGOUT SESSION ----------
 // ------------------------------------
-export function logout(req: Request, res: Response) {
+export function logout(_req: Request, res: Response) {
     res.clearCookie("token");
     res.status(200).json({ message: "Logged out" });
 }
@@ -270,17 +268,17 @@ export function logout(req: Request, res: Response) {
 
 const deleteUserSchema = z.object({
     password: z 
-        .string({ required_error: "please provide current password for validation"})
+        .string({ error: "please provide current password for validation"})
         .min(1, {message: "please provide current password for validation"})
 });
 
-export async function deleteUser(req: Request, res: Response) {
-    const userId = (req as any).user.id;
+export async function deleteUser(req: AuthRequest, res: Response) {
+    const userId = req.user!.id;
     const validation = deleteUserSchema.safeParse(req.body);
 
     if (!validation.success) {
         return res.status(400).json({
-            message: validation.error.issues[0].message
+            message: validation.error.issues[0]!.message
         });
     }
 
@@ -320,7 +318,7 @@ export async function deleteUser(req: Request, res: Response) {
 
         const submissions = await Submission.find({ user: userId });
         const submissionIds = submissions.map(s => s._id);
-        const submissionImageIds = submissions.map(s => s.image);
+        const submissionImageIds = submissions.map(s => s.image._id);
 
         const submissionImages = await Image.find({ _id: { $in: submissionImageIds } });
         const filenames = submissionImages.map(img => img.filename);
@@ -369,8 +367,8 @@ export async function deleteUser(req: Request, res: Response) {
 
 // ---------- USER COMPS ----------
 // --------------------------------
-export async function getUserCompetitions(req: Request, res: Response) {
-    const userId = (req as any).user.id;
+export async function getUserCompetitions(req: AuthRequest, res: Response) {
+    const userId = req.user?.id;
 
     try {
         // ---------- GET USER ----------
@@ -392,14 +390,9 @@ export async function getUserCompetitions(req: Request, res: Response) {
         // ---------- ADD SIGNED URL ----------
         await Promise.all(
 
-            competitions.map(async (competition: any) => {
-
-                if (competition.logoBanner?.getSignedUrl) {
-
-                    const url =
-                        await competition.logoBanner.getSignedUrl();
-
-                    competition._doc.signedLogoUrl = url;
+            competitions.map(async (competition: CompetitionInterface) => {
+                if (competition.logoBanner && "getSignedUrl" in competition.logoBanner) {
+                    competition.signedLogoUrl = await competition.logoBanner.getSignedUrl();
                 }
             })
         );
@@ -420,47 +413,54 @@ export async function getUserCompetitions(req: Request, res: Response) {
 
 // ---------- USER SUBMITS ----------
 // ----------------------------------
-export async function getUserSubmissions(
-    req: Request,
-    res: Response
-) {
-    const userId = (req as any).user.id;
-
+export async function getUserSubmissions(req: AuthRequest,res: Response) {
+    const userId = req.user!.id;
     try {
-
-        const submissions = await Submission.find({
-            user: userId
-        })
+        const submissions = await Submission.find({user: userId})
         .populate("image")
         .populate({
             path: "competition",
-            select: "title endDate votingStartDate submissions phase",
+            select: "title endDate votingStartDate submissions phase winners",
             populate: {
                 path: "submissions"
             }
         });
 
-        const formattedSubmissions =
-            await submissionsIndicator(submissions);
+        const enrichedSubmissions = await Promise.all(
+            submissions.map(async (submission) => {
 
-        const enrichedSubmissions =
-            formattedSubmissions.map((submission: any) => ({
-                ...submission,
+                let imageUrl = null;
+                const image = submission.image as ImageInterface;
 
-                competitionTitle:
-                    submission.competition &&
-                    typeof submission.competition === "object" &&
-                    "title" in submission.competition
-                        ? submission.competition.title
-                        : null
-            }));
+                if (image?.filename) {
+                    const { data } = await supabase.storage
+                        .from("images")
+                        .createSignedUrl(
+                            image.filename,
+                            60 * 60
+                        );
+
+                    imageUrl = data?.signedUrl ?? null;
+                }
+
+                return {
+                    ...submission.toObject(),
+                    imageUrl,
+                    competitionTitle:
+                        submission.competition &&
+                        typeof submission.competition === "object" &&
+                        "title" in submission.competition
+                            ? submission.competition.title
+                            : null
+                };
+            })
+        );
 
         return res.status(200).json({
             submissions: enrichedSubmissions
         });
 
     } catch (err) {
-
         return res.status(500).json({
             message: "Server error",
             err
@@ -468,58 +468,40 @@ export async function getUserSubmissions(
     }
 }
 
-
-
 // ------------------------------------
 // ---------- PUBLIC PROFILE ----------
 // ------------------------------------
-
-export async function getPublicProfile(
-    req: Request,
-    res: Response
-) {
-
+export async function getPublicProfile(req: Request,res: Response) {
     const { username } = req.params;
 
     try {
+        if (!username || typeof username !== "string") {return res.status(400).json({ code: "INVALID_PARAMS", message: "username required" });}
 
         // ---------- GET USER ----------
-        const user = await User.findOne({
-            username
-        })
+        const user = await User.findOne({username})
         .populate("profilePicture");
 
         if (!user) {
-
-            return res.status(404).json({
-                message: "User not found"
-            });
+            return res.status(404).json({message: "User not found"});
         }
 
         // ---------- FORMAT PROFILE PIC ----------
         let profilePicture = null;
 
-        if (
-            user.profilePicture &&
-            typeof user.profilePicture !== "string" &&
-            user.profilePicture.getSignedUrl
-        ) {
-
+        if (user.profilePicture) {
+            const pic = user.profilePicture as ImageInterface;
             profilePicture = {
-                _id: user.profilePicture._id,
-                url:
-                    await user.profilePicture.getSignedUrl()
+                _id: pic._id,
+                url: await pic.getSignedUrl()
             };
         }
 
-
         // ---------- GET USER SUBMISSIONS ----------
-        const submissions = await Submission.find({
-            user: user._id
-        })
+        const submissions = await Submission.find({user: user._id})
         .populate("image")
         .populate({
             path: "competition",
+            select: "title endDate phase winners",
             populate: {
                 path: "submissions"
             }
@@ -527,39 +509,41 @@ export async function getPublicProfile(
 
         // ---------- ONLY FINISHED SUBMISSIONS ----------
         const finishedSubmissions = submissions.filter(
-            (submission: any) => {
-
-                if (!submission.competition?.endDate) {
-                    return false;
-                }
-
-                return (
-                    new Date(
-                        submission.competition.endDate
-                    ).getTime() < Date.now()
-                );
+            (submission: CompetitionSubmissionInterface) => {
+                if (!submission.competition || !("endDate" in submission.competition)) { return false; }
+                return new Date(submission.competition.endDate).getTime() < Date.now();
             }
         );
 
         // ---------- FORMAT SUBMISSIONS ----------
-        const formattedSubmissions =
-            await submissionsIndicator(
-                finishedSubmissions
-            );
+        const enrichedSubmissions = await Promise.all(
+            finishedSubmissions.map(async (submission) => {
 
-        const enrichedSubmissions =
-            formattedSubmissions.map(
-                (submission: any, index: number) => ({
+                let imageUrl = null;
+                const image = submission.image as ImageInterface;
 
-                    ...submission,
+                if (image?.filename) {
+                    const { data } = await supabase.storage
+                        .from("images")
+                        .createSignedUrl(
+                            image.filename,
+                            60 * 60
+                        );
+                    imageUrl = data?.signedUrl ?? null;
+                }
 
+                return {
+                    ...submission.toObject(),
+                    imageUrl,
                     competitionTitle:
-                        finishedSubmissions[index]?.competition &&
-                        typeof finishedSubmissions[index].competition === "object"
-                            ? finishedSubmissions[index].competition.title
+                        submission.competition &&
+                        typeof submission.competition === "object" &&
+                        "title" in submission.competition
+                            ? submission.competition.title
                             : null
-                })
-            );
+                };
+            })
+        );
 
         // ---------- GET USER COMPETITIONS ----------
         const competitions = await Competition.find({
@@ -573,21 +557,11 @@ export async function getPublicProfile(
             await Promise.all(
 
                 competitions.map(
-                    async (competition: any) => {
-
+                    async (competition: CompetitionInterface) => {
                         let signedLogoUrl = "";
-
-                        if (
-                            competition.logoBanner &&
-                            competition.logoBanner.getSignedUrl
-                        ) {
-
-                            signedLogoUrl =
-                                await competition
-                                    .logoBanner
-                                    .getSignedUrl();
+                        if (competition.logoBanner && "getSignedUrl" in competition.logoBanner) {
+                            signedLogoUrl = await competition.logoBanner.getSignedUrl();
                         }
-
                         return {
                             _id: competition._id,
                             title: competition.title,
@@ -606,7 +580,6 @@ export async function getPublicProfile(
                                 competition.phase,
                             logoBanner:
                                 competition.logoBanner,
-
                             signedLogoUrl
                         };
                     }
@@ -614,13 +587,10 @@ export async function getPublicProfile(
             );
 
         // ---------- GET STATS ----------
-        const stats = await calculateUserStats(
-            user._id.toString()
-        );
+        const stats = await calculateUserStats(user._id.toString());
 
         // ---------- RESPONSE ----------
         return res.status(200).json({
-
             user: {
                 _id: user._id,
                 username: user.username,
@@ -628,21 +598,16 @@ export async function getPublicProfile(
                 camera: user.camera,
                 themes: user.themes,
             },
-
             submissions: enrichedSubmissions,
-
             competitions: formattedCompetitions,
-
             stats
         });
 
     } catch (err) {
-
         console.log(
             "GET PUBLIC PROFILE ERROR:",
             err
         );
-
         return res.status(500).json({
             message: "Server error"
         });
@@ -651,9 +616,9 @@ export async function getPublicProfile(
 
 // ---------- USER STATS ----------
 // --------------------------------
-export async function getUserStats(req: Request, res: Response) {
+export async function getUserStats(req: AuthRequest, res: Response) {
 
-    const userId = (req as any).user.id;
+    const userId = req.user!.id;
 
     try {
 

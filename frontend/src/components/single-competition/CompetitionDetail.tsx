@@ -2,13 +2,14 @@ import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router";
 import { fetchCompetitionById } from "../../services/api";
 import { type Competition, type Submission } from "../../types/competitions.ts";
-import VoteButton from "./VoteButton.tsx";
 import styles from "./CompetitionDetail.module.css";
-import { useUser } from "../../hooks/useUser.ts";
 import modalStyles from "../../styles/upload-overlay.module.css";
+import { useUser } from "../../hooks/useUser.ts";
 import { Throbber } from "../user-feedback/Throbber.tsx";
+import VoteButton from "./VoteButton.tsx";
 import ImageUploadForm from "../images/ImageUploadForm.tsx";
 import { getIndicator, sortSubmissions } from "../../utils/submissionIndicators.ts";
+import ReportForm from "../report/ReportForm.tsx";
 
 function formatCountdown(target: string): string {
     const diff = new Date(target).getTime() - Date.now();
@@ -30,9 +31,10 @@ export default function CompetitionDetail() {
     const [competition, setCompetition] = useState<Competition | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
-    const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
+    const [_selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
     const [showLogoModal, setShowLogoModal] = useState(false);
     const [fullscreenSubmission, setFullscreenSubmission] = useState<Submission | null>(null);
+    const [showReportModal, setShowReportModal] = useState(false);
 
     const loadCompetition = useCallback(() => {
         if (!id) return;
@@ -66,9 +68,34 @@ export default function CompetitionDetail() {
             ? competition.votingStartDate
             : competition.endDate;
 
-    function handleVoteChange() {
-        setSelectedSubmission(null);
-        loadCompetition();
+    function handleVoteChange(submissionId: string, voted: boolean) {
+        if (!user) return;
+
+        setCompetition(prev => {
+            if(!prev) return prev;
+
+            return {
+                ...prev,
+                submissions: prev.submissions.map(sub =>
+                    sub._id === submissionId
+                    ? {
+                        ...sub,
+                        votes: voted
+                        ? [...sub.votes, user._id]
+                        : sub.votes.filter(id => id !== user._id)}
+                    : sub)
+            }
+        })
+        setFullscreenSubmission(prev => {
+            if (!prev || prev._id !== submissionId) return prev;
+
+            return {
+                ...prev,
+                votes: voted
+                    ? [...prev.votes, user._id]
+                    : prev.votes.filter(id => id !== user._id)
+            };
+        });
     }
 
     function handleLogoUploadSuccess() {
@@ -267,8 +294,10 @@ export default function CompetitionDetail() {
                         alt="Submission"
                     />
                     <div className={styles.fullscreenActions}>
-                        <button className={styles.closeFullscreenBtn}>Report</button>
-                        <button className={styles.closeFullscreenBtn} onClick={() => setFullscreenSubmission(null)}>Close</button>
+                        <button className={`${styles.closeFullscreenBtn} ${styles.reportBtn}`} onClick={() => {setShowReportModal(true)}}>
+                            <img src="/icons/report.svg" alt="report picture" className={styles.reportBtnIcon} />
+                        </button>
+
                         {phase === 'voting' && (
                         <VoteButton
                             submission={fullscreenSubmission}
@@ -278,7 +307,27 @@ export default function CompetitionDetail() {
                             onVoteChange={handleVoteChange}
                             variant="fullscreen"/>
                         )}
+
+                        <button className={styles.closeFullscreenBtn} onClick={() => setFullscreenSubmission(null)}>
+                            <img src="/icons/close.svg" alt="close fullscreen view" className={styles.closeFullscreenBtnIcon} />
+                        </button>
                     </div>
+                </div>
+            </div>
+        )}
+
+        {/* REPORT  */}
+        {showReportModal && fullscreenSubmission && (
+            <div className={modalStyles.modalOverlay}>
+                <div className={modalStyles.modalContent} onClick={(e) => e.stopPropagation()}>
+                    <button className={modalStyles.closeBtn}onClick={() => setShowReportModal(false)}>
+                        ✕
+                    </button>
+                    <ReportForm
+                        submissionId={fullscreenSubmission._id}
+                        competitionId={competition._id}
+                        reportedUserId={fullscreenSubmission.user?._id}
+                    />
                 </div>
             </div>
         )}
