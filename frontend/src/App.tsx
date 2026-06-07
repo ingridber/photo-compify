@@ -1,5 +1,5 @@
 import './App.css';
-import { Routes, Route } from 'react-router';
+import { Routes, Route, Navigate } from 'react-router';
 import { useEffect } from 'react';
 import type { ComponentType } from 'react';
 
@@ -37,6 +37,7 @@ import ProfileCompetitions from './components/profile/ProfileCompetitions';
 import { SignOut } from './components/SignOut';
 import SignOutDeleteAccount from './components/manage-account/SignOutPage';
 import ReportForm from './components/report/ReportForm';
+import Users from './components/admin/Users';
 
 const protectedElement = (Component: ComponentType) => (
   <ProtectedRoute>
@@ -107,6 +108,8 @@ function App() {
 
         {/* admin  */}
         <Route path="/admin" element={<Admin />}>
+          <Route index element={<Navigate to="users" replace />} />
+          <Route path='users' element={<Users />} />
           <Route path="reports" element={<ReportForm />} />
         </Route>
 
