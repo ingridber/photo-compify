@@ -4,6 +4,7 @@ import { requireRole } from "../middleware/requireRole";
 import {deleteCompetition, updateCompetition, adminSetCompetitionPhase} from "../controllers/competitionsController";
 import { deleteImage } from "../controllers/imageController";
 import { deleteUserById } from "../controllers/requireRoleController";
+import { getAllUsers, updateUserRole } from "../controllers/adminUsersController";
 
 const adminRouter = express.Router();
 
@@ -20,5 +21,7 @@ adminRouter.delete("/images/:id", requireRole(["moderator", "admin"]),deleteImag
 
 // Admin controll for users
 adminRouter.delete("/users/:id", authenticateToken, requireRole(["admin"]), deleteUserById);
+adminRouter.get("/users", getAllUsers);
+adminRouter.patch("/users/:id/role", updateUserRole);
 
 export default adminRouter;

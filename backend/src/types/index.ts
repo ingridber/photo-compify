@@ -16,6 +16,8 @@ export interface InterfaceUser extends Document {
     lockUntil: Date | undefined;
     camera?: string | null;
     themes?: string[] | null;
+    createdAt: Date;
+    updatedAt: Date;
 };
 
 export interface CompetitionInterface extends Document {
