@@ -1,106 +1,108 @@
 /* 🧱 Omslutande container */
 .notificationMenu {
-    position: relative;
-    display: flex;
-    align-items: center;
-    height: 70%; /* Samma höjd som hamburgarknappen i navbaren */
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 70%;
 }
 
-/* 🔔 Själva knappen för klockan */
+/* 🔔 Knappen (Matchar hamburger-knappens storlek) */
 .notificationBtn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    height: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  position: relative;
 }
 
-/* 🖼️ Klockikonen */
+/* 🖼️ Ikon */
 .notificationIcon {
-    height: 100%;
-    filter: var(--iconToggleTheme);
-    opacity: 0.8;
-
+  height: 100%;
+  filter: var(--iconToggleTheme);
+  opacity: 0.8;
 }
 
-/* 🔴 Den röda badge-bubblan för antal */
+/* 🔴 Badge (Matchar din stil men lite mer diskret) */
 .notificationBadge {
-    position: absolute;
-    top: -2px;
-    right: -2px;
-    background-color: #ff4d4d; /* Röd färg för uppmärksamhet */
-    color: white;
-    font-size: 0.7rem;
-    font-weight: bold;
-    border-radius: 50%;
-    min-width: 16px;
-    height: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2px;
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background-color: #bfa48c; /* Matchar din accentfärg i hamburgermenyn */
+  color: var(--bg);
+  font-size: 0.65rem;
+  font-weight: 700;
+  border-radius: 50%;
+  min-width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* 📜 Dropdown-menyn */
+/* 📜 Dropdown (Matchar stilen i HamburgerMenu.module.css) */
 .notificationDropdown {
-    position: absolute;
-    top: 100%;
-    right: 0;          /* 🌟 Linjerar högerkanten med klockans högerkant */
-    width: 320px;       /* 🌟 Gjorde den lite bredare enligt önskemål */
-    margin-top: 10px;   /* Lite distans från navbaren */
-    background-color: var(--navigate-menu);
-    border: 1px solid var(--text-light);
-    border-radius: 4px;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
-    list-style: none;
-    padding: 0.5rem 0;
-    z-index: 1000;
-    opacity: 0.955;     /* Matchar din burgarmeny */
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 300px;
+  margin-top: 15px;
+  background-color: var(--bg);
+  border: 1px solid var(--text);
+  border-radius: 0; /* Om du vill ha en skarpare look som matchar hamburgermenyn */
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+  list-style: none;
+  padding: 0.5rem 0;
+  z-index: 1000;
+  
+  /* Samma fina reveal-animation som hamburgermenyn */
+  opacity: 1;
+  transform: translateY(0);
 }
 
-/* ✉️ Varje enskild notifiering i listan */
+/* ✉️ Notis-objekt */
 .notificationItem {
-    padding: 0.75rem 1rem;
-    color: var(--text-light);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    transition: background-color 0.2s ease;
-}
-
-.notificationItem:last-child {
-    border-bottom: none;
+  padding: 1rem;
+  color: var(--text);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid rgba(191, 164, 140, 0.2);
 }
 
 .notificationItem:hover {
-    background-color: rgba(255, 255, 255, 0.05); /* Visuell feedback vid hover */
+  background-color: rgba(191, 164, 140, 0.1);
 }
 
-/* 📌 Rubriken inuti en notis */
+/* 📌 Rubrik (Matchar menuBtn-stilen: uppercase + spacing) */
 .notificationItem h4 {
-    margin: 0 0 0.25rem 0;
-    font-size: 0.95rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.02rem;
+  margin: 0 0 0.25rem 0;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
 }
 
-/* 💬 Texten inuti en notis */
+/* 💬 Text */
 .notificationItem p {
-    margin: 0;
-    font-size: 0.8rem;
-    opacity: 0.8;
+  margin: 0;
+  font-size: 0.8rem;
+  opacity: 0.7;
 }
 
+.noNotifications {
+  padding: 1rem;
+  text-align: center;
+  color: var(--text);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
 
-/* ----------------------------------- */
-/* ---------- MOBILE LAYOUT ---------- */
-/* ----------------------------------- */
 @media (max-width: 600px) {
   .notificationBtn {
     height: 1.8rem;
   }
-
 }
