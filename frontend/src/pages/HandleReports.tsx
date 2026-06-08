@@ -110,6 +110,8 @@ export default function HandleReports() {
     return (
         <>
         <div className={styles.reportContainer}>
+            <h1>Reports</h1>
+            
             <h2 className={styles.unresolved}>Unresolved</h2>
 
             {unresolvedReports.length > 0 ? (
