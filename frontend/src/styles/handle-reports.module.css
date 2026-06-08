@@ -1,7 +1,5 @@
 .reportContainer {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 1rem 1rem 40rem 1rem;
+    max-width: 80vw;
 }
 
 .reportItem {
@@ -13,7 +11,11 @@
 }
 
 .unresolved {
+    margin-top: 5rem;
     color: red;
+}
+
+.reportContainer h2 {
     text-transform: uppercase;
 }
 
@@ -103,8 +105,6 @@
     color: white;
     cursor: pointer;
 }
-
-
 
 .fullscreenModal {
   position: fixed;
