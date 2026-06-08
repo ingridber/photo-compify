@@ -1,0 +1,146 @@
+.reportContainer {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1rem 1rem 40rem 1rem;
+}
+
+.reportItem {
+    border-bottom: 1px solid var(--text);
+}
+
+.reportItem:first-of-type {
+    border-top: 1px solid var(--text);
+}
+
+.unresolved {
+    color: red;
+    text-transform: uppercase;
+}
+
+.report {
+    width: 100%;
+    padding: 1.25rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    color: var(--text);
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+}
+
+.report:hover {
+    opacity: 0.85;
+}
+
+.showReportIcon {
+    width: 1.5rem;
+    aspect-ratio: 1/1;
+    flex-shrink: 0;
+    padding-right: 0.5rem;
+    filter: var(--iconToggleTheme);
+    transform-origin: center;
+}
+
+.open {
+    transform: scaleY(-1);
+}
+
+.reportTitle {
+    font-size: 1.5rem;
+    font-weight: 400;
+}
+
+.reportWrapper {
+    padding-bottom: 1.25rem;
+    
+
+}
+
+.reportMain {
+    width: 100%;
+    display: flex;
+    justify-content: space-between !important;
+}
+
+.reportSpecsTitle {
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding-bottom: 0.5rem;
+}
+
+.imageContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.imageThumbnail {
+    width: 100px;
+    cursor: pointer;
+}
+
+.reportActions {
+    display: flex;
+    gap: 0.5rem;
+    margin: 1rem auto;
+}
+
+.acceptBtn {
+    padding: 0.5rem;
+    background-color: green;
+    color: white;
+    cursor: pointer;
+
+}
+
+.declineBtn {
+    background-color: red;
+    color: white;
+    cursor: pointer;
+}
+
+
+
+.fullscreenModal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  background: rgba(0,0,0,.85);
+  backdrop-filter: blur(8px);
+  animation: fadeUp .18s ease;
+}
+
+.fullscreenContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.fullscreenImage {
+  max-width: 100%;
+  max-height: 75vh;
+  object-fit: contain;
+  box-shadow: 0 20px 80px rgba(0,0,0,.45);
+}
+
+.closeFullscreenBtn {
+  padding: .8rem 1.6rem;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+  color: white;
+  font-size: .72rem;
+  letter-spacing: .14em;
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+}

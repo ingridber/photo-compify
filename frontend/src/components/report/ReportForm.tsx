@@ -3,7 +3,8 @@ import { useRef, useState, useEffect } from "react";
 import { uploadImage } from "../../services/imageApi";
 import FileFormatValidation from "../../utils/FileFormatValidation";
 import FileSizeValidation from "../../utils/FileSizeValidation";
-import { createReport } from "../../services/reportApi";
+import { createReport, checkNoPreviousReport } from "../../services/reportApi";
+import { useUser } from "../../hooks/useUser";
 
 const DESC_MAX = 250;
 
@@ -23,10 +24,10 @@ interface apiErrors {
     reportId?: string;
 }
 
-export default function ReportForm({submissionId, competitionId, reportedUserId}: ReportFormProps) {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [confirmEmail, setConfirmEmail] = useState("");
+export default function ReportForm({submissionId, competitionId, reportedUserId,}: ReportFormProps) {
+    const {user} = useUser();
+    const [name, setName] = useState(user ? user.username : "");
+    const [email, setEmail] = useState( user? user.email : "");
     const [description, setDescription] = useState("");
     const [confirmed, setConfirmed] = useState(false);
     const [errors, setErrors] = useState<FormErrors>({});
@@ -39,19 +40,6 @@ export default function ReportForm({submissionId, competitionId, reportedUserId}
     const [reportId, setReportId] = useState('');
     const fileSizeRules = FileSizeValidation();
     const fileFormatRules = FileFormatValidation();
-
-    function validateConfirmEmail(value: string): string | undefined {
-        if (value !== email) {return "Email addresses do not match";}
-    }
-
-    function handleBlur(value: string) {
-        const error = validateConfirmEmail(value);
-
-        setErrors((prev) => ({
-            ...prev,
-            confirmEmail: error,
-        }));
-    }
 
     useEffect(() => {
         return () => {
@@ -103,10 +91,8 @@ export default function ReportForm({submissionId, competitionId, reportedUserId}
         if (fileInputRef.current) {fileInputRef.current.value = "";}
     };
 
-
-    const isValid =
+    const isValid = 
         email.trim().length > 0 &&
-        confirmEmail.trim().length > 0 &&
         description.trim().length > 0 &&
         confirmed;
 
@@ -117,9 +103,7 @@ export default function ReportForm({submissionId, competitionId, reportedUserId}
         setshowResult(false);
         const newErrors: FormErrors = {};
 
-        if (email !== confirmEmail) {newErrors.confirmEmail = "Email addresses do not match";}
         if (!confirmed) {newErrors.confirmation = "You must confirm this report before submitting.";}
-
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
             return;
@@ -133,25 +117,28 @@ export default function ReportForm({submissionId, competitionId, reportedUserId}
             email,
             description,
         };
-
         let evidenceImageId: string | null = null;
 
         try {
+            const checkOK = await checkNoPreviousReport({submissionId: reportData.submissionId, email: reportData.email})
+
+            if (!checkOK.success) {
+                throw {
+                    message: checkOK.message,
+                    reportId: checkOK.reportId,
+                };
+            }
+
             if (selectedFile) {
                 const imgFormData = new FormData();
-
                 imgFormData.append("image",selectedFile);
-
                 const uploadRes = await uploadImage(imgFormData);
                 const uploadData = await uploadRes.json();
-
                 if (!uploadRes.ok) {
                     throw new Error( uploadData.message || "Image upload failed");
                 }
-
                 evidenceImageId = uploadData.data._id;
             }
-
 
             const res = await createReport({
                 ...reportData,
@@ -163,7 +150,6 @@ export default function ReportForm({submissionId, competitionId, reportedUserId}
             setshowResult(true);
             setName("");
             setEmail("");
-            setConfirmEmail("");
             setDescription("");
             setConfirmed(false);
             clearFile();
@@ -180,11 +166,6 @@ export default function ReportForm({submissionId, competitionId, reportedUserId}
                 setshowResult(true);
             }
         };
-
-
-
-
-
 
     return (
     <>
@@ -218,24 +199,6 @@ export default function ReportForm({submissionId, competitionId, reportedUserId}
                     onChange={(e) => setEmail(e.target.value)}
                 />
             </div>
-            {/* CONFIRM EMAIL */}
-            <div className={styles.field}>
-                <label className={styles.label}>Confirm Email</label>
-                {errors.confirmEmail && (<p className={styles.error}>{errors.confirmEmail}</p>)}
-                <input
-                    className={styles.input}
-                    required
-                    type="email"
-                    placeholder="example@example.com"
-                    value={confirmEmail}
-                    onChange={(e) => {
-                        setConfirmEmail(e.target.value);
-                        setErrors(prev => ({...prev, confirmEmail: undefined,}));
-                    }}
-                    onBlur={(e) => handleBlur(e.target.value)}
-                />
-            </div>
-
             {/* DESCRIPTION */}
             <div className={styles.field}>
                 <label className={styles.label} htmlFor="report-description">Description of the issue</label>
@@ -251,11 +214,9 @@ export default function ReportForm({submissionId, competitionId, reportedUserId}
                 />
                 <small className={styles.counter}>{description.length}/{DESC_MAX}</small>
             </div>
-
             {/* FILE */}
             <div className={styles.field}>
                 <label className={styles.label}>Supporting image (optional)</label>
-
                 <div
                     className={styles.imgContainer}
                     onClick={() => fileInputRef.current?.click()}
@@ -297,7 +258,6 @@ export default function ReportForm({submissionId, competitionId, reportedUserId}
                     </div>
                 )}
             </div>
-
             {/* CONFIRMATION */}
             <div className={styles.field}>
                 <label className={styles.label}>Confirmation</label>

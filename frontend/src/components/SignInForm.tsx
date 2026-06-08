@@ -43,6 +43,7 @@ export function SignInForm() {
                 setUser({
                     _id: data._id,
                     username: data.username,
+                    email: data.email,
                     profilePicture: data.profilePicture || null,
                     camera: data.camera,
                     themes: data.themes,

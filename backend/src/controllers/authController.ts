@@ -184,6 +184,7 @@ export async function login(req: Request, res: Response): Promise<Response> {
             status: 200,
             _id: user._id,
             username: user.username,
+            email: user.email,
             role: user.role,
             profilePicture: profilePicture,
             camera: user.camera,
@@ -234,6 +235,7 @@ export async function getCurrentUser(req: AuthRequest, res: Response): Promise<R
                 camera: user.camera,
                 themes: user.themes,
                 role: user.role,
+                email: user.email,
             }
         });
 
