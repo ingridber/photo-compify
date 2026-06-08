@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
+import { apiCall } from '../utils/apiCall';
 
 interface Notification {
     _id: string;        
@@ -19,8 +20,6 @@ interface NotificationContextType {
 
 export const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
-const API_URL = "http://localhost:3000/api/v1/notifications";
-
 export const NotificationProvider = ({ children }: { children: React.ReactNode }) => {
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [updateTrigger, setUpdateTrigger] = useState(0);
@@ -30,10 +29,7 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
     useEffect(() => {
         const fetchNotifications = async () => {
             try {
-                const response = await fetch(API_URL, {
-                    method: "GET",
-                    credentials: "include" 
-                });
+                const response = await apiCall("/notifications");
 
                 if (!response.ok) throw new Error("Failed to fetch notifications");
 
@@ -53,11 +49,7 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
 
     const markAsRead = async (id: string) => {
         try {
-            const response = await fetch(`${API_URL}/${id}/read`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include"
-            });
+            const response = await apiCall(`/notifications/${id}/read`, "PATCH");
 
             if (!response.ok) throw new Error("Failed to update notification status");
 

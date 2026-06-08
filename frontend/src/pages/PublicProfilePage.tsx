@@ -7,6 +7,7 @@ import type { PublicProfile } from "../types/user";
 import { Throbber } from "../components/user-feedback/Throbber";
 import profileStyle from "../components/profile/profile.module.css";
 import { getSubmissionIndicator } from "../utils/submissionIndicators";
+import { apiCall } from "../utils/apiCall";
 
 export default function PublicProfilePage() {
     const { username } = useParams();
@@ -20,7 +21,7 @@ export default function PublicProfilePage() {
     useEffect(() => {
         async function loadProfile() {
             try {
-                const res = await fetch(`http://localhost:3000/api/v1/user/${username}`);
+                const res = await apiCall(`/user/${username}`);
 
                 if (!res.ok) {
                     throw new Error("Failed to fetch profile");

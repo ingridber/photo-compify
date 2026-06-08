@@ -9,6 +9,7 @@ import { useUser } from "../../hooks/useUser";
 import { useNavigate } from "react-router";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "./getCroppedImg";
+import { apiCall } from "../../utils/apiCall";
 
 type PictureProps = {
     pictureType? : string | null;
@@ -131,11 +132,8 @@ export default function ImageUploadForm({pictureType, competitionId, onUploadSuc
 
       if (pictureType === 'logo' && competitionId) {
           try {
-              const res = await fetch(`http://localhost:3000/api/v1/competitions/${competitionId}`, {
-                  method: 'PATCH',
-                  credentials: 'include',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ logoBanner: data.data._id }),
+              const res = await apiCall(`/competitions/${competitionId}`, "PATCH", {
+                  logoBanner: data.data._id
               });
               if (!res.ok) throw new Error('Failed to update logo');
               setMessage("Logo updated");
