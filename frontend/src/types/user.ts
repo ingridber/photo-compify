@@ -5,7 +5,7 @@ import type { Competition, Submission } from "./competitions";
 export type User = {
     _id: string;
     username: string;
-    email: string;
+    email?: string;
     role: "user" | "moderator" | "admin";
     profilePicture?: {
         _id: string;

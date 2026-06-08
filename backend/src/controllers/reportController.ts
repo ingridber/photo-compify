@@ -8,57 +8,7 @@ import { User } from "../models/User";
 // RESEND
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-/*
------ REPORT -----
-_id: 6a21401b6655a1f6b5162d4e
-reportId: "RPT-1780577542763-667"
-reportedUserId: 69f9dfb45f5f17deb4705adb
-submissionId: 6a169ca10f832985db2f5481
-competitionId: 6a136be5f281cce5b4ab29f1
-name: "ingrid"
-email: "rut.ingrid.berggren@gmail.com"
-description: "final test"
-evidenceImg: null | ObjectId('6a09f9838f1874e7c226d3c5')
-createdAt: 2026-06-04T12:52:22.771+00:00
-updatedAt: 2026-06-04T12:52:22.771+00:00
-resolved: false
-
------ SUBMISSION -----
-_id: 6a169ca10f832985db2f5481
-competition: 6a136be5f281cce5b4ab29f1
-user: 69f9dfb45f5f17deb4705adb
-image: 6a169ca00f832985db2f5480
-votes: Array (empty)
-createdAt: 2026-05-27T07:26:25.049+00:00
-updatedAt: 2026-05-27T07:26:25.049+00:00
-
------ USERS -----
-_id: 69f9dfb45f5f17deb4705adb
-username: "testing2"
-email: "asdfasdf@asdsdf.asdf"
-password: "$2b$10$fmfngZhK4NYu4xbXO5p8ceIJosHxMFTLxW6tPdEtyE2qZcsU.39qC"
-warnings: 0
-loginAttempts: 0
-__v: 1
-profilePicture: 6a0c66be5b49ba5cb6ec4bcd
-themes: Array (empty)
-
-
------ IMAGE -----
-_id: 69f8833a5d8f369d79229912
-filename: "1777894201571-test.jpg"
-uploadedAt: 2026-05-04T11:30:02.195+00:00
-fileSize: 692617
-fileFormat: "image/jpeg"
-__v: 0
-
-*/
-
-
-
-
 // ----- CHECK REPORT -----
-// ------------------------
 
 // Lösning för att minimera calls till supabase för att hantera att bild inte laddas upp innan create
 // check -> ladda upp bild -> create report
@@ -165,7 +115,7 @@ type PopulatedSubmission = {
 
 // ----- GET REPORTS -----
 // -----------------------
-export async function getReports(req: AuthRequest, res: Response ) {
+export async function getReports(_req: AuthRequest, res: Response ) {
 
     try {
         const reports = await Report.find({
