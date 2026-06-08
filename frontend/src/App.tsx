@@ -27,6 +27,7 @@ import { DeleteAccount } from './components/manage-account/DeleteAccount';
 import Faq from './pages/Faq';
 import Admin from './pages/Admin';
 import Gdpr from './pages/Gdpr';
+import HandleReports from './pages/HandleReports';
 
 // Components
 import { ChangeUsername } from './components/manage-account/ChangeUsername';
@@ -36,7 +37,6 @@ import ProfileSubmissions from './components/profile/ProfileSubmissions';
 import ProfileCompetitions from './components/profile/ProfileCompetitions';
 import { SignOut } from './components/SignOut';
 import SignOutDeleteAccount from './components/manage-account/SignOutPage';
-import ReportForm from './components/report/ReportForm';
 import Users from './components/admin/Users';
 
 const protectedElement = (Component: ComponentType) => (
@@ -110,7 +110,7 @@ function App() {
         <Route path="/admin" element={<Admin />}>
           <Route index element={<Navigate to="users" replace />} />
           <Route path='users' element={<Users />} />
-          <Route path="reports" element={<ReportForm />} />
+          <Route path="reports" element={<HandleReports />} />
         </Route>
 
       </Routes>

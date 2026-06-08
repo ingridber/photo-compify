@@ -10,6 +10,8 @@ const reportSchema = new Schema<ReportInterface>({
     email: { type: String, required: true, trim: true,},
     description: { type: String, required: true, maxlength: 250,},
     evidenceImg: { type: Schema.Types.ObjectId, ref: "Image", default: null,},
+    resolved: {type: Boolean, default: false},
+    auditedBy: {type: String, default: null},
 },{ timestamps: true,}
 );
 

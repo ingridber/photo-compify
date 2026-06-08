@@ -94,7 +94,9 @@ export interface ReportInterface {
     name?: string;
     email: string;
     description: string;
-    evidenceImg: string | null;
+    evidenceImg: Types.ObjectId | null;
     createdAt: Date;
     updatedAt: Date;
+    resolved: boolean;
+    auditedBy: string | null;
 }
