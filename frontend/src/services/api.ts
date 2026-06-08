@@ -35,6 +35,7 @@ export async function logout() {
     if (!res.ok) {
         throw new Error('Logout failed');
     }
+    sessionStorage.clear();
 
     return res;
 };

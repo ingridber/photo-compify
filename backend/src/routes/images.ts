@@ -3,6 +3,7 @@ import { getAllImages, getImageById, createImage,deleteImage,updateImage} from "
 import { upload } from "../middleware/uploadMiddleware";
 import { uploadRateLimit } from "../middleware/rateLimitImage";
 import { checkFileSize } from "../middleware/checkFileSize";
+import { authenticateToken } from "../middleware/auth";
 
 const router = express.Router();
 
@@ -10,8 +11,8 @@ const router = express.Router();
 router.get("/", getAllImages);
 // router.get("/test-supabase", testSupabase);
 router.get("/:id", getImageById);
-router.post("/", uploadRateLimit, upload.single("image"), checkFileSize, createImage);
-router.delete("/:id", deleteImage);
-router.patch("/:id", updateImage);
+router.post("/", authenticateToken, uploadRateLimit, upload.single("image"), checkFileSize, createImage);
+router.delete("/:id", authenticateToken, deleteImage);
+router.patch("/:id", authenticateToken, updateImage);
 
 export default router;
