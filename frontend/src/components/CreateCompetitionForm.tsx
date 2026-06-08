@@ -9,6 +9,7 @@ import AVAILABLE_THEMES from '../constants/availableThemes';
 import Select from 'react-select';
 import type { MultiValue } from 'react-select';
 import type { ThemeOption } from '../types/competitions';
+import { apiCall } from '../utils/apiCall';
 
 const TITLE_MAX = 50;
 const DESC_MAX = 250;
@@ -121,16 +122,11 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
                 logoImageId = uploadData.data._id;
             }
 
-            const res = await fetch('http://localhost:3000/api/v1/competitions', {
-                method: 'POST',
-                credentials: 'include',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    title,
-                    description,
-                    themes: themes.map((theme) => theme.value),
-                    ...(logoImageId && { logoBanner: logoImageId }),
-                }),
+            const res = await apiCall('/competitions', "POST", {
+                title,
+                description,
+                themes: themes.map((theme) => theme.value),
+                ...(logoImageId && { logoBanner: logoImageId }),
             });
 
             const data = await res.json().catch(() => null);
