@@ -8,6 +8,8 @@ export default function Admin() {
   return (
     <div className={styles.adminPage}>
       <div className={styles.menuContainer}>
+
+        <h1>Admin</h1>
         <button
           onClick={() => navigate("/admin/users")}
           className={
