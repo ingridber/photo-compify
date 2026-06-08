@@ -26,8 +26,8 @@ interface apiErrors {
 
 export default function ReportForm({submissionId, competitionId, reportedUserId,}: ReportFormProps) {
     const {user} = useUser();
-    const [name, setName] = useState(user ? user.username : "");
-    const [email, setEmail] = useState( user? user.email : "");
+    const [name, setName] = useState(user?.username ?? "");
+    const [email, setEmail] = useState<string>(user?.email ?? "");
     const [description, setDescription] = useState("");
     const [confirmed, setConfirmed] = useState(false);
     const [errors, setErrors] = useState<FormErrors>({});
