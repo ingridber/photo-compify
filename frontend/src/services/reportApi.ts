@@ -1,3 +1,5 @@
+import { apiCall } from "../utils/apiCall";
+
 export interface CreateReportData {
     reportedUserId: string;
     submissionId: string;
@@ -9,14 +11,8 @@ export interface CreateReportData {
 }
 
 export async function createReport(reportData: CreateReportData) {
-    const res = await fetch("http://localhost:3000/api/v1/report",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(reportData),
-        }
+    const res = await apiCall("/report", "POST",
+        { reportData }
     );
 
     const data = await res.json();
