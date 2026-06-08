@@ -1,41 +1,15 @@
 import type { Competition, Submission } from "../types/competitions";
-
-// TODO: github issus - hardcoded urls - fix function to fetch calls to avoid upprepningar 
-// stödfunktion till: 
-    //     const res = await fetch("http://localhost:3000/api/v1/{PATH-HERE}", {
-    //     method: "POST",
-    //     headers: {
-    //         "Content-Type": "application/json",
-    //     },
-    //     credentials: "include",
-    //     body: JSON.stringify({ username: username, password: password }),
-    // });
-
-const BASE_URL: string = "http://localhost:3000/api/v1";
+import { apiCall } from "../utils/apiCall";
 
 // ---------- LOG IN ----------
-// ----------------------------
 export async function login(username: string, password: string) {
-    const res = await fetch("http://localhost:3000/api/v1/auth/login", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ username: username, password: password }),
-    });
-
-    return res;
+    return await apiCall("/auth/login", "POST", { username: username, password: password });
 };
 
 // ---------- GET CURRENT USER ----------
-// --------------------------------------
 export async function getCurrentUser() {
-
     try {
-        const res = await fetch("http://localhost:3000/api/v1/auth/me", {
-            credentials: "include",
-        });
+        const res = await apiCall("/auth/me", "GET");
 
         if (res.status === 401) {
             return null;
@@ -55,12 +29,8 @@ export async function getCurrentUser() {
 };
 
 // ---------- LOG OUT ----------
-// -----------------------------
 export async function logout() {
-    const res = await fetch("http://localhost:3000/api/v1/user/logout", {
-        method: "POST",
-        credentials: "include",
-    });
+    const res = await apiCall("/user/logout", "POST");
 
     if (!res.ok) {
         throw new Error('Logout failed');
@@ -70,27 +40,17 @@ export async function logout() {
 };
 
 // ---------- REGISTER ----------
-// ------------------------------
-export async function register(email: string, username: string, password: string,confirmPassword: string,  token: string) {
-
-    const res = await fetch("http://localhost:3000/api/v1/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-            email: email,
-            username: username,
-            password: password,
-            confirmPassword: confirmPassword,
-            recaptchaToken: token,
-        }),
+export async function register(email: string, username: string, password: string, confirmPassword: string, token: string) {
+    return await apiCall("/auth/register", "POST", {
+        email: email,
+        username: username,
+        password: password,
+        confirmPassword: confirmPassword,
+        recaptchaToken: token
     });
-
-    return res;
 };
 
 // ---------- FETCH COMPETITIONS ----------
-// ----------------------------------------
 type FetchCompetitionsParams = {
     page?: number;
     limit?: number;
@@ -98,8 +58,6 @@ type FetchCompetitionsParams = {
     search?: string;
     themes?: string[];
 };
-
-// const BASE_URL = "http://localhost:3000/api/v1";
 
 export async function fetchCompetitions(params?: FetchCompetitionsParams) {
     const query = new URLSearchParams();
@@ -124,8 +82,8 @@ export async function fetchCompetitions(params?: FetchCompetitionsParams) {
         query.append("limit", params.limit.toString());
     }
 
-    const res = await fetch(
-        `${BASE_URL}/competitions?${query.toString()}`
+    const res = await apiCall(
+        `/competitions?${query.toString()}`, "GET"
     );
 
     if (!res.ok) {
@@ -136,18 +94,10 @@ export async function fetchCompetitions(params?: FetchCompetitionsParams) {
     return await res.json()
 }
 
-
 // ---------- UPDATE USERNAME ----------
-// -------------------------------------
 export async function updateUsername(username: string) {
-
-    const res = await fetch("http://localhost:3000/api/v1/user/username", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-            newUsername: username
-        }),
+    const res = await apiCall("/user/username", "PATCH", {
+        newUsername: username
     });
 
     const data = await res.json();
@@ -160,21 +110,15 @@ export async function updateUsername(username: string) {
 };
 
 // ---------- UPDATE PASSWORD ----------
-// -------------------------------------
 export async function updatePassword(
     password: string,
     newPassword: string,
     confirmPassword: string) {
 
-    const res = await fetch("http://localhost:3000/api/v1/user/password", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-            password: password,
-            newPassword: newPassword,
-            confirmPassword: confirmPassword
-        }),
+    const res = await apiCall("/user/password", "PATCH", {
+        password: password,
+        newPassword: newPassword,
+        confirmPassword: confirmPassword
     });
 
     const data = await res.json();
@@ -187,37 +131,24 @@ export async function updatePassword(
 };
 
 // ---------- DELETE ACCOUNT ----------
-// ------------------------------------
 export async function deleteAccount(
     password: string,) {
 
-    const res = await fetch("http://localhost:3000/api/v1/user/", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-            password: password,
-        }),
+    const res = await apiCall("/user/", "DETELE", {
+        password: password,
     });
 
     return res;
 }
 
-
 // ---------- UPDATE PROFILE PIC ----------
-// ----------------------------------------
 export async function updateProfilePicture(
     profilePicture: string,
     oldProfilePicture?: string) {
 
-    const res = await fetch("http://localhost:3000/api/v1/user/profilePicture", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-            profilePicture,
-            oldProfilePicture
-        }),
+    const res = await apiCall("/user/profilePicture", "PATCH", {
+        profilePicture,
+        oldProfilePicture
     });
 
     if (!res.ok) {
@@ -228,7 +159,7 @@ export async function updateProfilePicture(
 }
 
 export async function fetchCompetitionById(id: string,): Promise<Competition> {
-    const res = await fetch(`${BASE_URL}/competitions/${id}`, {credentials: "include"});
+    const res = await apiCall(`/competitions/${id}`, "GET");
 
     if (!res.ok) {
         const error = await res.json().catch(() => null);
@@ -244,13 +175,10 @@ export async function createSubmission(
     competitionId: string,
     imageId: string,
 ): Promise<Submission> {
-    const res = await fetch(
-        `${BASE_URL}/competitions/${competitionId}/submissions`,
+    const res = await apiCall(
+        `/competitions/${competitionId}/submissions`, "POST",
         {
-            method: "POST",
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ imageId }),
+            imageId
         },
     );
 
@@ -263,12 +191,8 @@ export async function createSubmission(
 }
 
 export async function voteOnSubmission(submissionId: string): Promise<void> {
-    const res = await fetch(
-        `${BASE_URL}/submissions/${submissionId}/vote`,
-        {
-            method: "POST",
-            credentials: "include",
-        },
+    const res = await apiCall(
+        `/submissions/${submissionId}/vote`, "POST"
     );
 
     if (!res.ok) {
@@ -278,12 +202,8 @@ export async function voteOnSubmission(submissionId: string): Promise<void> {
 }
 
 export async function removeVote(submissionId: string): Promise<void> {
-    const res = await fetch(
-        `${BASE_URL}/submissions/${submissionId}/vote`,
-        {
-            method: "DELETE",
-            credentials: "include",
-        },
+    const res = await apiCall(
+        `/submissions/${submissionId}/vote`, "DELETE"
     );
 
     if (!res.ok) {
@@ -292,26 +212,13 @@ export async function removeVote(submissionId: string): Promise<void> {
     }
 }
 // ---------- DELETE PROFILE PIC ----------
-// ----------------------------------------
 export async function deleteProfilePicture() {
-
-    return fetch("http://localhost:3000/api/v1/user/profilePicture", {
-        method: "DELETE",
-        credentials: "include"
-    });
-};
-
+    return await apiCall("/user/profilePicture", "DELETE");
+}
 
 // ---------- GET USER COMPS ----------
-// ------------------------------------
-
 export async function getUserComps() {
-    const res = await fetch(
-    "http://localhost:3000/api/v1/user/competitions",
-    {
-        credentials: "include",
-    }
-    );
+    const res = await apiCall("/user/competitions");
 
     if (!res.ok) {
         const error = await res.json().catch(() => null);
@@ -324,19 +231,9 @@ export async function getUserComps() {
     return await res.json();
 }
 
-
-
-
 // ---------- GET USER SUBMITS ----------
-// --------------------------------------
-
 export async function getUserSubmits() {
-        const res = await fetch(
-        "http://localhost:3000/api/v1/user/submissions",
-        {
-            credentials: "include",
-        }
-    );
+    const res = await apiCall("/user/submissions");
 
     if (!res.ok) {
         const error = await res.json().catch(() => null);
@@ -349,48 +246,27 @@ export async function getUserSubmits() {
     return await res.json();
 }
 
-
 // ---------- GET USER STATS ----------
-// ------------------------------------
-
 export async function getUserStats() {
-
-    const res = await fetch(
-        "http://localhost:3000/api/v1/user/stats",
-        {
-            credentials: "include"
-        }
-    );
+    const res = await apiCall("/user/stats");
 
     if (!res.ok) {
         throw new Error("Failed to fetch stats");
     }
-
     return await res.json();
 }
 
-
-
 // ---------- UPDATE USER DETAILS ----------
-// -----------------------------------------
 export async function updateUserDetails(
     camera?: string,
     themes?: string[]) {
 
-    const res = await fetch("http://localhost:3000/api/v1/user/edit", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-            camera,
-            themes
-        }),
-
+    const res = await apiCall("/user/edit", "PATCH", {
+        camera,
+        themes
     });
-
     if (!res.ok) {
         throw new Error("Failed to update user details")
     }
-
     return await res.json();
-    }
+}

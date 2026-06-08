@@ -1,8 +1,7 @@
+import { apiCall } from "../utils/apiCall";
+
 export async function exportMyData() {
-  const res = await fetch("http://localhost:3000/api/v1/user/export-my-data", {
-    method: "GET",
-    credentials: "include"
-  });
+  const res = await apiCall("/user/export-my-data");
 
   if (!res.ok) {
     throw new Error("Could not export user data");
