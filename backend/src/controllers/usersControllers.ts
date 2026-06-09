@@ -11,10 +11,8 @@ import { calculateUserStats } from "../services/userStats";
 import { CompetitionInterface, CompetitionSubmissionInterface, ImageInterface, type AuthRequest } from "../types";
 
 
-
 // ---------- CHANGE USERNAME ----------
 // -------------------------------------
-
 const changeUsernameSchema = z.object({
     newUsername: z
         .string({ error: "Need to provide a username"})
@@ -68,7 +66,6 @@ export async function changeUsername(req: AuthRequest, res: Response) {
 
 // ---------- CHANGE PASSWORD ----------
 // -------------------------------------
-
 const changePasswordSchema = z.object({
     password: z
         .string( {error: "Password is requiered" })
@@ -141,7 +138,6 @@ export async function changePassword(req: AuthRequest, res: Response) {
 
 // ---------- CHANGE PROFILE PIC ----------
 // ----------------------------------------
-
 const changeProfilePictureSchema = z.object({
     profilePicture: z
         .string({ error: "User not found"}),
@@ -265,7 +261,6 @@ export function logout(_req: Request, res: Response) {
 
 // ---------- DELETE ACCOUNT ----------
 // ------------------------------------
-
 const deleteUserSchema = z.object({
     password: z 
         .string({ error: "please provide current password for validation"})
@@ -362,7 +357,6 @@ export async function deleteUser(req: AuthRequest, res: Response) {
         });
     };
 };
-
 
 
 // ---------- USER COMPS ----------
@@ -501,9 +495,10 @@ export async function getPublicProfile(req: Request,res: Response) {
         .populate("image")
         .populate({
             path: "competition",
-            select: "title endDate phase winners",
+            select: "title endDate phase winners _id",
             populate: {
-                path: "submissions"
+                path: "submissions",
+                select: "user"
             }
         });
 
