@@ -6,8 +6,11 @@ import type { Submission, Competition } from "../types/competitions";
 import type { PublicProfile } from "../types/user";
 import { Throbber } from "../components/user-feedback/Throbber";
 import profileStyle from "../components/profile/profile.module.css";
+import fullscreenStyle from "../styles/fullscreen-image.module.css";
+import modalStyles from "../styles/upload-overlay.module.css";
 import { getSubmissionIndicator } from "../utils/submissionIndicators";
 import { apiCall } from "../utils/apiCall";
+import ReportForm from "../components/report/ReportForm";
 
 export default function PublicProfilePage() {
     const { username } = useParams();
@@ -17,6 +20,8 @@ export default function PublicProfilePage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [view, setView] = useState<"submissions" | "competitions" | "wins">("submissions");
+    const [showReportModal, setShowReportModal] = useState(false);
+    const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
 
     useEffect(() => {
         async function loadProfile() {
@@ -144,7 +149,8 @@ export default function PublicProfilePage() {
                                 src={submission.imageUrl}
                                 onClick={() => {
                                     if (submission.imageUrl) {
-                                        setFullscreenImage(submission.imageUrl);
+                                        setFullscreenImage(submission.imageUrl)
+                                        setSelectedSubmission(submission)
                                     }
                                 }}
                             />
@@ -183,12 +189,37 @@ export default function PublicProfilePage() {
 
         {/* ----- SUBMISSION FULLSCREEN VIEW MODAL OVERLAY ----- */}
         {fullscreenImage && (
-            <div className={profileStyle.fullscreenModal} onClick={() => setFullscreenImage(null)} >
-                <div className={profileStyle.fullscreenContent} onClick={(e) => e.stopPropagation()} >
-                    <img src={fullscreenImage} className={profileStyle.fullscreenImage}/>
-                    <button className={profileStyle.closeFullscreenBtn} onClick={() => setFullscreenImage(null)}>
-                        Close
+            <div className={fullscreenStyle.fullscreenModal} onClick={() => setFullscreenImage(null)} >
+                <div className={fullscreenStyle.fullscreenContent} onClick={(e) => e.stopPropagation()} >
+                    <img src={fullscreenImage} className={fullscreenStyle.fullscreenImage} onClick={()=> setFullscreenImage(null)}/>
+
+                    <div className={fullscreenStyle.fullscreenActions}>
+                        <button className={`${fullscreenStyle.closeFullscreenBtn} ${fullscreenStyle.reportBtn}`} onClick={() => {setShowReportModal(true)}}>
+                            <img src="/icons/report.svg" alt="report picture" className={fullscreenStyle.reportBtnIcon} />
+                        </button>
+                        <button className={fullscreenStyle.closeFullscreenBtn} onClick={() => setFullscreenImage(null)}>
+                            <img src="/icons/close.svg" alt="close fullscreen view" className={fullscreenStyle.closeFullscreenBtnIcon} />
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        )}
+
+        {/* REPORT  */}
+        {showReportModal && selectedSubmission && (
+            <div className={modalStyles.modalOverlay}>
+                <div className={modalStyles.modalContent} onClick={(e) => e.stopPropagation()}>
+                    <button className={modalStyles.closeBtn}onClick={() => setShowReportModal(false)}>
+                        ✕
                     </button>
+                    <ReportForm
+                        submissionId={selectedSubmission._id}
+                        competitionId={typeof selectedSubmission?.competition === "string"
+                            ? selectedSubmission.competition
+                            : selectedSubmission?.competition?._id}
+                        reportedUserId={selectedSubmission.user}
+                    />
                 </div>
             </div>
         )}

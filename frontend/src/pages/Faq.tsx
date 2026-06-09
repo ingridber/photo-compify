@@ -1,5 +1,6 @@
 import { useState } from "react";
-import styles from "../styles/faq.module.css";
+import infoStyles from "../styles/footer-info-page.module.css";
+import dropDrownStyles from "../styles/drop-down.module.css";
 
 export default function Faq() {
     const [openQuestion, setOpenQuestion] = useState<number | null>(null);
@@ -19,7 +20,10 @@ export default function Faq() {
             answer: 'Navigate to the photo you want to report and open it in full-screen mode. Tap the button with an exclamation mark and complete the report form. Once our administrators have reviewed the report, you will be notified of the outcome using the contact information you provided in the form.',
         },{
             question: "Where can i access my data?",
-            answer: 'In the footer at the bottom of this page, you will find a link to "GDPR". Please navigate there to learn more about our data protection practices and how to collect your data.',
+            answer: (<>In the footer at the bottom of this page, you will find a link to <a href="/gdpr"><strong>GDPR</strong></a>. Please navigate there to learn more about our data protection practices and how to collect your data.</>),
+        },{
+            question: "Where do i find your community guidelines?",
+            answer: (<>In the footer at the bottom of this page, you will find a link to <a href="/guidelines"><strong>GUIDELINES</strong></a>. Please review these guidelines to learn more about our community standards, content policies, and the rules regarding image ownership, acceptable uploads, and user conduct.</>),
         },
     ];
 
@@ -28,32 +32,32 @@ export default function Faq() {
     };
 
     return (
-        <div className={styles.faqContainer}>
-            <h1 className={styles.pageTitle}>FAQ</h1>
+        <div className={infoStyles.container}>
+            <h1 className={infoStyles.title}>FAQ</h1>
 
             {faqItems.map((item, index) => {
                 const isOpen = openQuestion === index;
 
                 return (
-                    <div key={index} className={styles.faqItem}>
+                    <div key={index} className={dropDrownStyles.item}>
                         <button
-                            className={styles.question}
+                            className={dropDrownStyles.itemButton}
                             onClick={() => toggleQuestion(index)}
                         >
-                            <span>{item.question}</span>
+                            <span className={dropDrownStyles.itemTitle}>{item.question}</span>
 
                             <img
                                 src="/icons/arrow.svg"
                                 alt="Toggle answer"
-                                className={`${styles.showAnswerIcon} ${
-                                    isOpen ? styles.open : ""
+                                className={`${dropDrownStyles.showIcon} ${
+                                    isOpen ? dropDrownStyles.open : ""
                                 }`}
                             />
                         </button>
 
                         {isOpen && (
-                            <div className={styles.answerWrapper}>
-                                <p className={styles.answer}>
+                            <div className={dropDrownStyles.openItemWrapper}>
+                                <p className={dropDrownStyles.openItem}>
                                     {item.answer}
                                 </p>
                             </div>

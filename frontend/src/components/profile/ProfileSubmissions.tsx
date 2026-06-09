@@ -3,6 +3,7 @@ import { getUserSubmits } from "../../services/api";
 import { useNavigate } from "react-router";
 import type { Submission } from "../../types/competitions";
 import profileStyle from "./profile.module.css";
+import fullscreenStyle from "../../styles/fullscreen-image.module.css";
 import { getSubmissionIndicator } from "../../utils/submissionIndicators";
 
 type Props = {
@@ -128,23 +129,26 @@ export default function ProfileSubmissions({showOnlyWins = false}: Props) {
 
         {fullscreenImage && (
             <div
-                className={profileStyle.fullscreenModal}
+                className={fullscreenStyle.fullscreenModal}
                 onClick={() => setFullscreenImage(null)}
             >
                 <div
-                    className={profileStyle.fullscreenContent}
+                    className={fullscreenStyle.fullscreenContent}
                     onClick={(e) => e.stopPropagation()}
                 >
                     <img
                         src={fullscreenImage}
-                        className={profileStyle.fullscreenImage}
+                        className={fullscreenStyle.fullscreenImage}
                     />
-                    <button
-                        className={profileStyle.closeFullscreenBtn}
-                        onClick={() => setFullscreenImage(null)}
-                    >
-                        Close
-                    </button>
+                    <div className={fullscreenStyle.fullscreenActions}>
+                        <button
+                            style={{margin: "auto"}}
+                            className={fullscreenStyle.closeFullscreenBtn}
+                            onClick={() => setFullscreenImage(null)}
+                        >
+                            <img src="/icons/close.svg" alt="close fullscreen view" className={fullscreenStyle.closeFullscreenBtnIcon} />
+                        </button>
+                    </div>
                 </div>
             </div>
         )}
