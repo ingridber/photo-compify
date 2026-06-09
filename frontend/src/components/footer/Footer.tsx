@@ -22,8 +22,7 @@ export default function Footer() {
             <div className={styles.wrapperCenter}>
                 <h2 className={styles.footerTitle}>Help</h2>
 
-                <NavLink
-                    to="/faq"
+                <NavLink to="/faq"
                     className={({ isActive }) =>
                         isActive
                             ? `${styles.navLink} ${styles.active}`
@@ -33,8 +32,7 @@ export default function Footer() {
                     <span className={styles.navTitle}>FAQ</span>
                 </NavLink>
 
-                <NavLink
-                    to="/gdpr" /* GDPR ROUTE HERE*/
+                <NavLink to="/gdpr"
                     className={({ isActive }) =>
                         isActive
                             ? `${styles.navLink} ${styles.active}`
@@ -44,15 +42,14 @@ export default function Footer() {
                     <span className={styles.navTitle}>GDPR</span>
                 </NavLink>
 
-                <NavLink
-                    to="/contact"
+                <NavLink to="/guidelines"
                     className={({ isActive }) =>
                         isActive
                             ? `${styles.navLink} ${styles.active}`
                             : styles.navLink
                     }
                 >
-                    <span className={styles.navTitle}>Contact</span>
+                    <span className={styles.navTitle}>Guidelines</span>
                 </NavLink>
             </div>
 
@@ -60,8 +57,7 @@ export default function Footer() {
                 <h2 className={styles.footerTitle}>Access</h2>
 
                 {!user && (
-                    <NavLink
-                        to="/login"
+                    <NavLink to="/login"
                         className={({ isActive }) =>
                             isActive
                                 ? `${styles.navLink} ${styles.active}`
@@ -72,8 +68,7 @@ export default function Footer() {
                     </NavLink>
                 )}
 
-                <NavLink
-                    to="/admin"
+                <NavLink to="/admin"
                     className={({ isActive }) =>
                         isActive
                             ? `${styles.navLink} ${styles.active}`
