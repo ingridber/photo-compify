@@ -1,5 +1,5 @@
 import './App.css';
-import { Routes, Route, Navigate } from 'react-router';
+import { Routes, Route, Navigate, useLocation } from 'react-router';
 import { useEffect } from 'react';
 import type { ComponentType } from 'react';
 
@@ -35,8 +35,6 @@ import { ChangePassword } from './components/manage-account/ChangePassword';
 import { ChangeProfilePicture } from './components/manage-account/ChangeProfilePicture';
 import ProfileSubmissions from './components/profile/ProfileSubmissions';
 import ProfileCompetitions from './components/profile/ProfileCompetitions';
-import { SignOut } from './components/SignOut';
-import SignOutDeleteAccount from './components/manage-account/SignOutPage';
 import Users from './components/admin/Users';
 
 const protectedElement = (Component: ComponentType) => (
@@ -44,6 +42,16 @@ const protectedElement = (Component: ComponentType) => (
     <Component />
   </ProtectedRoute>
 );
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
 
 function App() {
   const { setUser, setLoading } = useUser();
@@ -62,13 +70,13 @@ function App() {
 
   return (
   <div className="app">
+    <ScrollToTop />
     <Header />
 
     <main className="mainContent">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<SignIn />} />
-        <Route path="logging-out" element={protectedElement(SignOut)} />
         <Route path="/register" element={<Register />} />
         <Route path="/image-upload" element={<ImageUpload />} />
 
@@ -98,7 +106,6 @@ function App() {
           <Route path="change-username" element={protectedElement(ChangeUsername)} />
           <Route path="change-password" element={protectedElement(ChangePassword)} />
           <Route path="change-picture" element={protectedElement(ChangeProfilePicture)} />
-          <Route path="logout" element={protectedElement(SignOutDeleteAccount)} />
           <Route path="delete-account" element={protectedElement(DeleteAccount)} />
         </Route>
 
