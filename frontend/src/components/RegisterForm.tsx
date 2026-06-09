@@ -272,6 +272,7 @@ export default function RegisterForm() {
                             {isLoading ? "Processing..." : "Register"}
                         </button>
                     </div>
+                        <p style={{textAlign: "center", fontSize: ".7rem", opacity: ".5"}}>protected by reCAPTCHA</p>
                 </form>
             </section>
         )}
