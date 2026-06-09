@@ -6,6 +6,12 @@ import { buildCompetitionQuery } from "./competitionsQuery";
 import z from "zod";
 import { requiredString } from "../utils/validationHelpers";
 import { Types } from "mongoose";
+import { Submission } from "../models/Submission";
+import { supabase } from "../config/supabase";
+import { CompetitionVote } from "../models/CompetitionVote";
+import { Image } from "../models/Image";
+import { Notification } from "../models/Notification";
+
 
 // ---------------------------------------
 // --------- GET ALL COMPETITION ---------
@@ -231,9 +237,13 @@ export async function updateCompetition(req: AuthRequest, res: Response) {
 // --------------------------------------
 export async function deleteCompetition(req: AuthRequest, res: Response) {
   try {
-    const competition = await Competition.findById(req.params.id);
+    const competition = await Competition.findById(req.params.id).populate<{
+      submissions: (CompetitionSubmissionInterface & {
+        image?: ImageInterface;
+      })[];
+    }>("submissions", "image votes");
 
-    if (!competition) {
+    if(!competition) {
       return res.status(404).json({
         code: "COMPETITION_NOT_FOUND",
         message: "The requested competition was not found",
@@ -252,13 +262,52 @@ export async function deleteCompetition(req: AuthRequest, res: Response) {
       });
     }
 
+    if (competition.phase === "ended") {
+      return res.status(403).json({
+        code: "COMPETITION_PHASE_VIOLATED",
+        message: "Competitions that have ended can not be deleted",
+        status: 403,
+      });
+    }
+
+    const submissionIds = competition.submissions.map((sub) => sub._id);
+
+    const imageFilenames: string[] = [];
+    const imageIds: Types.ObjectId[] = [];
+
+    for (const sub of competition.submissions) {
+      if (sub.image) {
+        const image = sub.image as ImageInterface;
+        imageFilenames.push(image.filename);
+        imageIds.push(image._id);
+      }
+    }
+
+    if (imageFilenames.length > 0) {
+      await supabase.storage.from("images").remove(imageFilenames);
+      await Image.deleteMany({ _id: { $in: imageIds }});
+    }
+
+    await Submission.deleteMany({ _id: { $in: submissionIds}});
+
+    if (competition.logoBanner) {
+      const logo = await Image.findById(competition.logoBanner);
+      if (logo){
+        await supabase.storage.from("images").remove([logo.filename]);
+        await Image.findByIdAndDelete(logo._id);
+      }
+    }
+
+    await CompetitionVote.deleteMany({ competition: competition._id});
+    await Notification.deleteMany({ competition: competition._id});
     await Competition.findByIdAndDelete(req.params.id);
-    res.status(204).send();
+
+    return res.status(204).send();
   } catch (e) {
     console.error(e);
-    res.status(500).json({
+    return res.status(500).json({
       code: "INTERNAL_SERVER_ERROR",
-      message: "something went wrong",
+      message: "Something went wrong",
       status: 500,
     });
   }
