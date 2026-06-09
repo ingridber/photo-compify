@@ -5,13 +5,15 @@ import FileFormatValidation from "../../utils/FileFormatValidation";
 import FileSizeValidation from "../../utils/FileSizeValidation";
 import { createReport, checkNoPreviousReport } from "../../services/reportApi";
 import { useUser } from "../../hooks/useUser";
+import type { UserRef } from "../../types/competitions";
 
 const DESC_MAX = 250;
+const SITE_KEY = "6Lfr5dgsAAAAAAh2wY2jQK-Pb4QalmOyznzsEA7j";
 
 interface ReportFormProps {
     submissionId: string;
     competitionId: string;
-    reportedUserId: string;
+    reportedUserId: string | UserRef;
 }
 
 interface FormErrors {
@@ -22,6 +24,15 @@ interface FormErrors {
 interface apiErrors {
     message: string;
     reportId?: string;
+}
+
+declare global {
+    interface Window {
+        grecaptcha: {
+            ready: (cb: () => void) => void;
+            execute: (siteKey: string, options: { action: string }) => Promise<string>;
+        };
+    }
 }
 
 export default function ReportForm({submissionId, competitionId, reportedUserId,}: ReportFormProps) {
@@ -40,6 +51,19 @@ export default function ReportForm({submissionId, competitionId, reportedUserId,
     const [reportId, setReportId] = useState('');
     const fileSizeRules = FileSizeValidation();
     const fileFormatRules = FileFormatValidation();
+
+    useEffect(() => {
+            if (!document.querySelector(`script[src*="recaptcha/api.js"]`)) {
+                const script = document.createElement("script");
+                script.src = `https://www.google.com/recaptcha/api.js?render=${SITE_KEY}`;
+                script.async = true;
+                document.body.appendChild(script);
+                return () => {
+                    const existingScript = document.querySelector(`script[src*="recaptcha/api.js"]`);
+                    if (existingScript) document.body.removeChild(existingScript);
+                };
+            }
+        }, []);
 
     useEffect(() => {
         return () => {
@@ -120,7 +144,22 @@ export default function ReportForm({submissionId, competitionId, reportedUserId,
         let evidenceImageId: string | null = null;
 
         try {
-            const checkOK = await checkNoPreviousReport({submissionId: reportData.submissionId, email: reportData.email})
+
+            if (!window.grecaptcha) {
+                throw new Error("reCAPTCHA script not loaded. Check your internet connection or AdBlocker.");
+            }
+
+            // Hämta token från Google
+            const token = await new Promise<string>((resolve, reject) => {
+                window.grecaptcha.ready(() => {
+                    window.grecaptcha
+                        .execute(SITE_KEY, { action: "create_account" })
+                        .then(resolve)
+                        .catch(reject);
+                });
+            });
+
+            const checkOK = await checkNoPreviousReport({submissionId: reportData.submissionId, email: reportData.email, token})
 
             if (!checkOK.success) {
                 throw {
@@ -279,6 +318,7 @@ export default function ReportForm({submissionId, competitionId, reportedUserId,
             >
                 Submit Report
             </button>
+            <p style={{textAlign: "center", fontSize: ".7rem", opacity: ".5", marginTop: ".5rem"}}>protected by reCAPTCHA</p>
         </form>
     )}
     </>

@@ -22,7 +22,7 @@ export interface Competition {
 
 export type Phase = "submission" | "voting" | "ended";
 
-type UserRef = {
+export type UserRef = {
     _id: string;
     username: string;
 }

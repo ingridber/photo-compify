@@ -1,14 +1,16 @@
 import { apiCall } from "../utils/apiCall";
+import type { UserRef } from "../types/competitions";
 
 // ---------- CHECK PREVIOUS REPORT ----------
 interface CheckReport {
     submissionId: string;
     email: string;
+    token: string;
 }
 
 export async function checkNoPreviousReport(conditions: CheckReport){
     const res = await apiCall("/report/check", "POST",
-        { conditions }
+        conditions
     );
     const data = await res.json();
     return data;
@@ -16,7 +18,7 @@ export async function checkNoPreviousReport(conditions: CheckReport){
 
 // ---------- CREATE  REPORT ----------
 interface CreateReportData {
-    reportedUserId: string;
+    reportedUserId: string | UserRef;
     submissionId: string;
     competitionId: string;
     name: string;
@@ -26,8 +28,8 @@ interface CreateReportData {
 }
 
 export async function createReport(reportData: CreateReportData) {
-    const res = await apiCall("/report", "POST",
-        { reportData }
+    const res = await apiCall("/report/create", "POST",
+        reportData
     );
     const data = await res.json();
     if (!res.ok) { throw data; }

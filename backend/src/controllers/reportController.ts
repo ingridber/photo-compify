@@ -3,21 +3,27 @@ import type { AuthRequest } from "../types";
 import { Report } from "../models/Reports";
 import { Resend } from "resend";
 import { User } from "../models/User";
-
+import { verifyRecaptcha } from "../utils/verifyRecaptcha";
 
 // RESEND
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// ----- CHECK REPORT -----
-
+// ----- CHECK REPORT & RECAPTCHA-----
 // Lösning för att minimera calls till supabase för att hantera att bild inte laddas upp innan create
 // check -> ladda upp bild -> create report
 export async function checkNoPreviousReport(req: Request, res: Response) {
-
     try {
-        const {email, submissionId} = req.body;
-        const existingReport = await Report.findOne({ email, submissionId, });
+        const {email, submissionId, token} = req.body;
 
+        const isHuman = process.env.NODE_ENV === "production" ? await verifyRecaptcha(token): true;
+        if (!isHuman) {
+            return res.status(400).json({
+                message: "reCaptcha verification failed",
+                code: "RECAPTCHA_FAILED"
+            });
+        }
+
+        const existingReport = await Report.findOne({ email, submissionId, });
         if (existingReport) {
             return res.status(409).json({
                 success: false,
@@ -36,12 +42,9 @@ export async function checkNoPreviousReport(req: Request, res: Response) {
     }
 }
 
-
-
 // ----- CREATE REPORT -----
 // -------------------------
 export const createReport = async (req: Request, res: Response) => {
-
     try {
         const {
             reportedUserId,
@@ -291,4 +294,3 @@ export async function resolveReport(req: AuthRequest, res: Response) {
         })
     }
 }
-
