@@ -4,6 +4,7 @@ import { fetchCompetitionById } from "../../services/api";
 import { type Competition, type Submission } from "../../types/competitions.ts";
 import styles from "./CompetitionDetail.module.css";
 import modalStyles from "../../styles/upload-overlay.module.css";
+import fullscreenStyle from "../../styles/fullscreen-image.module.css";
 import { useUser } from "../../hooks/useUser.ts";
 import { Throbber } from "../user-feedback/Throbber.tsx";
 import VoteButton from "./VoteButton.tsx";
@@ -286,16 +287,17 @@ export default function CompetitionDetail() {
         )}
 
         {fullscreenSubmission && (
-            <div className={styles.fullscreenModal} onClick={() => setFullscreenSubmission(null)}>
-                <div className={styles.fullscreenContent} onClick={(e) => e.stopPropagation()}>
+            <div className={fullscreenStyle.fullscreenModal} onClick={() => setFullscreenSubmission(null)}>
+                <div className={fullscreenStyle.fullscreenContent} onClick={(e) => e.stopPropagation()}>
                     <img
                         src={fullscreenSubmission.signedImageUrl}
-                        className={styles.fullscreenImage}
+                        className={fullscreenStyle.fullscreenImage}
                         alt="Submission"
+                        onClick={() => setFullscreenSubmission(null)}
                     />
-                    <div className={styles.fullscreenActions}>
-                        <button className={`${styles.closeFullscreenBtn} ${styles.reportBtn}`} onClick={() => {setShowReportModal(true)}}>
-                            <img src="/icons/report.svg" alt="report picture" className={styles.reportBtnIcon} />
+                    <div className={fullscreenStyle.fullscreenActions}>
+                        <button className={`${fullscreenStyle.closeFullscreenBtn} ${fullscreenStyle.reportBtn}`} onClick={() => {setShowReportModal(true)}}>
+                            <img src="/icons/report.svg" alt="report picture" className={fullscreenStyle.reportBtnIcon} />
                         </button>
 
                         {phase === 'voting' && (
@@ -308,8 +310,8 @@ export default function CompetitionDetail() {
                             variant="fullscreen"/>
                         )}
 
-                        <button className={styles.closeFullscreenBtn} onClick={() => setFullscreenSubmission(null)}>
-                            <img src="/icons/close.svg" alt="close fullscreen view" className={styles.closeFullscreenBtnIcon} />
+                        <button className={fullscreenStyle.closeFullscreenBtn} onClick={() => setFullscreenSubmission(null)} >
+                            <img src="/icons/close.svg" alt="close fullscreen view" className={fullscreenStyle.closeFullscreenBtnIcon} />
                         </button>
                     </div>
                 </div>
