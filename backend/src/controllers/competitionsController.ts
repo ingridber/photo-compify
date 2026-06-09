@@ -92,10 +92,11 @@ export async function getCompetitionById(req: AuthRequest, res: Response) {
     ]
   });
 
-  if (competition.logoBanner?.getSignedUrl) {
-     const url = await competition.logoBanner.getSignedUrl();
-     competition.signedLogoUrl = url;
-  }
+if (competition.logoBanner?.getSignedUrl) {
+    const url = await competition.logoBanner.getSignedUrl();
+
+    competition.set("signedLogoUrl", url, { strict: false });
+}
 
   const submissions = competition.submissions as unknown as PopulatedSubmission[];
 
