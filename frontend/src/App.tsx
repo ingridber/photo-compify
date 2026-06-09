@@ -28,6 +28,7 @@ import Faq from './pages/Faq';
 import Admin from './pages/Admin';
 import Gdpr from './pages/Gdpr';
 import HandleReports from './pages/HandleReports';
+import Guidelines from './pages/Guidelines';
 
 // Components
 import { ChangeUsername } from './components/manage-account/ChangeUsername';
@@ -112,6 +113,7 @@ function App() {
         {/* footer */}
         <Route path="/faq" element={<Faq />} />
         <Route path="/gdpr" element={<Gdpr />} />
+        <Route path="/guidelines" element={<Guidelines />} />
 
         {/* admin  */}
         <Route path="/admin" element={<Admin />}>
