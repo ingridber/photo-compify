@@ -11,11 +11,11 @@
 }
 
 .unresolved {
-    margin-top: 5rem;
     color: red;
 }
 
 .reportContainer h2 {
+    margin-top: 5rem;
     text-transform: uppercase;
 }
 
