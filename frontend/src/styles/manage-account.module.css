@@ -216,7 +216,6 @@
     color: var(--text);
 }
 
-.signOutTitle,
 .deleteAccountTitle {
     font-size: 0.8rem;
     color: var(--text);
@@ -230,7 +229,6 @@
     margin-top: 0.5rem;
 }
 
-.signOut,
 .deleteAccount {
     border: none;
     background: none;

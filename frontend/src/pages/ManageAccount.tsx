@@ -67,18 +67,6 @@ export function ManageAccount() {
             <span className={styles.small}>Delete</span>
             <span className={styles.large}>Account</span>
           </div>
-
-          <div
-            className={`${styles.optionCell} ${styles.optionClickable} 
-            ${location.pathname.includes("logout")
-                ? styles.activeOption
-                : ""
-            }`}
-            onClick={() => navigate("logout")}
-          >
-            <span className={styles.small}>Sign</span>
-            <span className={styles.large}>Out</span>
-          </div>
         </div>
       </header>
 

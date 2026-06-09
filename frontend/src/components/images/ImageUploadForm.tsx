@@ -46,8 +46,18 @@ export default function ImageUploadForm({pictureType, competitionId, onUploadSuc
 
     if (!file) return;
 
+    // Ta bort alla mellanslag från filnamnet
+    const noSpacesFile = new File(
+      [file],
+      file.name
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9.-]/g, ""),
+      { type: file.type }
+    );
+
     // format check
-    const formatError = fileFormatRules.validateFileFormat(file);
+    const formatError = fileFormatRules.validateFileFormat(noSpacesFile);
     if (formatError) {
       setMessage(formatError);
       setSelectedFile(null);
@@ -56,7 +66,7 @@ export default function ImageUploadForm({pictureType, competitionId, onUploadSuc
     }
 
     // size check
-    const sizeError = fileSizeRules.validateFileSize(file);
+    const sizeError = fileSizeRules.validateFileSize(noSpacesFile);
     if (sizeError) {
       setMessage(sizeError);
       setSelectedFile(null);
@@ -64,8 +74,8 @@ export default function ImageUploadForm({pictureType, competitionId, onUploadSuc
       return;
     }
 
-    setSelectedFile(file);
-    setPreviewUrl(URL.createObjectURL(file));
+    setSelectedFile(noSpacesFile);
+    setPreviewUrl(URL.createObjectURL(noSpacesFile));
   };
 
   const handleUpload = async () => {
@@ -85,7 +95,6 @@ export default function ImageUploadForm({pictureType, competitionId, onUploadSuc
         throw new Error(data.message || "Upload failed");
       }
 
-      // ----------------------------------------
       // ---------- HANDLE PROFILE PIC ----------
       // ----------------------------------------
       if(pictureType === 'profile') {
@@ -114,9 +123,6 @@ export default function ImageUploadForm({pictureType, competitionId, onUploadSuc
       }
       // ----------------------------------------
       // ----------------------------------------
-      // ----------------------------------------
-
-
 
       if(pictureType === 'submission' && competitionId) {
           try {
