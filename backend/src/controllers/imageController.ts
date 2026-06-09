@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { supabase } from "../config/supabase";
 import { Image } from "../models/Image";
+import { validateImage } from "../services/sightengine";
 
 
 
@@ -15,7 +16,16 @@ export async function createImage(req: Request, res: Response) {
         message: "Image file is required"
       });
     }
+    const sightengineResult = await validateImage(imageFile);
 
+    // console.log("SIGHTENGINE RESULT:");
+    // console.log("Sightengine:", sightengineResult);
+    if (!sightengineResult.approved) {
+      return res.status(400).json({
+        message: "Image violates content policy",
+        reason: sightengineResult.reason,
+      });
+    }
     const fileName = `${Date.now()}-${imageFile.originalname}`;
 
     const { data, error } = await supabase.storage
