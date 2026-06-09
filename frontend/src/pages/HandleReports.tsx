@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { getReports } from "../services/reportApi"
+import { getReports, deleteSubmission, warnUser, resolveReport } from "../services/reportApi"
 import { Throbber } from "../components/user-feedback/Throbber";
 import styles from "../styles/handle-reports.module.css";
 import { useUser } from "../hooks/useUser";
+
 
 interface Report {
     _id: string;
@@ -47,41 +48,20 @@ export default function HandleReports() {
     if (loading) {return <Throbber/>;}
     const toggleReport = (index: number) => {setOpen(open === index ? null : index);};
 
-    // -----------------------------------
     // ---------- HANDLE ACCEPT ----------
     // -----------------------------------
     const handleAccept = async (report: Report) => {
         try {
             setStatusMessage("Deleting submission")
-            // ---------- delete submission ----------
-            const resDelete = await fetch(`http://localhost:3000/api/v1/submissions/${report.submissionId._id}`, {
-                credentials: "include",
-                method: "DELETE",
-            });
-
-            if (!resDelete.ok) {
-                const data = await resDelete.json();
-                throw new Error(data.message);
-            }
+            
+            await deleteSubmission(report.submissionId._id);
             setStatusMessage("Submission deleted. Warning user...")
 
-            // ---------- warn user ----------
-            const resWarning = await fetch(`http://localhost:3000/api/v1/report/${report.reportedUserId._id}`, {
-                credentials: "include",
-                method: "PATCH",
-            });
-
-            if (!resWarning.ok) { throw new Error("Failed to warn user"); }
+            await warnUser(report.reportedUserId._id);
             setStatusMessage("User warned. Sending emails...");
 
-            // ---------- resolve report, send emails ----------
-            const resResolve = await fetch(`http://localhost:3000/api/v1/report/resolve/${report._id}`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json",
-                },
-                credentials: "include",
-                body: JSON.stringify({
-                    auditedBy: user?._id,
+            await resolveReport(report._id, {
+                    auditedBy: user!._id,
                     reportedUserContact: report.reportedUserId.email,
                     reportedUserWarnings: report.reportedUserId.warnings,
                     responseContact: report.email,
@@ -90,8 +70,6 @@ export default function HandleReports() {
                     uploaded: report.submissionId.image.uploadedAt,
                     compTitle: report.competitionId.title,
                 })
-            })
-            if (!resResolve.ok) { throw new Error("Failed to resolve report");}
             setStatusMessage("Report resolved successfully");
 
             // ---------- move resolved to resolved ----------
