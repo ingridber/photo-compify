@@ -94,7 +94,7 @@
 
 .sliderTitleContainer {
   background-color: #171616;
-  padding: 2rem;
+  padding: 3rem;
   margin-bottom: 1.5rem;
   opacity: .95;
   border-bottom: 1px solid #F3EEE5; 
@@ -107,9 +107,48 @@
   }
 }
 
-.sliderSpace {
-  margin-top: 4rem !important;
-  background: none;
+.sliderSection {
+    position: relative;
+    overflow: hidden;
+}
+
+.sliderSection::before,
+.sliderSection::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 250px;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.sliderSection::before {
+    left: 0;
+    background: linear-gradient(
+        to right,
+        var(--bg) 0%,
+        var(--bg) 5%,
+        var(--bg) 10%,
+        var(--bg) 15%,
+        var(--bg) 20%,
+        var(--bg) 30%,
+        transparent 100%
+    );
+}
+
+.sliderSection::after {
+    right: 0;
+    background: linear-gradient(
+        to left,
+        var(--bg) 0%,
+        var(--bg) 5%,
+        var(--bg) 10%,
+        var(--bg) 15%,
+        var(--bg) 20%,
+        var(--bg) 30%,
+        transparent 100%
+    );
 }
 
 .sliderTitle {
@@ -118,12 +157,7 @@
     letter-spacing: 0.07em;
     text-transform: uppercase;
     color: #F3EEE5;
-
     text-align: center;
-}
-
-.sliderTitleComp {
-  color: var(--text);
 }
 
 .emptyState {

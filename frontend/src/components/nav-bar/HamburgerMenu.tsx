@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import styles from "./HamburgerMenu.module.css";
 import { useUser } from "../../hooks/useUser";
 import { DisplayProfilePicture } from "../display-profile-picture/DisplayProfilePicture";
-import { logout } from "../../services/api";
+import { logout } from "../../services/user";
 
 export default function HamburgerMenu() {
   const [open, setOpen] = useState(false);

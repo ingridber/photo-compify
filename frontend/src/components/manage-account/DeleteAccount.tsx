@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router";
 import { useUser } from "../../hooks/useUser";
 import { useState, useEffect } from "react";
-import { deleteAccount } from "../../services/api";
+import { deleteAccount } from "../../services/user";
 import styles from "../../styles/form.module.css";
 
 export function DeleteAccount() {

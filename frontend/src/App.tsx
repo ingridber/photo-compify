@@ -9,7 +9,7 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import Footer from './components/footer/Footer';
 
 import { useUser } from './hooks/useUser';
-import { getCurrentUser } from './services/api';
+import { getCurrentUser } from './services/user';
 
 // Pages
 import { Home } from './pages/Home';

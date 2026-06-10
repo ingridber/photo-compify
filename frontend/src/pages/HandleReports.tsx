@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { getReports, deleteSubmission, warnUser, resolveReport } from "../services/reportApi"
+import { getReports, warnUser, resolveReport } from "../services/reportApi"
+import { deleteSubmission } from "../services/competitions";
 import { Throbber } from "../components/user-feedback/Throbber";
 import styles from "../styles/handle-reports.module.css";
 import { useUser } from "../hooks/useUser";
-
 
 interface Report {
     _id: string;

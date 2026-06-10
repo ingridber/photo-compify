@@ -1,7 +1,7 @@
 import { useUser } from "../hooks/useUser";
 import { DisplayProfilePicture } from "../components/display-profile-picture/DisplayProfilePicture";
 import { useEffect, useState } from "react";
-import { getUserStats } from "../services/api";
+import { getUserStats } from "../services/user";
 import { Outlet, useNavigate } from "react-router";
 import ProfileEditDetails from "../components/profile/ProfileEditDetails";
 import profileStyle from "../components/profile/profile.module.css";

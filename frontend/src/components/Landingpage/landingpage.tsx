@@ -2,28 +2,38 @@ import styles from "./landingpage.module.css";
 import { useState, useEffect } from "react";
 import { useNavigate, NavLink } from "react-router";
 import { useUser } from "../../hooks/useUser";
-import { getFeaturedComps } from "../../services/api";
+import { getFeaturedComps } from "../../services/competitions.ts";
 import CompetitionsCard from "../competitions/CompetitionsCard";
 import FeaturedSlider from "./FeaturedSlider";
 import type { Competition } from "../../types/competitions";
 
+function shuffleArray<T>(array: T[]): T[] {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const temp: T = array[i] as T;
+        array[i] = array[j] as T;
+        array[j] = temp;
+    }
+    return array;
+}
+
 export default function LandingPage() {
     const navigate = useNavigate();
     const { user } = useUser();
-    const [submissionCompetitions, setSubmissionCompetitions] = useState<Competition[]>([]);
-    const [votingCompetitions, setVotingCompetitions] = useState<Competition[]>([]);
+    const [competitions, setCompetitions] = useState<Competition[]>([]);
 
     useEffect(() => {
         async function loadFeatured() {
             try {const result = await getFeaturedComps();
-                setVotingCompetitions(result.votingCompetitions);
-                setSubmissionCompetitions(result.submissionCompetitions);
+                setCompetitions([...result.submissionCompetitions, ...result.votingCompetitions]);
             } catch (error) {
                 console.error(error);
             }
         }
         loadFeatured();
     }, []);
+
+    const shuffledArray = shuffleArray(competitions);
 
     return (
         // HERO
@@ -52,32 +62,12 @@ export default function LandingPage() {
                 </div>
             </section>
 
-            {/* SLIDER - VOTING */}
+            {/* SLIDER */}
+            <div className={`${styles.sliderTitleContainer}`}>
+                <h2 className={`${styles.sliderTitle}`}>Popular Competitions</h2>
+            </div>
             <section className={styles.sliderSection}>
-                <div className={styles.sliderTitleContainer}>
-                    <h2 className={styles.sliderTitle}>Voting Now</h2>
-                </div>
-                {votingCompetitions.length === 0 ? (
-                    <div className={styles.emptyState}>
-                        <p>SAY WHAT!? </p>
-                        <p>There's no competitions in the voting phase?</p>
-                        <p>Oh well, you might aswell explore</p>
-                        <NavLink to="/competitions" className={styles.emptyBtn}>Explore Competitions</NavLink>
-                    </div>
-                ) : (
-                    <FeaturedSlider>
-                        {votingCompetitions.map((competition) => (
-                            <CompetitionsCard key={competition._id} competition={competition}/>
-                        ))}
-                    </FeaturedSlider> 
-                )}
-            </section>
-            {/* SLIDER - COMPETITION */}
-            <section className={styles.sliderSection}>
-                <div className={`${styles.sliderTitleContainer} ${styles.sliderSpace}`}>
-                    <h2 className={`${styles.sliderTitle} ${styles.sliderTitleComp}`}>Popular Competitions</h2>
-                </div>
-                {submissionCompetitions.length === 0 ? (
+                {shuffledArray.length === 0 ? (
                     <div className={styles.emptyState}>
                         <p>OH NO... </p>
                         <p>There's no competitions in the submission phase.... yet...?</p>
@@ -86,7 +76,7 @@ export default function LandingPage() {
                     </div>
                 ) : (
                     <FeaturedSlider autoplayDelay={6500}>
-                        {submissionCompetitions.map((competition) => (
+                        {shuffledArray.map((competition) => (
                             <CompetitionsCard key={competition._id} competition={competition}/>
                         ))}
                     </FeaturedSlider>

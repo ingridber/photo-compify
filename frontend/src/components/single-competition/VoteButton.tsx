@@ -1,5 +1,5 @@
 import type { Submission } from "../../types/competitions";
-import { voteOnSubmission, removeVote } from "../../services/api";
+import { voteOnSubmission, removeVote } from "../../services/competitions.ts";
 import styles from "./vote-button.module.css";
 import { useState } from "react";
 

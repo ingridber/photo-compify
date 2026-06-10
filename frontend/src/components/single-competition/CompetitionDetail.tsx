@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router";
-import { fetchCompetitionById } from "../../services/api";
+import { fetchCompetitionById } from "../../services/competitions.ts";
 import { type Competition, type Submission } from "../../types/competitions.ts";
 import styles from "./CompetitionDetail.module.css";
 import modalStyles from "../../styles/upload-overlay.module.css";
@@ -223,6 +223,26 @@ export default function CompetitionDetail() {
                     <button className={styles.editSubmit} type="button" onClick={() => navigate(`/competitions/${id}/submit`)}>
                         Edit your submission?
                     </button>
+
+
+
+{/* TODO: INGRID GÖR DET HÄR */}
+
+
+
+
+                    <button>
+                        DELTE SUBMISSION
+                    </button>
+
+
+
+
+
+
+
+
+
                 </div>
             </div>
         )}

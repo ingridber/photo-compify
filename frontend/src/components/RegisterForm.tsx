@@ -1,6 +1,6 @@
 import styles from "../styles/form.module.css";
 import { useState, useEffect } from "react";
-import { register } from "../services/api";
+import { register } from "../services/user";
 import { useNavigate } from "react-router";
 import { Throbber } from "./user-feedback/Throbber";
 

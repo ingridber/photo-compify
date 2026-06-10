@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getUserSubmits } from "../../services/api";
+import { getUserSubmits } from "../../services/user";
 import { useNavigate } from "react-router";
 import type { Submission } from "../../types/competitions";
 import profileStyle from "./profile.module.css";

@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router";
 import Select from "react-select";
 import type { MultiValue } from "react-select";
 import styles from "./competitions-page.module.css";
-import { fetchCompetitions } from "../../services/api";
+import { fetchCompetitions } from "../../services/competitions.ts";
 import CompetitionsCard from "./CompetitionsCard";
 import Pagination from "./Pagination";
 import AVAILABLE_THEMES from "../../constants/availableThemes";
