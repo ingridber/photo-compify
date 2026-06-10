@@ -1,19 +1,18 @@
-import type { CompetitionInterface, AuthRequest, CompetitionSubmissionInterface, ImageInterface } from "../types/index";
-import type { Request, Response } from "express";
-import { Competition } from "../models/Competition";
-import { User } from "../models/User";
-import { buildCompetitionQuery } from "./competitionsQuery";
 import z from "zod";
+import { buildCompetitionQuery } from "./competitionsQuery";
 import { requiredString } from "../utils/validationHelpers";
-import { Types } from "mongoose";
-import { Submission } from "../models/Submission";
 import { supabase } from "../config/supabase";
 import { CompetitionVote } from "../models/CompetitionVote";
 import { Image } from "../models/Image";
 import { Notification } from "../models/Notification";
+import { Submission } from "../models/Submission";
+import { Competition } from "../models/Competition";
+import { User } from "../models/User";
+import { Types } from "mongoose";
+import type { CompetitionInterface, AuthRequest, CompetitionSubmissionInterface, ImageInterface } from "../types/index";
+import type { Request, Response } from "express";
 
 
-// ---------------------------------------
 // --------- GET ALL COMPETITION ---------
 // ---------------------------------------
 export async function getAllCompetitions(req: Request, res: Response) {
@@ -23,17 +22,12 @@ export async function getAllCompetitions(req: Request, res: Response) {
     return res.json(result);
   } catch (e) {
     console.error(e);
-    return res.status(500).json({
-      message: "Something went wrong",
-    });
+    return res.status(500).json({message: "Something went wrong",});
   }
 }
 
-
-// -----------------------------------------
 // --------- GET COMPETITION BY ID ---------
 // -----------------------------------------
-
 const getCompetitionByIdSchema = z.object({
   params: z.object({
     id: z
@@ -46,9 +40,7 @@ type PopulatedSubmission = Omit<CompetitionSubmissionInterface, "user" | "image"
         _id: Types.ObjectId | string;
         username?: string;
     };
-    image?: ImageInterface & {
-        getSignedUrl?: () => Promise<string>;
-    };
+    image?: ImageInterface & {getSignedUrl?: () => Promise<string>;};
     signedImageUrl?: string;
     set: (path: string, value: unknown, options?: {strict?: boolean}) => void;
 }
@@ -94,7 +86,6 @@ export async function getCompetitionById(req: AuthRequest, res: Response) {
 
 if (competition.logoBanner?.getSignedUrl) {
     const url = await competition.logoBanner.getSignedUrl();
-
     competition.set("signedLogoUrl", url, { strict: false });
 }
 
@@ -122,11 +113,8 @@ if (competition.logoBanner?.getSignedUrl) {
 
   res.status(200).json(competition);
 }
-
-// --------------------------------------
 // --------- CREATE COMPETITION ---------
 // --------------------------------------
-
 const createCompetitionSchema = z.object({
   title: requiredString("One or more required fields are missing")
     .trim()
@@ -171,12 +159,9 @@ export async function createCompetition(req: AuthRequest, res: Response) {
   res.status(201).json(competition);
 }
 
-// --------------------------------------
 // --------- UPDATE COMPETITION ---------
 // --------------------------------------
-
 const updateCompetitionSchema = createCompetitionSchema.partial();
-
 
 export async function updateCompetition(req: AuthRequest, res: Response) {
   const validation = updateCompetitionSchema.safeParse(req.body);
@@ -233,7 +218,6 @@ export async function updateCompetition(req: AuthRequest, res: Response) {
   }
 }
 
-// --------------------------------------
 // --------- DELETE COMPETITION ---------
 // --------------------------------------
 export async function deleteCompetition(req: AuthRequest, res: Response) {
@@ -314,38 +298,24 @@ export async function deleteCompetition(req: AuthRequest, res: Response) {
   }
 }
 
+// --------- SET COMPETITION PHASE ---------
+// -----------------------------------------
 export async function adminSetCompetitionPhase(req: AuthRequest, res: Response) {
   const isAdmin = req.user!.role === "admin";
 
-  if (!isAdmin) {
-    return res.status(403).json({
-      message: "Admin only",
-    });
-  }
+  if (!isAdmin) { return res.status(403).json({message: "Admin only",});}
 
   const { id } = req.params;
 
-  const phaseSchema = z.object({
-    phase: z.enum(["submission", "voting", "ended"]),
-  });
-
+  const phaseSchema = z.object({phase: z.enum(["submission", "voting", "ended"]),});
   const validation = phaseSchema.safeParse(req.body);
 
-  if (!validation.success) {
-    return res.status(400).json({
-      message: "Invalid phase",
-    });
-  }
+  if (!validation.success) { return res.status(400).json({message: "Invalid phase",});}
 
   const { phase } = validation.data;
-
   const competition = await Competition.findById(id);
 
-  if (!competition) {
-    return res.status(404).json({
-      message: "Competition not found",
-    });
-  }
+  if (!competition) { return res.status(404).json({message: "Competition not found",});}
 
   competition.phase = phase;
   await competition.save();
@@ -353,5 +323,33 @@ export async function adminSetCompetitionPhase(req: AuthRequest, res: Response) 
   return res.status(200).json({
     message: "Phase updated",
     competition,
+  });
+}
+
+// --------- GET FEATURED COMPETITIONS ---------
+// ---------------------------------------------
+export async function getFeaturedCompetitions(_req: Request,res: Response) {
+  const submissionCompetitions = await Competition.find({phase: "submission",})
+      .populate("logoBanner")
+      .sort({ submissions: -1,})
+      .limit(5)
+      .populate("owner")
+
+  const votingCompetitions = await Competition.find({phase: "voting",})
+      .populate("logoBanner")
+      .sort({ endDate: 1,})
+      .limit(5)
+      .populate("owner")
+      
+  for (const comp of [...submissionCompetitions, ...votingCompetitions,]) {
+    if ( comp.logoBanner && typeof comp.logoBanner === "object" && "getSignedUrl" in comp.logoBanner) {
+      const url = await comp.logoBanner.getSignedUrl();
+      comp.set( "signedLogoUrl", url,{ strict: false });
+    }
+  }
+
+  res.json({
+    submissionCompetitions,
+    votingCompetitions,
   });
 }
