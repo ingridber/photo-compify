@@ -11,6 +11,7 @@ import VoteButton from "./VoteButton.tsx";
 import ImageUploadForm from "../images/ImageUploadForm.tsx";
 import { getIndicator, sortSubmissions } from "../../utils/submissionIndicators.ts";
 import ReportForm from "../report/ReportForm.tsx";
+import { deleteSubmission } from "../../services/competitions.ts";
 
 function formatCountdown(target: string): string {
     const diff = new Date(target).getTime() - Date.now();
@@ -36,6 +37,7 @@ export default function CompetitionDetail() {
     const [showLogoModal, setShowLogoModal] = useState(false);
     const [fullscreenSubmission, setFullscreenSubmission] = useState<Submission | null>(null);
     const [showReportModal, setShowReportModal] = useState(false);
+    const [deleteError, setDeleteError] = useState<string | null>(null);
 
     const loadCompetition = useCallback(() => {
         if (!id) return;
@@ -51,6 +53,15 @@ export default function CompetitionDetail() {
         loadCompetition();
     }, [loadCompetition]);
 
+    useEffect(() => {
+    if (!deleteError) return;
+
+    const timer = setTimeout(() => {
+            setDeleteError(null);
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }, [deleteError]);
 
     if (loading) return <Throbber />;
     if (error) return <p>{error}</p>;
@@ -102,6 +113,20 @@ export default function CompetitionDetail() {
     function handleLogoUploadSuccess() {
         setShowLogoModal(false);
         loadCompetition();
+    }
+
+    async function handleDelete(id: string) {
+        try {
+            await deleteSubmission(id);
+            loadCompetition();
+            sessionStorage.clear();
+        } catch (err) {
+            if (err instanceof Error) {
+                setDeleteError(err.message);
+            } else {
+                setDeleteError("Something went wrong");
+            }
+        }
     }
 
     return (
@@ -220,29 +245,18 @@ export default function CompetitionDetail() {
                 <img className={styles.ctaImage} src={userSubmission.signedImageUrl} alt="Your submission"/>
                 <div className={styles.submittedInfo}>
                     <p className={styles.ctaTitle}>You have submitted!</p>
-                    <button className={styles.editSubmit} type="button" onClick={() => navigate(`/competitions/${id}/submit`)}>
-                        Edit your submission?
-                    </button>
 
-
-
-{/* TODO: INGRID GÖR DET HÄR */}
-
-
-
-
-                    <button>
-                        DELTE SUBMISSION
-                    </button>
-
-
-
-
-
-
-
-
-
+                    <div className={styles.btnContainer}>
+                        <button className={styles.editSubmit} type="button" onClick={() => navigate(`/competitions/${id}/submit`)}>
+                            Edit your submission?
+                        </button>
+                        <button className={styles.editSubmit} onClick={() => handleDelete(userSubmission._id)}>
+                            Delete submission
+                        </button>
+                    </div>
+                    {deleteError && (
+                        <p>{deleteError}</p>
+                    )}
                 </div>
             </div>
         )}

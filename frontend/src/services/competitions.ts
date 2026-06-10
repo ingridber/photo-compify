@@ -90,9 +90,10 @@ export async function deleteSubmission(submissionId: string) {
         `/submissions/${submissionId}`,
         "DELETE"
     );
-    const data = await res.json();
+   
+    if (!res.ok) { 
+        const data = await res.json();
+        throw new Error(data.message); }
 
-    if (!res.ok) { throw new Error(data.message); }
-
-    return data;
+    return;
 }
