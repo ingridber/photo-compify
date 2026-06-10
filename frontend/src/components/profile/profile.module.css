@@ -374,7 +374,7 @@
   width: 1.2rem;
   margin-left: .5rem;
   object-fit: contain;
-  filter: var(--back-btn-icon);
+  filter: var(--iconLight);
 }
 
 .emptyText {

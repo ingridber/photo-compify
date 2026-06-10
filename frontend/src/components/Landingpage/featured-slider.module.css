@@ -1,0 +1,73 @@
+.viewport {
+  overflow: hidden;
+  cursor: grab;
+}
+
+.viewport:active {
+  cursor: grabbing;
+}
+
+.embla {
+  width: 100%;
+}
+
+.container {
+  display: flex;
+  gap: 1rem;
+}
+
+.container > :first-child {
+  margin-left: calc((100% - min(900px, 90vw)) / 2);
+}
+
+.container > :last-child {
+  margin-right: calc((100% - min(900px, 90vw)) / 2);
+}
+
+.container > * {
+  flex: 0 0 min(1000px, 90vw);
+}
+
+.centered .container {
+    justify-content: center;
+}
+
+.btnContainer {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.prevBtn,
+.nextBtn {
+    width: 48px;
+    height: 48px;
+    border: none;
+    background-color: var(--bg);
+    cursor: pointer;
+    margin: .5rem 1rem 0 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.prevBtn img,
+.nextBtn img {
+    filter: var(--iconToggleTheme);
+    opacity: 0.8;
+}
+
+.prevBtn img {
+    transform: rotate(90deg);
+}
+
+.nextBtn img {
+    transform: rotate(270deg);
+}
+
+@media (max-width: 740px) {
+    .prevBtn img,
+    .nextBtn img {
+    height: 20px;
+}
+}
