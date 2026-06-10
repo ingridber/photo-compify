@@ -31,7 +31,7 @@ A competition runs for 7 days from creation. Five days for users to submit their
 ## API documentation
 
 If you are looking for docs for the API you can check out the wiki.
-See API wiki here: [API Wiki](https://github.com/ingridber/photo-compify/wiki)
+See [API Wiki](https://github.com/ingridber/photo-compify/wiki)
 
 ## Local development
 
@@ -45,7 +45,7 @@ cd ../frontend
 npm install
 ```
 
-Create `backend/.env` with the variables found in `backend/.env.example`
+Create `backend/.env` with the variables found in `backend/.env.example`  
 Create `frontend/.env` with the variables found in `frontend/.env.example`
 
 Run both apps from the repository root:
