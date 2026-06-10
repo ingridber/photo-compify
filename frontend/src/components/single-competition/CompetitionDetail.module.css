@@ -292,9 +292,8 @@
 
 .medalIcon {
   width: 1.2rem;
-  filter: var(--back-btn-icon);
+  filter: var(--iconLight);
 }
-
 
 /* ----- RESPONSIVE ----- */
 @media (max-width: 768px) {

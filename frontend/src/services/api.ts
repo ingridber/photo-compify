@@ -11,20 +11,15 @@ export async function getCurrentUser() {
     try {
         const res = await apiCall("/auth/me", "GET");
 
-        if (res.status === 401) {
-            return null;
-        };
-
-        if (!res.ok) {
-            throw new Error("Failed to fetch user");
-        };
+        if (res.status === 401) {return null;};
+        if (!res.ok) {throw new Error("Failed to fetch user");};
 
         const data = await res.json();
-
         return data;
 
     } catch (err) {
-        throw new Error('Something went wrong')
+        console.log(err);
+        throw new Error('Something went wrong');
     };
 };
 
@@ -32,9 +27,7 @@ export async function getCurrentUser() {
 export async function logout() {
     const res = await apiCall("/user/logout", "POST");
 
-    if (!res.ok) {
-        throw new Error('Logout failed');
-    }
+    if (!res.ok) {throw new Error('Logout failed');}
     sessionStorage.clear();
 
     return res;
@@ -63,35 +56,15 @@ type FetchCompetitionsParams = {
 export async function fetchCompetitions(params?: FetchCompetitionsParams) {
     const query = new URLSearchParams();
 
-    if (params?.page) {
-        query.append("page", params.page.toString());
-    }
+    if (params?.page) {query.append("page", params.page.toString());}
+    if (params?.status) {query.append("status", params.status);}
+    if (params?.search) {query.append("search", params.search);}
+    if (params?.themes?.length) {query.append("themes", params.themes.join(","));}
+    if (params?.limit) {query.append("limit", params.limit.toString());}
 
-    if (params?.status) {
-        query.append("status", params.status);
-    }
+    const res = await apiCall(`/competitions?${query.toString()}`, "GET");
+    if (!res.ok) { throw new Error(`Failed to fetch competitions: ${res.status} ${res.statusText}`);}
 
-    if (params?.search) {
-        query.append("search", params.search);
-    }
-
-    if (params?.themes?.length) {
-        query.append("themes", params.themes.join(","));
-    }
-
-    if (params?.limit) {
-        query.append("limit", params.limit.toString());
-    }
-
-    const res = await apiCall(
-        `/competitions?${query.toString()}`, "GET"
-    );
-
-    if (!res.ok) {
-        throw new Error(
-            `Failed to fetch competitions: ${res.status} ${res.statusText}`
-        );
-    }
     return await res.json()
 }
 
@@ -103,9 +76,7 @@ export async function updateUsername(username: string) {
 
     const data = await res.json();
 
-    if (!res.ok) {
-        throw new Error(data.message);
-    }
+    if (!res.ok) { throw new Error(data.message);}
 
     return data;
 };
@@ -124,9 +95,7 @@ export async function updatePassword(
 
     const data = await res.json();
 
-    if (!res.ok) {
-        throw new Error(data.message);
-    }
+    if (!res.ok) { throw new Error(data.message);}
 
     return data;
 };
@@ -152,35 +121,29 @@ export async function updateProfilePicture(
         oldProfilePicture
     });
 
-    if (!res.ok) {
-        throw new Error("Failed to upload profile picture")
-    }
-
+    if (!res.ok) {throw new Error("Failed to upload profile picture")}
     return;
 }
 
+// ---------- FECTH COMPETITION ----------
 export async function fetchCompetitionById(id: string,): Promise<Competition> {
     const res = await apiCall(`/competitions/${id}`, "GET");
 
     if (!res.ok) {
         const error = await res.json().catch(() => null);
-        throw new Error(
-            error?.message ?? `Failed to fetch competition (${res.status})`,
-        );
+        throw new Error(error?.message ?? `Failed to fetch competition (${res.status})`,);
     }
 
     return res.json();
 }
 
+// ---------- CREATE COMPETITION ----------
 export async function createSubmission(
     competitionId: string,
     imageId: string,
 ): Promise<Submission> {
-    const res = await apiCall(
-        `/competitions/${competitionId}/submissions`, "POST",
-        {
-            imageId
-        },
+    const res = await apiCall(`/competitions/${competitionId}/submissions`, "POST",
+        {imageId},
     );
 
     if (!res.ok) {
@@ -191,10 +154,9 @@ export async function createSubmission(
     return res.json();
 }
 
+// ---------- VOTE ON SUBMISSION ----------
 export async function voteOnSubmission(submissionId: string): Promise<void> {
-    const res = await apiCall(
-        `/submissions/${submissionId}/vote`, "POST"
-    );
+    const res = await apiCall(`/submissions/${submissionId}/vote`, "POST");
 
     if (!res.ok) {
         const error = await res.json().catch(() => null);
@@ -202,16 +164,16 @@ export async function voteOnSubmission(submissionId: string): Promise<void> {
     }
 }
 
+// ---------- REMOVE SUBMISSIONVOTE ----------
 export async function removeVote(submissionId: string): Promise<void> {
-    const res = await apiCall(
-        `/submissions/${submissionId}/vote`, "DELETE"
-    );
+    const res = await apiCall(`/submissions/${submissionId}/vote`, "DELETE");
 
     if (!res.ok) {
         const error = await res.json().catch(() => null);
         throw new Error(error?.message ?? `Failed to remove vote (${res.status})`);
     }
 }
+
 // ---------- DELETE PROFILE PIC ----------
 export async function deleteProfilePicture() {
     return await apiCall("/user/profilePicture", "DELETE");
@@ -223,10 +185,7 @@ export async function getUserComps() {
 
     if (!res.ok) {
         const error = await res.json().catch(() => null);
-
-        throw new Error(
-            error?.message ?? "Failed to fetch user competitions"
-        );
+        throw new Error(error?.message ?? "Failed to fetch user competitions");
     }
 
     return await res.json();
@@ -238,10 +197,7 @@ export async function getUserSubmits() {
 
     if (!res.ok) {
         const error = await res.json().catch(() => null);
-
-        throw new Error(
-            error?.message ?? "Failed to fetch user submissions"
-        );
+        throw new Error(error?.message ?? "Failed to fetch user submissions");
     }
 
     return await res.json();
@@ -251,9 +207,7 @@ export async function getUserSubmits() {
 export async function getUserStats() {
     const res = await apiCall("/user/stats");
 
-    if (!res.ok) {
-        throw new Error("Failed to fetch stats");
-    }
+    if (!res.ok) { throw new Error("Failed to fetch stats");}
     return await res.json();
 }
 
@@ -266,8 +220,17 @@ export async function updateUserDetails(
         camera,
         themes
     });
-    if (!res.ok) {
-        throw new Error("Failed to update user details")
-    }
+
+    if (!res.ok) {throw new Error("Failed to update user details")}
+    
+    return await res.json();
+}
+
+// ---------- GET FEATURED COMPS ----------
+export async function getFeaturedComps() {
+    const res = await apiCall("/competitions/featured")
+
+    if (!res.ok) {throw new Error("Failed to fetch featured competitions")}
+
     return await res.json();
 }

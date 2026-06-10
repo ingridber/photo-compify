@@ -1,8 +1,8 @@
 .cardContainer {
-    width: 80%;
+    width: 100%;
     cursor: pointer;
     border-radius: 1rem;
-    margin: 1.5rem;
+    margin-bottom: 1.5rem;
     box-shadow: var(--shadow);
     background-color: var(--comp-card-bg);
     transition: transform 0.2s ease;
@@ -15,8 +15,8 @@
 }
 
 /* CARD HEADER ----- background image, phase, competition title */
-/* ------------------------------------------------------------ */
 .cardHeader {
+    width: 100%;
     position: relative;
     display: flex;
     align-items: flex-end;
@@ -33,7 +33,7 @@
 }
 
 .cardNoLogo {
-    height: 11rem;
+    height: 12rem;
     background: var(--card-header-bg);
 }
 
@@ -50,41 +50,45 @@
     color: var(--text-light);
 }
 
+.heroContent {
+    width: 100%;
+}
+
 .heroEyebrow {
     margin: 0.5 0 0rem 0.2rem;
     font-size: 0.68rem;
     letter-spacing: 0.32em;
     text-transform: uppercase;
     opacity: 0.8;
-    padding-left: 2.3rem;
+    padding-left: var(--card-content-padding);
 }
 
 .heroTitle {
     margin: 0;
-    max-width: 14ch;
-    font-size: clamp(3rem, 4vw, 5.5rem);
+    width: 85%;
+    font-size: clamp(1rem, 4vw, 5.5rem);
     line-height: 0.88;
     letter-spacing: -0.07em;
     font-weight: 300;
-    padding: 0 0 0.8rem 2.4rem;
+    padding: 0 0 0.8rem var(--card-content-padding);
 }
 
 /* CARD MAIN ----- themes, description */
-/* ----------------------------------- */
 .cardMain {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 0.5rem 0;
-    width: 90%;
+    padding: .5rem var(--card-content-padding) .5rem var(--card-content-padding);
+    width: 100%;
     margin: auto;
+    box-sizing: border-box;
 }
 
 .themesContainer {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    margin: 1rem 0 1.2rem 0;
+    margin: 1rem 0 1.2rem ;
 }
 
 .theme {
@@ -101,7 +105,6 @@
 
 .description {
     margin: -0.5rem 0 0 0;
-    max-width: 46ch;
     color: var(--text);
     font-size: 1rem;
     line-height: 1.7;
@@ -109,14 +112,12 @@
 }
 
 /* CARD FOOTER ----- Owner, Participants, End Date */
-/* ----------------------------------------------- */
 .cardFooter {
     display: flex;
     justify-content: space-between;
     gap: 2rem;
-    margin: 0 auto 0.8rem auto;
-    padding: 0.5rem 1rem 0 1rem;
-    width: 85%;
+    margin: 0 var(--card-content-padding) .8rem var(--card-content-padding);
+    padding: .5rem .5rem 0 .5rem;
     border-top: 1px solid var(--text);
 }
 
@@ -141,7 +142,6 @@
     margin-right: -0.2rem;
 }
 
-/* ----------------------------------- */
 /* ---------- MOBILE LAYOUT ---------- */
 /* ----------------------------------- */
 @media (max-width: 600px) {
@@ -231,5 +231,4 @@
 .hideOwner {
     display: none;
 }
-
 }

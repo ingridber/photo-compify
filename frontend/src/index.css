@@ -1,25 +1,32 @@
 :root {
-
-
-
   color: var(--text);
   background: var(--bg);
-
   --main-margin: 100px;
 
-  /* ----- COLORS ----- */
+  /* ----- FONTS ----- */
+  --sans: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --heading: 'Archivo', system-ui, 'Segoe UI', Roboto, sans-serif;
+  font: 18px/145% var(--sans);
+  letter-spacing: 0.18px;
+  color-scheme: light dark;
+
+  /* ----- TEXT ----- */
   --text: #171616;
   --text-light: #F2F1EB;
   --text-dark: #171616;
-  /* --bg: #F2F1EB; */
+
+  /* ----- BACKGROUNDS ----- */
   --bg: #F3EEE5;
-
   --bg-dark: #001F45;
-  --bg-light: #F2F1EB;
   --comp-card-bg: #F2F1EB;
-  --border: #2C2F4A;
   --nav-bg: #F2F1EB;
+  --image-bg: url("images/background_light.png");
 
+  /* ----- OTHER ----- */
+  --shadow: 0 4px 12px rgba(93, 137, 150, 0.35);
+  --border: #2C2F4A;
+
+  /* ----- COMPETITION CARDS ----- */
   --card-header-border-size: 1px;  
   --card-header-border-style: outset;  
   --card-header-border: #D9CAB8;
@@ -31,112 +38,69 @@
       #E8DED0 58%,
       #D7C8B5 100%
     );
+  --card-content-padding: 2.4rem;
 
-  --image-bg: url("images/background_light.png");
-
-
-  /* ----- TEXT THEMES ----- */
-  --navy: #001F45;
-
-  /* ----- FILTER ICONS (toggle dark/light mode) ----- */
+  /* ----- ICONS ----- */
   --iconToggleTheme: none;
+  --iconLight: brightness(0) saturate(100%) invert(96%) sepia(7%) saturate(188%) hue-rotate(15deg) brightness(104%) contrast(90%);
 
-  /* ----- COMP STATUS ----- */
-  --ended: red;
-  --submission: blue;
-  --vote: gold;
-
-  /* ----- MODAL ----- */
-
-  --modal-overlay: rgba(6, 70, 134, 0.3);
-  --modal-bg: #5D8996;
-  --modal-border: #064686;
-  
-/* ----- FORMS ----- */
-  --input-field: #B0CBC1;
-  --input-placeholder: #5D8996;
-  --display-pw-icon: brightness(0) saturate(100%) invert(56%) sepia(15%) saturate(634%) hue-rotate(146deg) brightness(92%) contrast(89%);
+  /* ----- BUTTONS ----- */
   --submit-btn: green;
-  --submit-disabled: #C3C3C3;
   --abort-btn: red;
 
-/* ----- BUTTONS ----- */
-  --btn: #064686;
-  --back-btn: #5D8996;
-  --back-btn-icon: brightness(0) saturate(100%) invert(96%) sepia(7%) saturate(188%) hue-rotate(15deg) brightness(104%) contrast(90%);
-  --edit-btn: #064686;
-  --edit-btn-text: #F2F1EB;
-  --shadow: 0 4px 12px rgba(93, 137, 150, 0.35);
-
-  /* ----- NAVIGATION -----  */
-  --navigate-menu: #064686;
-  /* --navigate-icon: brightness(0) saturate(100%) invert(56%) sepia(15%) saturate(634%) hue-rotate(146deg) brightness(92%) contrast(89%); */
-  --navigate-icon: brightness(0) saturate(100%) invert(96%) sepia(7%) saturate(188%) hue-rotate(15deg) brightness(104%) contrast(90%) opacity(60%);
-  --navigate-text: #B0CBC1;
-
-  /* ----- FONTS ----- */
-  --sans: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: 'Archivo', system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-
-  color-scheme: light dark;
 
   @media (max-width: 1024px) {
     font-size: 16px;
   }
 
-
   html,
-body,
-#root {
+  body,
+  #root {
     min-height: 100vh;
     margin: 0;
     overflow-x: hidden;
+  }
 
+  #root {
+      display: flex;
+  }
 
+  .app {
+      min-height: 100vh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+  }
+
+  .mainContent {
+      flex: 1;
+  }
+
+  .grecaptcha-badge {
+    display: none !important;
+  }
 }
 
-#root {
-    display: flex;
-}
-
-.app {
-    min-height: 100vh;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.mainContent {
-    flex: 1;
-}
-
-.grecaptcha-badge {
-  display: none !important;
-}
-
-}
-
-
-
-
-
+/* ------------------------------ */
+/* ---------- DARKMODE ---------- */
+/* ------------------------------ */
 [data-theme="dark"] {
-  /* --bg: #0D0C0C; */
+
+  /* ----- BACKGROUNDS ----- */
   --bg: #000000;
-  --text: #F2F1EB;
-  --shadow: none;
-  --input-placeholder: #B0CBC1;
-  --input-field: #5D8996;
   --bg-dark: #001229;
   --comp-card-bg: #171616;
-  --border: #4A4A4A;
-
   --nav-bg: #171616;
   --image-bg: url("images/background_dark.png");
 
+  /* ----- TEXT ----- */
+  --text: #F2F1EB;
+
+  /* ----- OTHER ----- */
+  --border: #4A4A4A;
+  --shadow: none;
+
+  /* ----- COMPETITION CARDS ----- */
   --card-header-border-size: 2px;  
   --card-header-border-style: solid;  
   --card-header-border: #171616;  
@@ -149,34 +113,12 @@ body,
       #08152b 100%
     );
 
-
-    
-
-  
-
-  --submission: lightblue;
-
-
-    /* ----- FILTER ICONS (toggle dark/light mode) ----- */
+  /* ----- ICONS ----- */
   --iconToggleTheme: brightness(0) saturate(100%) invert(96%) sepia(7%) saturate(188%) hue-rotate(15deg) brightness(104%) contrast(90%);
-
-
-
-  /* ----- MODAL ----- */
-  --modal-overlay: rgba(0, 31, 69, 0.8);
-  --modal-bg: #001229;
-  --modal-border: #5D8996;
-
-  --display-pw-icon: brightness(0) saturate(100%) invert(96%) sepia(7%) saturate(188%) hue-rotate(15deg) brightness(104%) contrast(90%);
 }
 
-body {
-  margin: 0;
-}
-
-p {
-  margin: 0;
-}
+body { margin: 0; }
+p { margin: 0; }
 
 * {
     transition:
@@ -186,27 +128,26 @@ p {
         box-shadow 0.3s ease;
 }
 
-  /* ----- THEMES COLORS ----- */
-  .PortraitColor {background-color: #D2A4A4;}
-  .LandscapeColor {background-color: #ACD2A4;}
-  .StreetColor {background-color: #A4B3D2;}
-  .WildlifeColor {background-color: #A4D2B1;}
-  .MacroColor {background-color: #D2C7A4;}
-  .ArchitectureColor {background-color: #B0A4D2;}
-  .NatureColor {background-color: #7FBF7F }
-  .TravelColor {background-color: #F2B66D;}
-  .MinimalistColor {background-color: #D9D9D9;}
-  .Color {background-color: #D2C7A4;}
-  .BlackWhiteColor {background-color: #4A4A4A; color: var(--text-light) !important;}
-  .LongExposureColor {background-color: #6FA8DC;}
-  .AbstractColor {background-color: #C77DFF;}
-  .AerialColor {background-color: #7DA2A9;}
-  .NightColor {background-color: #2C2F4A; color: var(--text-light) !important;}
-  .AstrophotographyColor {background-color: #1A1B3A; color: var(--text-light) !important;}
-  .DocumentaryColor {background-color: #8C8C8C;}
-  .DefaultColor {background-color: #B0CBC1;}
-  .AnythingGoesColor {background-color: pink;}
-
+/* ----- THEMES COLORS ----- */
+.PortraitColor {background-color: #D2A4A4;}
+.LandscapeColor {background-color: #ACD2A4;}
+.StreetColor {background-color: #A4B3D2;}
+.WildlifeColor {background-color: #A4D2B1;}
+.MacroColor {background-color: #D2C7A4;}
+.ArchitectureColor {background-color: #B0A4D2;}
+.NatureColor {background-color: #7FBF7F }
+.TravelColor {background-color: #F2B66D;}
+.MinimalistColor {background-color: #D9D9D9;}
+.Color {background-color: #D2C7A4;}
+.BlackWhiteColor {background-color: #4A4A4A; color: var(--text-light) !important;}
+.LongExposureColor {background-color: #6FA8DC;}
+.AbstractColor {background-color: #C77DFF;}
+.AerialColor {background-color: #7DA2A9;}
+.NightColor {background-color: #2C2F4A; color: var(--text-light) !important;}
+.AstrophotographyColor {background-color: #1A1B3A; color: var(--text-light) !important;}
+.DocumentaryColor {background-color: #8C8C8C;}
+.DefaultColor {background-color: #B0CBC1;}
+.AnythingGoesColor {background-color: pink;}
 
 
 /* ----------------------------------- */
@@ -216,6 +157,4 @@ p {
   :root { 
       --main-margin: 60px;
   }
-
-
 } 
