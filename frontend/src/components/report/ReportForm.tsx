@@ -6,6 +6,7 @@ import FileSizeValidation from "../../utils/FileSizeValidation";
 import { createReport, checkNoPreviousReport } from "../../services/reportApi";
 import { useUser } from "../../hooks/useUser";
 import type { UserRef } from "../../types/competitions";
+import { removeSpaces } from "../../utils/filenameSpaceRemove";
 
 const DESC_MAX = 250;
 const SITE_KEY = "6Lfr5dgsAAAAAAh2wY2jQK-Pb4QalmOyznzsEA7j";
@@ -169,8 +170,9 @@ export default function ReportForm({submissionId, competitionId, reportedUserId,
             }
 
             if (selectedFile) {
+                const noSpaceFile = removeSpaces(selectedFile);
                 const imgFormData = new FormData();
-                imgFormData.append("image",selectedFile);
+                imgFormData.append("image", noSpaceFile);
                 const uploadRes = await uploadImage(imgFormData);
                 const uploadData = await uploadRes.json();
                 if (!uploadRes.ok) {
