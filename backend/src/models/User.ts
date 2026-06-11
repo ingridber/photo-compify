@@ -13,6 +13,10 @@ const userSchema = new Schema<InterfaceUser>({
     lockUntil: { type: Date },
     camera: { type: String },
     themes: [{ type: String }],
+    lastLogin: {
+        type: Date,
+        default: null,
+    },
 },
 { timestamps: true });
 
