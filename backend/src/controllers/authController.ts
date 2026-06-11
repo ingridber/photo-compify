@@ -8,7 +8,7 @@ import z from "zod";
 import type { AuthRequest, ImageInterface } from "../types";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN ?? "7d";
 const NODE_ENV = process.env.NODE_ENV;
 
 
@@ -160,8 +160,7 @@ export async function login(req: Request, res: Response): Promise<Response> {
 
         // ---------- SKAPA OCH SPARA TOKEN ----------
         const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN } as any);
-        // TODO: change to secure: true when in production
-        res.cookie("token", token, { httpOnly: true, secure: NODE_ENV === "production", sameSite: "lax" });
+        res.cookie("token", token, { httpOnly: true, secure: NODE_ENV === "production", sameSite: "none" });
 
         // ---------- RESET ATTEMPTS VID SUCCESS ----------
         user.loginAttempts = 0;
