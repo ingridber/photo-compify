@@ -95,9 +95,10 @@ export interface ReportInterface {
     name?: string;
     email: string;
     description: string;
-    evidenceImg: Types.ObjectId | null;
+    evidenceImg: Types.ObjectId | null | "deleted";
     createdAt: Date;
     updatedAt: Date;
     resolved: boolean;
+    state: "new" | "in progress" | "accepted" | "declined" | "disputed";
     auditedBy: string | null;
 }

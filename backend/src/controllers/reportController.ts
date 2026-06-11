@@ -209,17 +209,17 @@ export async function reportUser(req: AuthRequest, res: Response) {
     }
 }
 
-// ----- RESOLVE REPORT -----
-// --------------------------
-export async function resolveReport(req: AuthRequest, res: Response) {
+// ----- HARD ACCEPT REPORT -----
+// ------------------------------
+export async function hardAcceptReport(req: AuthRequest, res: Response) {
     try {
         const report = await Report.findByIdAndUpdate(
             req.params.id,
             {resolved: true,
             auditedBy: req.body.auditedBy,
+            state: "accepted"
             },
             {new: true}
-            
         );
 
         const reportedUserContact = req.body.reportedUserContact;
@@ -260,7 +260,7 @@ export async function resolveReport(req: AuthRequest, res: Response) {
                         `
                 })
         } catch(err) {
-            console.log("Failed to send warning (mail): ", err)
+            console.error("Failed to send warning (mail): ", err)
         }
 
         try {
@@ -282,7 +282,7 @@ export async function resolveReport(req: AuthRequest, res: Response) {
                         `
                 })
         } catch(err) {
-            console.log("Failed to send report response (mail): ", err)
+            console.error("Failed to send report response (mail): ", err)
         }
 
         return res.status(200).json({
@@ -292,5 +292,91 @@ export async function resolveReport(req: AuthRequest, res: Response) {
         return res.status(500).json({
             message: "Failed to resolve report. Internal server error"
         })
+    }
+}
+
+// ----- DECLINE REPORT -----
+// --------------------------
+export async function declineReport(req: AuthRequest, res: Response ) {
+    try {
+        const report = await Report.findByIdAndUpdate(
+            req.params.id,
+            {resolved: true,
+                auditedBy: req.body.auditedBy,
+                state: "declined"
+            },
+            {new: true}
+        );
+
+        const reportId = req.body.reportId;
+        const responseContact = req.body.responseContact;
+        const filename = req.body.filename;
+        const uploaded = req.body.uploaded;
+        const compTitle = req.body.compTitle;
+
+        if (!report) {
+            return res.status(404).json({
+                message: 'Could not find report',
+                status: 404,
+            })
+        }
+
+        try {
+            await resend.emails.send({
+                    from: "onboarding@resend.dev",
+                    to: responseContact,
+                    subject: "Your Report Has Been Reviewed",
+                    html: 
+                        `<h1>Report Declined – No Action Taken</h1>
+                        <p>We have completed our review of report ID: <strong>${reportId}</strong> concerning the following photo:</p>
+                        <p><strong>Image:</strong> ${filename}</p>
+                        <p><strong>Uploaded at:</strong> ${uploaded}</p>
+                        <p><strong>In Competition:</strong> ${compTitle}</p>
+                        <p>After carefully reviewing the reported content, we determined that it does not violate our Community Guidelines.</p>
+                        <p>As a result, no action has been taken against the image or the account involved, and the content will remain available on the platform.</p>
+                        <p>Thank you for taking the time to help us maintain the quality and integrity of our community. We appreciate your efforts in reporting content that you believe may require review.</p>
+                        <br>
+                        <p><strong>Please do not reply to this email, as this mailbox is not monitored.</strong></p>
+                        <p>Regards,</p>
+                        <p>The Photo Compify Team</p>
+                        `
+                })
+        } catch(err) {
+            console.error("Failed to send report response (mail): ", err)
+        }
+
+        return res.status(200).json({
+            message: "Report resolved"
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            message: "Failed to resolve report. Internal server error"
+        })
+    }
+}
+
+// ----- CLEAR EVIDENCE REF ----
+// -----------------------------
+export async function clearEvidenceImgRef(req: AuthRequest, res: Response ) {
+    try {
+        const report = await Report.findByIdAndUpdate(
+            req.params.id,
+            {evidenceImg: "deleted",
+            },
+            {new: true}
+        );
+
+        if (!report) {
+            return res.status(404).json({
+                message: 'Could not find report',
+                status: 404,
+            })
+        }
+
+        return res.status(200).json({ message: "Evidence image reference cleared"})
+
+    } catch (error) {
+        return res.status(500).json({ message: "Failed to clear evidence image reference. Internal server error"})
     }
 }

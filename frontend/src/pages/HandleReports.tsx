@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
-import { getReports, warnUser, resolveReport } from "../services/reportApi"
+import { getReports, warnUser, hardAcceptReport, declineReport } from "../services/reportApi"
 import { deleteSubmission } from "../services/competitions";
 import { Throbber } from "../components/user-feedback/Throbber";
 import styles from "../styles/handle-reports.module.css";
 import { useUser } from "../hooks/useUser";
+import { deleteImage } from "../services/imageApi";
+import { clearEvidenceImgRef } from "../services/reportApi";
 
 interface Report {
     _id: string;
@@ -55,12 +57,22 @@ export default function HandleReports() {
             setStatusMessage("Deleting submission")
             
             await deleteSubmission(report.submissionId._id);
-            setStatusMessage("Submission deleted. Warning user...")
+            setStatusMessage("Submission deleted")
+
+            if(report.evidenceImg) {
+                
+                const res = await deleteImage(report.evidenceImg._id)
+                
+                if(res) {
+                    await clearEvidenceImgRef(report._id)
+                    setStatusMessage("Deleting evidence image")
+                } 
+            }
 
             await warnUser(report.reportedUserId._id);
-            setStatusMessage("User warned. Sending emails...");
+            setStatusMessage("User warned");
 
-            await resolveReport(report._id, {
+            await hardAcceptReport(report._id, {
                     auditedBy: user!._id,
                     reportedUserContact: report.reportedUserId.email,
                     reportedUserWarnings: report.reportedUserId.warnings,
@@ -70,18 +82,56 @@ export default function HandleReports() {
                     uploaded: report.submissionId.image.uploadedAt,
                     compTitle: report.competitionId.title,
                 })
-            setStatusMessage("Report resolved successfully");
+            setStatusMessage("Emails sent. Report resolved successfully");
 
             // ---------- move resolved to resolved ----------
             setReports(prev =>
                 prev.map(r => r._id === report._id ? { ...r, resolved: true } : r)
             );
 
+            setStatusMessage('');
+
         } catch (err) {
             setStatusMessage(err instanceof Error ? err.message : "Something went wrong");
         }
     };
 
+    // ---------- HANDLE DECLINE ----------
+    // ------------------------------------
+    const handleDecline = async (report: Report) => {
+        try {
+            setStatusMessage("Resolving report")
+            
+            await declineReport(report._id, {
+                    responseContact: report.email,
+                    reportId: report.reportId,
+                    filename: report.submissionId.image.filename,
+                    uploaded: report.submissionId.image.uploadedAt,
+                    compTitle: report.competitionId.title,
+                    auditedBy: user!._id,
+                });
+            setStatusMessage("Repor resolved, email sent.")
+
+            if(report.evidenceImg) {
+                const res = await deleteImage(report.evidenceImg._id)
+                
+                if(res) {
+                    await clearEvidenceImgRef(report._id)
+                    setStatusMessage("Deleting evidence image")
+                } 
+            }
+            
+            setReports(prev =>
+                prev.map(r => r._id === report._id ? { ...r, resolved: true } : r)
+            );
+
+            setStatusMessage('');
+        
+        } catch (err) {
+            setStatusMessage(err instanceof Error ? err.message : "Something went wrong");
+        }
+    }
+    
     const unresolvedReports = reports.filter(r => !r.resolved);
     const resolvedReports = reports.filter(r => r.resolved);
 
@@ -162,7 +212,9 @@ export default function HandleReports() {
                                         className={styles.acceptBtn}>
                                         Accept
                                     </button>
-                                    <button className={styles.declineBtn}>Decline</button>
+                                    <button onClick={() => handleDecline(report)}
+                                        className={styles.declineBtn}>
+                                        Decline</button>
                                 </div>
 
                                 <p>created at: {report.createdAt}</p>
