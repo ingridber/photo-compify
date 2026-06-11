@@ -60,7 +60,7 @@ export async function warnUser(userId: string) {
 }
 
 // ---------- RESOLVE REPORT ----------
-interface ResolveReportData {
+export interface ResolveReportData {
     auditedBy: string;
     reportedUserContact?: string;
     reportedUserWarnings?: number;

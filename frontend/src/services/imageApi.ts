@@ -5,9 +5,7 @@ export async function uploadImage(formData: FormData) {
 }
 
 export async function deleteImage(id: string) {
-
   const res =  await apiCall(`/images/${id}`, "DELETE")
-
   if(!res.ok) {return false};
   return true;
 }
