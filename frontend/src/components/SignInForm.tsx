@@ -1,6 +1,6 @@
 import styles from "../styles/form.module.css";
 import { useState } from "react";
-import { login } from "../services/api";
+import { login } from "../services/user";
 import { useUser } from "../hooks/useUser";
 import { useNavigate, useLocation, Link } from "react-router";
 

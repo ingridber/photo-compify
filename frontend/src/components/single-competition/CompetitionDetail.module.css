@@ -221,6 +221,11 @@
   gap: 1rem;
 }
 
+.btnContainer {
+  display: flex;
+  flex-direction: column;
+}
+
 .editSubmit {
   text-transform: uppercase;
   font-family: var(--sans);
@@ -232,12 +237,30 @@
   background: transparent;
   border: 1px solid var(--border);
   color: var(--text);
-  font-size: 0.62rem;
+  font-size: 0.8rem;
   margin-top: 1rem;
 }
 
 .editSubmit:hover {
   border-color: var(--text-muted);
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+.error {
+  margin-top: 1rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  background: #c0392b;
+  color: white;
+  font-size: 1rem;
+  line-height: 1.4;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  z-index: 100;
+  animation: fadeIn 0.2s ease;
 }
 
 /* ----- SUBMISSIONS GRID ----- */
@@ -292,92 +315,13 @@
 
 .medalIcon {
   width: 1.2rem;
-  filter: var(--back-btn-icon);
-}
-
-/* ----- FULLSCREEN MODAL ----- */
-.fullscreenModal {
-  position: fixed;
-  inset: 0;
-  z-index: 998;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem;
-  background: rgba(0,0,0,.85);
-  backdrop-filter: blur(8px);
-  animation: fadeUp .18s ease;
-}
-
-.fullscreenContent {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.25rem;
-}
-
-.fullscreenImage {
-  max-width: 100%;
-  max-height: 75vh;
-  object-fit: contain;
-  box-shadow: 0 20px 80px rgba(0,0,0,.45);
-}
-
-.fullscreenActions {
-  width: 100%;
-  margin-top: 0.5rem;
-  display: grid;
-  grid-template-columns: 48px 1fr 48px;
-  gap: .5rem;
-  align-items: center;
-  justify-items: center;
-}
-
-.reportBtn,
-.closeFullscreenBtn {
-  width: 48px;
-  height: 48px;
-  min-width: unset;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  border-radius: 999px;
-  background: rgba(255,255,255,.08);
-  color: white;
-  cursor: pointer;
-}
-
-.closeFullscreenBtn {
-  width: 100%;
-  min-width: unset;
-  max-width: 120px;
-}
-
-.closeFullscreenBtn:hover {
-  background: rgba(255,255,255,.15);
-}
-
-.reportBtn {
-  min-width: unset;
-  width: 48px;
-  min-width: 48px;
-}
-
-.reportBtnIcon {
-  height: 60%;
-  filter: brightness(0)invert(1);
-  opacity: 0.8;
-}
-
-.closeFullscreenBtnIcon {
-  height: 50%;
-  filter: brightness(0)invert(1);
+  filter: var(--iconLight);
 }
 
 /* ----- RESPONSIVE ----- */
 @media (max-width: 768px) {
   .submittedLayout {
+    width: 100%;
     flex-direction: column;
   }
 
@@ -387,9 +331,6 @@
 }
 
 @media (max-width: 700px) {
-  .fullscreenModal {
-    padding: 0;
-  }
 
   .hero {
     flex-direction: column;

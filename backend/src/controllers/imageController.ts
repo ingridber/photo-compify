@@ -2,12 +2,14 @@ import { Request, Response } from "express";
 import { supabase } from "../config/supabase";
 import { Image } from "../models/Image";
 import { validateImage } from "../services/sightengine";
+import { upload } from "../middleware/uploadMiddleware";
 
 
 
-// TODO: ingen rollback ifall mongo failar, radera bild isf? 
 // POST - CREATE IMAGE
 export async function createImage(req: Request, res: Response) {
+  let uploadedPath: string | null = null;
+
   try {
     const imageFile = req.file;
 
@@ -41,8 +43,7 @@ export async function createImage(req: Request, res: Response) {
       });
     }
 
-
-    // TODO: ta bort bilden om savedImage failar (review 3)
+    uploadedPath = data.path;
     const savedImage = await Image.create({
       filename: data.path,
       fileSize: imageFile.size,
@@ -63,6 +64,16 @@ export async function createImage(req: Request, res: Response) {
 
   } catch (error: any) {
     console.log("CREATE IMAGE ERROR:", error);
+    
+    if (uploadedPath) {
+      const { error: cleanupError } = await supabase.storage
+      .from("images")
+      .remove([uploadedPath]);
+
+      if (cleanupError) {
+        console.error("Failed to clean up orphaned file:", cleanupError.message);
+      }
+    }
 
     return res.status(500).json({
       message: "Server error",
@@ -145,18 +156,20 @@ export async function deleteImage(req: Request, res: Response) {
       });
     }
 
+    await Image.findByIdAndDelete(id);
+
     const { error } = await supabase.storage
       .from("images")
       .remove([image.filename]);
 
     if (error) {
+      await Image.create({ ...image.toObject() });
+
       return res.status(500).json({
         message: "Failed to delete from Supabase",
         error: error.message
       });
     }
-
-    await Image.findByIdAndDelete(id);
 
     return res.status(200).json({
       message: "Image deleted successfully"

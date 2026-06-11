@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { updateUserDetails } from "../../services/api";
+import { updateUserDetails } from "../../services/user";
 import profileStyle from "./profile.module.css";
 import Select from "react-select";
 import type { MultiValue } from "react-select";

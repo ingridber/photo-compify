@@ -1,6 +1,6 @@
 import styles from "../../styles/form.module.css";
 import { useState } from "react";
-import { updatePassword } from "../../services/api";
+import { updatePassword } from "../../services/user";
 import { Throbber } from "../user-feedback/Throbber";
 
 export function ChangePassword() {

@@ -44,18 +44,7 @@ export async function getReports() {
     return data;
 }
 
-// ---------- DELETE SUBMISSION ----------
-export async function deleteSubmission(submissionId: string) {
-    const res = await apiCall(
-        `/submissions/${submissionId}`,
-        "DELETE"
-    );
-    const data = await res.json();
 
-    if (!res.ok) { throw new Error(data.message); }
-
-    return data;
-}
 
 // ---------- WARN USER ----------
 export async function warnUser(userId: string) {

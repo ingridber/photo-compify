@@ -1,6 +1,6 @@
 import styles from "../../styles/form.module.css";
 import { useState } from "react";
-import { updateUsername } from "../../services/api";
+import { updateUsername } from "../../services/user";
 import { useUser } from "../../hooks/useUser";
 import { Throbber } from "../user-feedback/Throbber";
 

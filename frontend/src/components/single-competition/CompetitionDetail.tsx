@@ -1,15 +1,17 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router";
-import { fetchCompetitionById } from "../../services/api";
+import { fetchCompetitionById } from "../../services/competitions.ts";
 import { type Competition, type Submission } from "../../types/competitions.ts";
 import styles from "./CompetitionDetail.module.css";
 import modalStyles from "../../styles/upload-overlay.module.css";
+import fullscreenStyle from "../../styles/fullscreen-image.module.css";
 import { useUser } from "../../hooks/useUser.ts";
 import { Throbber } from "../user-feedback/Throbber.tsx";
 import VoteButton from "./VoteButton.tsx";
 import ImageUploadForm from "../images/ImageUploadForm.tsx";
 import { getIndicator, sortSubmissions } from "../../utils/submissionIndicators.ts";
 import ReportForm from "../report/ReportForm.tsx";
+import { deleteSubmission } from "../../services/competitions.ts";
 
 function formatCountdown(target: string): string {
     const diff = new Date(target).getTime() - Date.now();
@@ -35,6 +37,7 @@ export default function CompetitionDetail() {
     const [showLogoModal, setShowLogoModal] = useState(false);
     const [fullscreenSubmission, setFullscreenSubmission] = useState<Submission | null>(null);
     const [showReportModal, setShowReportModal] = useState(false);
+    const [deleteError, setDeleteError] = useState<string | null>(null);
 
     const loadCompetition = useCallback(() => {
         if (!id) return;
@@ -50,6 +53,15 @@ export default function CompetitionDetail() {
         loadCompetition();
     }, [loadCompetition]);
 
+    useEffect(() => {
+    if (!deleteError) return;
+
+    const timer = setTimeout(() => {
+            setDeleteError(null);
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }, [deleteError]);
 
     if (loading) return <Throbber />;
     if (error) return <p>{error}</p>;
@@ -101,6 +113,20 @@ export default function CompetitionDetail() {
     function handleLogoUploadSuccess() {
         setShowLogoModal(false);
         loadCompetition();
+    }
+
+    async function handleDelete(id: string) {
+        try {
+            await deleteSubmission(id);
+            loadCompetition();
+            sessionStorage.clear();
+        } catch (err) {
+            if (err instanceof Error) {
+                setDeleteError(err.message);
+            } else {
+                setDeleteError("Something went wrong");
+            }
+        }
     }
 
     return (
@@ -219,9 +245,18 @@ export default function CompetitionDetail() {
                 <img className={styles.ctaImage} src={userSubmission.signedImageUrl} alt="Your submission"/>
                 <div className={styles.submittedInfo}>
                     <p className={styles.ctaTitle}>You have submitted!</p>
-                    <button className={styles.editSubmit} type="button" onClick={() => navigate(`/competitions/${id}/submit`)}>
-                        Edit your submission?
-                    </button>
+
+                    <div className={styles.btnContainer}>
+                        <button className={styles.editSubmit} type="button" onClick={() => navigate(`/competitions/${id}/submit`)}>
+                            Edit your submission?
+                        </button>
+                        <button className={styles.editSubmit} onClick={() => handleDelete(userSubmission._id)}>
+                            Delete submission
+                        </button>
+                    </div>
+                    {deleteError && (
+                        <p>{deleteError}</p>
+                    )}
                 </div>
             </div>
         )}
@@ -286,16 +321,17 @@ export default function CompetitionDetail() {
         )}
 
         {fullscreenSubmission && (
-            <div className={styles.fullscreenModal} onClick={() => setFullscreenSubmission(null)}>
-                <div className={styles.fullscreenContent} onClick={(e) => e.stopPropagation()}>
+            <div className={fullscreenStyle.fullscreenModal} onClick={() => setFullscreenSubmission(null)}>
+                <div className={fullscreenStyle.fullscreenContent} onClick={(e) => e.stopPropagation()}>
                     <img
                         src={fullscreenSubmission.signedImageUrl}
-                        className={styles.fullscreenImage}
+                        className={fullscreenStyle.fullscreenImage}
                         alt="Submission"
+                        onClick={() => setFullscreenSubmission(null)}
                     />
-                    <div className={styles.fullscreenActions}>
-                        <button className={`${styles.closeFullscreenBtn} ${styles.reportBtn}`} onClick={() => {setShowReportModal(true)}}>
-                            <img src="/icons/report.svg" alt="report picture" className={styles.reportBtnIcon} />
+                    <div className={fullscreenStyle.fullscreenActions}>
+                        <button className={`${fullscreenStyle.closeFullscreenBtn} ${fullscreenStyle.reportBtn}`} onClick={() => {setShowReportModal(true)}}>
+                            <img src="/icons/report.svg" alt="report picture" className={fullscreenStyle.reportBtnIcon} />
                         </button>
 
                         {phase === 'voting' && (
@@ -308,8 +344,8 @@ export default function CompetitionDetail() {
                             variant="fullscreen"/>
                         )}
 
-                        <button className={styles.closeFullscreenBtn} onClick={() => setFullscreenSubmission(null)}>
-                            <img src="/icons/close.svg" alt="close fullscreen view" className={styles.closeFullscreenBtnIcon} />
+                        <button className={fullscreenStyle.closeFullscreenBtn} onClick={() => setFullscreenSubmission(null)} >
+                            <img src="/icons/close.svg" alt="close fullscreen view" className={fullscreenStyle.closeFullscreenBtnIcon} />
                         </button>
                     </div>
                 </div>

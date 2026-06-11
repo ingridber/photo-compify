@@ -1,19 +1,15 @@
-import styles from "./competitions-page.module.css";
 import { useEffect, useState, useRef } from "react";
-import { fetchCompetitions } from "../../services/api";
-import CompetitionsCard from "./CompetitionsCard";
-import Pagination from "./Pagination";
 import { useSearchParams } from "react-router";
-import AVAILABLE_THEMES from "../../constants/availableThemes";
 import Select from "react-select";
 import type { MultiValue } from "react-select";
+import styles from "./competitions-page.module.css";
+import { fetchCompetitions } from "../../services/competitions.ts";
+import CompetitionsCard from "./CompetitionsCard";
+import Pagination from "./Pagination";
+import AVAILABLE_THEMES from "../../constants/availableThemes";
 import type { Competition, ThemeOption } from "../../types/competitions"
 
-const AVAILABLE_THEMES_OBJ: ThemeOption[] =
-  AVAILABLE_THEMES.map((theme) => ({
-    value: theme,
-    label: theme,
-  }));
+const AVAILABLE_THEMES_OBJ: ThemeOption[] = AVAILABLE_THEMES.map((theme) => ({value: theme,label: theme,}));
 
 export default function CompetitionsPage() {
   const [competitions, setCompetitions] = useState<Competition[]>([]);
@@ -29,8 +25,7 @@ export default function CompetitionsPage() {
   useEffect(() => {
     async function load() {
       try {
-        const result =
-          await fetchCompetitions({
+        const result = await fetchCompetitions({
             page,
             limit: 5,
             status: view,
@@ -38,13 +33,8 @@ export default function CompetitionsPage() {
             themes: selectedThemes,
           });
 
-        setCompetitions(
-          result.competitions
-        );
-
-        setTotalPages(
-          result.pagination.totalPages
-        );
+        setCompetitions(result.competitions);
+        setTotalPages(result.pagination.totalPages);
       } catch (err) {
         console.log(err);
       }
@@ -53,19 +43,13 @@ export default function CompetitionsPage() {
     load();
   }, [page, view, search, selectedThemes]);
 
-  const handleSelectThemes = (
-    selected: MultiValue<ThemeOption>
-  ) => {
-    setSelectedThemes(
-      selected.map((theme) => theme.value)
-    );
-
+  const handleSelectThemes = (selected: MultiValue<ThemeOption>) => {
+    setSelectedThemes(selected.map((theme) => theme.value));
     setPage(1);
   };
 
   return (
     <div className={styles.competitionsPage}>
-
       {/* title */}
       <div className={styles.pageHeader}>
         <h1 className={styles.pageTitle}>All Competitions</h1>
@@ -76,34 +60,25 @@ export default function CompetitionsPage() {
       <div className={styles.optionsRow}>
         <div
           className={`${styles.optionCell} ${styles.optionClickable} ${view === "submission" ? styles.activeOption : ""}`}
-          onClick={() => {
-            setView("submission");
-            setPage(1);}}
+          onClick={() => {setView("submission"); setPage(1);}}
         >
           <span className={styles.small}>Open for</span>
           <span className={styles.large}>Submission</span>
         </div>
-
         <div
           className={`${styles.optionCell} ${styles.optionClickable} ${view === "voting" ? styles.activeOption : ""}`}
-          onClick={() => {
-            setView("voting");
-            setPage(1);}}
+          onClick={() => {setView("voting"); setPage(1);}}
         >
           <span className={styles.small}>Start</span>
           <span className={styles.large}>Voting</span>
         </div>
-
         <div
           className={`${styles.optionCell} ${styles.optionClickable} ${view === "ended" ? styles.activeOption : ""}`}
-          onClick={() => {
-            setView("ended");
-            setPage(1);}}
+          onClick={() => {setView("ended"); setPage(1);}}
         >
           <span className={styles.small}>Explore</span>
           <span className={styles.large}>Ended</span>
         </div>
-
         <div
           className={`${styles.optionCell} ${styles.optionClickable} ${showFilters ? styles.activeOption : ""}`}
           onClick={() => setShowFilters((prev) => !prev)}
@@ -128,21 +103,13 @@ export default function CompetitionsPage() {
                     type="text"
                     placeholder="Competition title or username"
                     value={search}
-                    onChange={(e) => {
-                        setSearch(e.target.value);
-                        setPage(1);
-                    }}
+                    onChange={(e) => {setSearch(e.target.value); setPage(1);}}
                 />
-
                 {search && (
                     <button
                         type="button"
                         className={styles.clearBtn}
-                        onClick={() => {
-                            setSearch("");
-                            setPage(1);
-                            inputRef.current?.focus();
-                        }}
+                        onClick={() => {setSearch(""); setPage(1); inputRef.current?.focus();}}
                     >
                         ✕
                     </button>
@@ -175,10 +142,7 @@ export default function CompetitionsPage() {
           </div>
 
           <button
-            onClick={() => {
-              setShowFilters(!showFilters);
-              setSearch("");
-              setSelectedThemes([]);}}
+            onClick={() => {setShowFilters(!showFilters); setSearch(""); setSelectedThemes([]);}}
             className={styles.closeBtn}
             aria-label="Close filters"
           >
@@ -187,25 +151,18 @@ export default function CompetitionsPage() {
         </div>
       )}
 
-      {/* MATTIAS SLIDER */}
       {competitions.length === 0 ? (
         <p className={styles.noContent}>
           No competitions found
         </p>
       ) : (
-        competitions.map((comp) => (
-          <CompetitionsCard
-            key={comp._id}
-            competition={comp}
-          />
-        ))
+        <div className={styles.pageCardContainer}>
+          {competitions.map((comp) => (
+            <CompetitionsCard key={comp._id} competition={comp}/>
+          ))}
+        </div>
       )}
-
-      <Pagination
-        page={page}
-        totalPages={totalPages}
-        onPageChange={setPage}
-      />
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage}/>
     </div>
   );
 }

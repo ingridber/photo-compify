@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useUser } from "../../hooks/useUser";
-import { deleteProfilePicture } from "../../services/api";
+import { deleteProfilePicture } from "../../services/user";
 import ImageUploadForm from "../images/ImageUploadForm";
 
 import styles from "../../styles/form.module.css";

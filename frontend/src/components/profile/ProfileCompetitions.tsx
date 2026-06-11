@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getUserComps } from "../../services/api";
+import { getUserComps } from "../../services/user";
 import CompetitionsProfileCard from "../competitions/CompetitionsProfileCard";
 import { Throbber } from "../user-feedback/Throbber";
 import type { Competition, Phase } from "../../types/competitions";
