@@ -318,6 +318,19 @@ export async function adminSetCompetitionPhase(req: AuthRequest, res: Response) 
   if (!competition) { return res.status(404).json({message: "Competition not found",});}
 
   competition.phase = phase;
+  const now = new Date();
+
+  if (phase === "submission") {
+    competition.startDate = now;
+  }
+
+  if (phase === "voting") {
+    competition.votingStartDate = now;
+  }
+
+  if (phase === "ended") {
+    competition.endDate = now;
+  }
   await competition.save();
 
   return res.status(200).json({

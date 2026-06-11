@@ -18,6 +18,7 @@ export interface InterfaceUser extends Document {
     themes?: string[] | null;
     createdAt: Date;
     updatedAt: Date;
+    lastLogin?: Date | null;
 };
 
 export interface CompetitionInterface extends Document {

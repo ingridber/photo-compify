@@ -13,6 +13,7 @@ export type User = {
     } | null;
     camera?: string;
     themes?: string[];
+    lastLogin?: string;
 };
 
 export type UserContextType = {

@@ -166,6 +166,7 @@ export async function login(req: Request, res: Response): Promise<Response> {
         // ---------- RESET ATTEMPTS VID SUCCESS ----------
         user.loginAttempts = 0;
         user.lockUntil = undefined;
+        user.lastLogin = new Date() as any;
         await user.save();
 
         // ---------- HÄMTA PROFILE PICTURE ----------
@@ -189,6 +190,7 @@ export async function login(req: Request, res: Response): Promise<Response> {
             profilePicture: profilePicture,
             camera: user.camera,
             themes: user.themes,
+            LastLogin: user.lastLogin,
         });
 
     } catch (err) {

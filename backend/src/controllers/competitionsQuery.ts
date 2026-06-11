@@ -43,7 +43,7 @@ export const buildCompetitionQuery = async (
 
   // Build base MongoDB filter depending on competition status
   const query: any = {
-    ...getCompetitionFilter(status, now),
+    ...getCompetitionFilter(status),
     ...getThemeFilter(themes),
   };
 

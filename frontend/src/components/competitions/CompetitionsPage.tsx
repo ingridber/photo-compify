@@ -21,6 +21,7 @@ export default function CompetitionsPage() {
   const [view, setView] = useState<"submission" | "voting" | "ended">("submission");
   const [searchParams] = useSearchParams();
   const [search, setSearch] = useState(searchParams.get("search") || "");
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     async function load() {
@@ -41,7 +42,19 @@ export default function CompetitionsPage() {
     }
 
     load();
-  }, [page, view, search, selectedThemes]);
+  }, [page, view, search, selectedThemes, refreshKey]);
+
+  useEffect(() => {
+    const handler = () => {
+      setRefreshKey((prev) => prev + 1);
+    };
+
+    window.addEventListener("competitionsUpdated", handler);
+
+    return () => {
+      window.removeEventListener("competitionsUpdated", handler);
+    };
+  }, []);
 
   const handleSelectThemes = (selected: MultiValue<ThemeOption>) => {
     setSelectedThemes(selected.map((theme) => theme.value));
