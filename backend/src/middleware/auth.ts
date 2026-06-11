@@ -10,18 +10,13 @@ const JWT_SECRET = process.env.JWT_SECRET as string;
 // ------------------------------------------------------
 export function authenticateToken(req : AuthRequest, res: Response, next: NextFunction) {
 
-    // ---------- KONTROLLERA TOKEN i HEADER?? ----------
-    // --------------------------------------------------
-    const authHeader = req.headers["authorization"];
-    const headerToken = authHeader && authHeader.split(" ")[1];
-
     // ---------- HÄMTA TOKEN OM DEN FINNS I COOKIES ----------
     // --------------------------------------------------------
     const cookieToken = req.cookies?.token;
 
     // ---------- SÄTT TOKEN ----------
     // --------------------------------
-    const token = headerToken || cookieToken;
+    const token = cookieToken;
 
     // ---------- KOLLA TOKEN ----------
     // ---------------------------------
