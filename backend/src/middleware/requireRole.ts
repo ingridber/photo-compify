@@ -17,7 +17,7 @@ export function requireRole(roles: Role[]) {
 
             return res.status(401).json({
                 code: "NO_USER",
-                message: "Inte autentiserad",
+                message: "Not authenticated",
                 status: 401
             });
         }
@@ -27,7 +27,7 @@ export function requireRole(roles: Role[]) {
 
             return res.status(403).json({
                 code: "FORBIDDEN",
-                message: "Otillräckliga rättigheter",
+                message: "Insufficient rights",
                 status: 403
             });
         }
