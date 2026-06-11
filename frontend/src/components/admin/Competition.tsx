@@ -5,7 +5,7 @@ import {
   fetchCompetitionsForAdminPage,
   updateCompetitionsForAdminPage,
   deleteCompetitionsForAdminPage,
-} from "../../services/api";
+} from "../../services/admin";
 
 interface Competition {
   _id: string;

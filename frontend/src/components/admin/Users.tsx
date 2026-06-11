@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "./Users.module.css";
 import Pagination from "../competitions/Pagination";
-import { fetchUsers, updateRole, deleteUser } from "../../services/api";
+import { fetchUsers, updateRole, deleteUser } from "../../services/admin";
 import { formatLastLogin } from "../../utils/formatLastLogin";
 
 interface User {
