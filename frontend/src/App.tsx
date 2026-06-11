@@ -36,6 +36,7 @@ import Users from './components/admin/Users';
 import CreateCompetitionForm from './components/competitions/CreateCompetitionForm';
 import CompetitionDetail from './components/single-competition/CompetitionDetail';
 import CompetitionsPage from './components/competitions/CompetitionsPage';
+import Competitions from "./components/admin/Competition";
 
 const protectedElement = (Component: ComponentType) => (
   <ProtectedRoute>
@@ -121,6 +122,7 @@ function App() {
         <Route path="/admin" element={<Admin />}>
           <Route index element={<Navigate to="users" replace />} />
           <Route path='users' element={<Users />} />
+          <Route path='competitions' element={<Competitions />} />
           <Route path="reports" element={<HandleReports />} />
         </Route>
 
