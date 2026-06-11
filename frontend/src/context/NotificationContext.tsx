@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { apiCall } from '../utils/apiCall';
+import { useUser } from '../hooks/useUser';
 
 interface Notification {
     _id: string;        
@@ -23,12 +24,14 @@ export const NotificationContext = createContext<NotificationContextType | undef
 export const NotificationProvider = ({ children }: { children: React.ReactNode }) => {
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [updateTrigger, setUpdateTrigger] = useState(0);
+    const {user} = useUser();
 
     const refresh = () => setUpdateTrigger(prev => prev + 1);
 
     useEffect(() => {
         const fetchNotifications = async () => {
             try {
+                if (!user) return
                 const response = await apiCall("/notifications");
 
                 if (!response.ok) throw new Error("Failed to fetch notifications");
@@ -36,7 +39,7 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
                 const data = await response.json();
                 setNotifications(data);
             } catch (error) {
-                console.error("Could not fetch notifications from backend:", error);
+                console.error("Could not fetch notifications");
             }
         };
 
@@ -59,7 +62,7 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
                 )
             );
         } catch (error) {
-            console.error("Could not mark notification as read in backend:", error);
+            console.error("Could not mark notification as read");
         }
     };
 
