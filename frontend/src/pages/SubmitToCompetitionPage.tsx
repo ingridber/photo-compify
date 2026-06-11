@@ -3,7 +3,7 @@ import ImageUploadForm from "../components/images/ImageUploadForm";
 import modalStyles from "../styles/upload-overlay.module.css";
 
 export default function SubmitToCompetition() {
-  const { id } = useParams<{ id: string }>();
+  const { id, submissionId } = useParams<{ id: string, submissionId: string }>();
   const navigate = useNavigate();
 
   return (
@@ -19,7 +19,9 @@ export default function SubmitToCompetition() {
 
           <ImageUploadForm 
             pictureType="submission"
-            competitionId={id}/>
+            competitionId={id}
+            submissionId={submissionId ?? ""}
+            />
       </div>
     </div>
   );

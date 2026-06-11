@@ -247,7 +247,9 @@ export default function CompetitionDetail() {
                     <p className={styles.ctaTitle}>You have submitted!</p>
 
                     <div className={styles.btnContainer}>
-                        <button className={styles.editSubmit} type="button" onClick={() => navigate(`/competitions/${id}/submit`)}>
+                        <button className={styles.editSubmit} type="button" onClick={() => {
+                            navigate(`/competitions/${id}/submit/${userSubmission._id}`)
+                        }}>
                             Edit your submission?
                         </button>
                         <button className={styles.editSubmit} onClick={() => handleDelete(userSubmission._id)}>

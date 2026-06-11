@@ -82,9 +82,19 @@ function App() {
         {/* competitions */}
         <Route path="/create-competition" element={protectedElement(CreateCompetitionForm)}/>
         <Route path="/competitions" element={<CompetitionsPage />} />
-        <Route path="/competitions/:id" element={<CompetitionDetail />} />
-        <Route path="/competitions/:id/submit" element={protectedElement(SubmitToCompetition)}/>
-
+        <Route path="/competitions/:id" element={<CompetitionPage />} />
+        <Route
+          path="/competitions/:id/submit"
+          element={protectedElement(SubmitToCompetition)}
+        />
+        <Route
+            path="/competitions/:id/submit/:submissionId"
+            element={protectedElement(SubmitToCompetition)}
+        />
+        <Route
+          path="/create-competition"
+          element={protectedElement(CreateCompetitionPage)}
+        />
         {/* profile */}
         <Route path="/profile" element={protectedElement(ProfilePage)}>
           <Route index element={<ProfileSubmissions />} />

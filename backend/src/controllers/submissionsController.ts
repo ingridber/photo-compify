@@ -10,7 +10,7 @@ import z from "zod";
 
 export async function getSubmission(req: Request, res: Response) {
     try {
-        const submission = await Submission.findById(req.params.id).populate<{user: Pick<InterfaceUser, "_id" | "username">}>("user", "username");
+        const submission = await Submission.findById(req.params.id).populate<{ user: Pick<InterfaceUser, "_id" | "username"> }>("user", "username");
 
         if (!submission) {
             return res.status(404).json({
@@ -31,15 +31,15 @@ export async function getSubmission(req: Request, res: Response) {
 };
 
 const createSubmissionSchema = z.object({
-    imageId: z.string({ error: "No image ID provided"})
+    imageId: z.string({ error: "No image ID provided" })
 })
 
 export async function createSubmission(req: AuthRequest, res: Response) {
     const validation = createSubmissionSchema.safeParse(req.body);
 
-    if(!validation.success){
+    if (!validation.success) {
         const message = validation.error.issues?.[0]?.message ?? "Validation failed";
-        return res.status(400).json({message});
+        return res.status(400).json({ message });
     }
 
     try {
@@ -240,7 +240,7 @@ export async function removeVoteFromSubmission(req: AuthRequest, res: Response) 
             { $pull: { votes: new Types.ObjectId(req.user!.id) } }
         );
         await Competition.updateOne(
-            { _id: submission.competition as Types.ObjectId},
+            { _id: submission.competition as Types.ObjectId },
             { $inc: { totalVoteCount: -1 } }
         );
 
@@ -267,8 +267,8 @@ export async function deleteSubmission(req: AuthRequest, res: Response) {
             })
         };
 
-         const isOwner = submission.user.toString() === req.user!.id;
-         const isAdmin = req.user!.role === "admin";
+        const isOwner = submission.user.toString() === req.user!.id;
+        const isAdmin = req.user!.role === "admin";
 
         if (!isOwner && !isAdmin) {
             return res.status(403).json({
@@ -306,20 +306,19 @@ export async function deleteSubmission(req: AuthRequest, res: Response) {
     }
 };
 
-const updateSubmissionSchema = z.object ({
-    description: z.string().optional()
+const updateSubmissionSchema = z.object({
+    imageId: z.string({ error: "No image ID provided" })
 })
 
 export async function updateSubmission(req: AuthRequest, res: Response) {
     const validation = updateSubmissionSchema.safeParse(req.body);
 
-    if(!validation.success){
+    if (!validation.success) {
         const message = validation.error.issues?.[0]?.message ?? "Validation failed";
-        return res.status(400).json({message});
+        return res.status(400).json({ message });
     }
 
     try {
-        const { description } = validation.data;
         const submission = await Submission.findById(req.params.id);
 
         if (!submission) {
@@ -341,42 +340,26 @@ export async function updateSubmission(req: AuthRequest, res: Response) {
             })
         };
 
-        if (description) submission.description = description;
+        const { imageId } = validation.data;
 
-        if (req.file) {
-            const oldImageDoc = await Image.findById(submission.image);
+        const newImageDoc = await Image.findById(imageId);
 
-            // TODO: move delete old pic after new one is uploaded to avoid image loss (review 9)
-            if (oldImageDoc) {
-                await supabase.storage.from("images").remove([oldImageDoc.filename]);
-                await Image.findByIdAndDelete(oldImageDoc._id);
-            };
-
-            const fileName = `${Date.now()}-${req.file.originalname}`;
-            const { data, error } = await supabase.storage
-                .from("images")
-                .upload(fileName, req.file.buffer, {
-                    contentType: req.file.mimetype
-                });
-
-            if (error) {
-                return res.status(500).json({
-                    code: 'IMAGE_UPLOAD_FAILED',
-                    message: 'Failed to upload image',
-                    status: 500,
-                })
-            };
-
-            const newImageDoc = await Image.create({
-                filename: data.path,
-                uploadedAt: new Date(),
-                uploadedBy: req.user!.id,
-                fileSize: req.file.size,
-                fileFormat: req.file.mimetype,
+        if (!newImageDoc) {
+            return res.status(404).json({
+                code: 'IMAGE_NOT_FOUND',
+                message: 'The referenced image was not found',
+                status: 404,
             });
-
-            submission.image = newImageDoc._id;
         };
+
+        const oldImageDoc = await Image.findById(submission.image);
+
+        if (oldImageDoc) {
+            await supabase.storage.from("images").remove([oldImageDoc.filename]);
+            await Image.findByIdAndDelete(oldImageDoc._id);
+        };
+
+        submission.image = newImageDoc._id;
 
         await submission.save();
         return res.status(200).json(submission);

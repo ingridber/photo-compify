@@ -322,7 +322,7 @@ export async function deleteUser(req: AuthRequest, res: Response) {
             const { error } = await supabase.storage
                 .from("images")
                 .remove(filenames);
-            if (error) throw new Error(`Supabase deletion failed: ${error.message}`);
+            if (error) throw new Error('Supabase deletion failed');
         }
 
         await Image.deleteMany({ _id: { $in: submissionImageIds } });

@@ -31,7 +31,7 @@ export const markAsRead = async (req: AuthRequest, res: Response): Promise<void>
     try {
         const validation = mongoIdSchema.safeParse(req.params);
         if (!validation.success) {
-            res.status(400).json({ message: "Validation failed", errors: validation.error });
+            res.status(400).json({ message: "Validation failed" });
             return;
         }
 
