@@ -97,3 +97,19 @@ export async function deleteSubmission(submissionId: string) {
 
     return;
 }
+
+export async function updateSubmission(id: string, imageId: string) {
+    const res = await apiCall(
+        `/submissions/${id}`,
+        "PATCH",
+        {imageId}
+    );
+   
+    if (!res.ok) { 
+        const data = await res.json();
+        throw new Error(data.message); 
+    }
+
+    sessionStorage.clear();
+    return;
+}

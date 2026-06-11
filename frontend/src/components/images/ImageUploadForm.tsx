@@ -4,7 +4,7 @@ import { uploadImage } from "../../services/imageApi";
 import FileSizeValidation from "../../utils/FileSizeValidation";
 import FileFormatValidation from "../../utils/FileFormatValidation";
 import { updateProfilePicture} from "../../services/user";
-import { createSubmission } from "../../services/competitions";
+import { createSubmission, updateSubmission } from "../../services/competitions";
 import { getCurrentUser } from "../../services/user";
 import { useUser } from "../../hooks/useUser";
 import { useNavigate } from "react-router";
@@ -15,10 +15,11 @@ import { apiCall } from "../../utils/apiCall";
 type PictureProps = {
     pictureType? : string | null;
     competitionId?: string;
+    submissionId?: string;
     onUploadSuccess?: () => void;
 };
 
-export default function ImageUploadForm({pictureType, competitionId, onUploadSuccess}: PictureProps) {
+export default function ImageUploadForm({pictureType, competitionId, submissionId, onUploadSuccess}: PictureProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -127,6 +128,12 @@ export default function ImageUploadForm({pictureType, competitionId, onUploadSuc
 
       if(pictureType === 'submission' && competitionId) {
           try {
+              if (submissionId) {
+                  await updateSubmission(submissionId, data.data._id);
+                  setMessage("submission updated");
+                  navigate(`/competitions/${competitionId}`);
+                  return;
+              }
               await createSubmission(competitionId, data.data._id );
               setMessage("submission added");
               navigate(`/competitions/${competitionId}`);
