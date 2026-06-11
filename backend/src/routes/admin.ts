@@ -1,10 +1,11 @@
 import express from "express";
 import { authenticateToken } from "../middleware/auth";
 import { requireRole } from "../middleware/requireRole";
-import {deleteCompetition, updateCompetition, adminSetCompetitionPhase} from "../controllers/competitionsController";
+import {deleteCompetition, adminSetCompetitionPhase} from "../controllers/competitionsController";
 import { deleteImage } from "../controllers/imageController";
 import { deleteUserById } from "../controllers/requireRoleController";
 import { getAllUsers, updateUserRole } from "../controllers/adminUsersController";
+import { adminGetAllCompetitions, adminUpdateCompetitions } from "../controllers/adminCompetitionsController";
 
 const adminRouter = express.Router();
 
@@ -12,8 +13,9 @@ adminRouter.use(authenticateToken);
 adminRouter.use(requireRole(["admin"]));
 
 // Admin controll for competitions
+adminRouter.get("/competitions", adminGetAllCompetitions);
 adminRouter.delete("/competitions/:id", deleteCompetition);
-adminRouter.patch("/competitions/:id", updateCompetition);
+adminRouter.patch("/competitions/:id", adminUpdateCompetitions);
 adminRouter.patch("/competitions/:id/phase", adminSetCompetitionPhase);
 
 // Admin controll for images
