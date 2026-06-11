@@ -6,7 +6,7 @@
   /* ----- FONTS ----- */
   --sans: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: 'Archivo', system-ui, 'Segoe UI', Roboto, sans-serif;
-  font: 18px/145% var(--sans);
+  font: 20px/145% var(--sans);
   letter-spacing: 0.18px;
   color-scheme: light dark;
 
