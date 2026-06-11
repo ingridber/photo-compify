@@ -28,7 +28,6 @@ export async function getCurrentUser() {
         return data;
 
     } catch (err) {
-        console.log(err);
         throw new Error('Something went wrong');
     };
 };
@@ -47,7 +46,7 @@ export async function logout() {
 export async function deleteAccount(
     password: string,) {
 
-    const res = await apiCall("/user/", "DETELE", {
+    const res = await apiCall("/user/", "DELETE", {
         password: password,
     });
 

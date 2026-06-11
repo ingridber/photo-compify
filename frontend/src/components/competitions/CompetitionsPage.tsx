@@ -37,7 +37,7 @@ export default function CompetitionsPage() {
         setCompetitions(result.competitions);
         setTotalPages(result.pagination.totalPages);
       } catch (err) {
-        console.log(err);
+          throw err
       }
     }
 

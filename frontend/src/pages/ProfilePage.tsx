@@ -22,7 +22,7 @@ export function ProfilePage() {
                 const result = await getUserStats();
                 setStats(result);
             } catch (err) {
-                console.log(err);
+                throw err;
             }
         }
         loadStats();
