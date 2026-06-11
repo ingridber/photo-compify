@@ -1,8 +1,9 @@
 import styles from "../styles/form.module.css";
 import { useState } from "react";
-import { login } from "../services/user";
+import { getCsrfToken, login } from "../services/user";
 import { useUser } from "../hooks/useUser";
 import { useNavigate, useLocation, Link } from "react-router";
+import { setCsrfToken } from "../utils/csrfToken";
 
 interface FormErrors {
     username?: string;
@@ -50,6 +51,8 @@ export function SignInForm() {
                     role: data.role,
                 });
 
+                const csrfToken = await getCsrfToken();
+                setCsrfToken(await csrfToken.json());
                 setErrors({});
                 setUsername("");
                 setPassword("");

@@ -11,6 +11,14 @@ export async function register(email: string, username: string, password: string
     });
 };
 
+export async function getCsrfToken() {
+    const BASE_URL = import.meta.env.VITE_API_URL;
+    if (!BASE_URL) throw new Error("VITE_API_URL is not defined");
+    return await fetch(`${BASE_URL}/csrf-token`, {
+        credentials: "include",
+    });
+};
+
 // ---------- LOG IN ----------
 export async function login(username: string, password: string) {
     return await apiCall("/auth/login", "POST", { username: username, password: password });
