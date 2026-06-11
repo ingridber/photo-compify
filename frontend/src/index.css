@@ -48,6 +48,29 @@
   --submit-btn: green;
   --abort-btn: red;
 
+/* ----- BUTTONS ----- */
+  --btn: #064686;
+  --back-btn: #5D8996;
+  --back-btn-icon: brightness(0) saturate(100%) invert(96%) sepia(7%) saturate(188%) hue-rotate(15deg) brightness(104%) contrast(90%);
+  --edit-btn: #064686;
+  --edit-btn-text: #F2F1EB;
+  --shadow: 0 4px 12px rgba(93, 137, 150, 0.35);
+  --moderator-btn: #7c3aed;
+
+  /* ----- NAVIGATION -----  */
+  --navigate-menu: #064686;
+  /* --navigate-icon: brightness(0) saturate(100%) invert(56%) sepia(15%) saturate(634%) hue-rotate(146deg) brightness(92%) contrast(89%); */
+  --navigate-icon: brightness(0) saturate(100%) invert(96%) sepia(7%) saturate(188%) hue-rotate(15deg) brightness(104%) contrast(90%) opacity(60%);
+  --navigate-text: #B0CBC1;
+
+  /* ----- FONTS ----- */
+  --sans: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --heading: 'Archivo', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --mono: ui-monospace, Consolas, monospace;
+  font: 18px/145% var(--sans);
+  letter-spacing: 0.18px;
+
+  color-scheme: light dark;
 
   @media (max-width: 1024px) {
     font-size: 16px;
