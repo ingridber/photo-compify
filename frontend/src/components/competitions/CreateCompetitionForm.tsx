@@ -10,6 +10,7 @@ import Select from 'react-select';
 import type { MultiValue } from 'react-select';
 import type { ThemeOption } from '../../types/competitions';
 import { apiCall } from '../../utils/apiCall';
+import { removeSpaces } from '../../utils/filenameSpaceRemove';
 
 const TITLE_MAX = 50;
 const DESC_MAX = 250;
@@ -105,8 +106,9 @@ export default function CreateCompetitionForm({ onSuccess }: Props) {
             let logoImageId: string | null = null;
 
             if (selectedFile) {
+                const noSpaceImage = removeSpaces(selectedFile);
                 const imgFormData = new FormData();
-                imgFormData.append('image', selectedFile);
+                imgFormData.append('image', noSpaceImage);
 
                 const uploadRes = await uploadImage(imgFormData);
                 const uploadData = await uploadRes.json();
