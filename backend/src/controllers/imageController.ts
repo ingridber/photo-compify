@@ -19,8 +19,6 @@ export async function createImage(req: Request, res: Response) {
     }
     const sightengineResult = await validateImage(imageFile);
 
-     //console.log("SIGHTENGINE RESULT:");
-     //console.log("Sightengine:", sightengineResult);
     if (!sightengineResult.approved) {
       return res.status(400).json({
         message: "Image violates content policy",
