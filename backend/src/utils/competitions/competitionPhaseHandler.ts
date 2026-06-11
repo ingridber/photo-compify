@@ -55,8 +55,8 @@ export async function competitionPhaseHandler(
                 return {
                     user: sub.user,
                     competition: comp._id,
-                    title: isWinner ? "You won the competition!" : "Competition is now over",
-                    description: isWinner ? `Congratulations! Your submission to ${comp.title} won!` : `Voting is over for ${comp.title}. Go and look who won.`,
+                    title: isWinner ? "Your submission got a podium placement!" : "Competition is now over",
+                    description: isWinner ? `Congratulations! Your submission to ${comp.title} got placement ${winnerIds.indexOf(sub.user.toString() + 1)}!` : `Voting is over for ${comp.title}. Go and look who won.`,
                     phase: currentPhase,
                     read: false
                 };
