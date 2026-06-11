@@ -9,8 +9,9 @@ const reportSchema = new Schema<ReportInterface>({
     name: { type: String, default: "Not provided",},
     email: { type: String, required: true, trim: true,},
     description: { type: String, required: true, maxlength: 250,},
-    evidenceImg: { type: Schema.Types.ObjectId, ref: "Image", default: null,},
+    evidenceImg: { type: Schema.Types.Mixed, ref: "Image", default: null,},
     resolved: {type: Boolean, default: false},
+    state: {type: String, default: "new", },
     auditedBy: {type: String, default: null},
 },{ timestamps: true,}
 );

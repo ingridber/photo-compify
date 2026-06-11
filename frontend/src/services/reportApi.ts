@@ -62,8 +62,8 @@ export async function warnUser(userId: string) {
 // ---------- RESOLVE REPORT ----------
 interface ResolveReportData {
     auditedBy: string;
-    reportedUserContact: string;
-    reportedUserWarnings: number;
+    reportedUserContact?: string;
+    reportedUserWarnings?: number;
     responseContact: string;
     reportId: string;
     filename: string;
@@ -71,12 +71,12 @@ interface ResolveReportData {
     compTitle: string;
 }
 
-export async function resolveReport(
+export async function hardAcceptReport(
     reportId: string,
     reportData: ResolveReportData
 ) {
     const res = await apiCall(
-        `/report/resolve/${reportId}`,
+        `/report/accept/${reportId}`,
         "PATCH",
         reportData
     );
@@ -85,4 +85,33 @@ export async function resolveReport(
     if (!res.ok) { throw new Error(data.message || "Failed to resolve report"); }
 
     return data;
+}
+
+
+export async function declineReport(
+    reportId: string,
+    reportData: ResolveReportData
+) {
+    const res = await apiCall(`/report/decline/${reportId}`,
+        "PATCH",
+        reportData
+    );
+    
+    const data = await res.json();
+
+    if (!res.ok) { throw new Error(data.message || "Failed to resolve report"); }
+
+    return data;
+}
+
+export async function clearEvidenceImgRef(
+    reportId: string,
+) {
+    const res = await apiCall(`/report/clear/${reportId}`,
+        "PATCH",
+    );
+
+    if (!res.ok) { throw new Error("Failed to clear report"); }
+
+    return ;
 }
