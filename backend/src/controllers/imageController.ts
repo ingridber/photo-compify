@@ -37,7 +37,7 @@ export async function createImage(req: Request, res: Response) {
 
     if (error) {
       return res.status(500).json({
-        message: "Failed to upload image to Supabase",
+        message: "Failed to upload image",
       });
     }
 
@@ -102,7 +102,7 @@ export async function deleteImage(req: Request, res: Response) {
       await Image.create({ ...image.toObject() });
 
       return res.status(500).json({
-        message: "Failed to delete from Supabase",
+        message: "Failed to delete image",
       });
     }
 
