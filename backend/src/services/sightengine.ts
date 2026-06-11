@@ -1,13 +1,14 @@
-import axios from "axios";
-import FormData from "form-data";
-
 export async function validateImage(imageFile: Express.Multer.File) {
   const formData = new FormData();
 
-  formData.append("media", imageFile.buffer, {
-    filename: imageFile.originalname,
-    contentType: imageFile.mimetype,
-  });
+  formData.append(
+    "media",
+    new Blob(
+      [new Uint8Array(imageFile.buffer)],
+      { type: imageFile.mimetype }
+    ),
+    imageFile.originalname
+  );
 
   formData.append(
     "models",
@@ -24,15 +25,15 @@ export async function validateImage(imageFile: Express.Multer.File) {
     process.env.SIGHTENGINE_SECRET || ""
   );
 
-  const response = await axios.post(
+  const response = await fetch(
     "https://api.sightengine.com/1.0/check.json",
-    formData,
     {
-      headers: formData.getHeaders(),
+      method: "POST",
+      body: formData,
     }
   );
 
-  const data = response.data;
+  const data = await response.json();
 
   const sexualActivity = data.nudity?.sexual_activity || 0;
   const sexualDisplay = data.nudity?.sexual_display || 0;
