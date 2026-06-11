@@ -4,7 +4,6 @@ import { Report } from "../models/Reports";
 import { Resend } from "resend";
 import { User } from "../models/User";
 import { verifyRecaptcha } from "../utils/verifyRecaptcha";
-import { deleteImage } from "./imageController";
 
 // RESEND
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -261,7 +260,7 @@ export async function hardAcceptReport(req: AuthRequest, res: Response) {
                         `
                 })
         } catch(err) {
-            console.log("Failed to send warning (mail): ", err)
+            console.error("Failed to send warning (mail): ", err)
         }
 
         try {
@@ -283,7 +282,7 @@ export async function hardAcceptReport(req: AuthRequest, res: Response) {
                         `
                 })
         } catch(err) {
-            console.log("Failed to send report response (mail): ", err)
+            console.error("Failed to send report response (mail): ", err)
         }
 
         return res.status(200).json({
@@ -295,9 +294,6 @@ export async function hardAcceptReport(req: AuthRequest, res: Response) {
         })
     }
 }
-
-
-
 
 // ----- DECLINE REPORT -----
 // --------------------------
@@ -346,7 +342,7 @@ export async function declineReport(req: AuthRequest, res: Response ) {
                         `
                 })
         } catch(err) {
-            console.log("Failed to send report response (mail): ", err)
+            console.error("Failed to send report response (mail): ", err)
         }
 
         return res.status(200).json({
@@ -378,13 +374,9 @@ export async function clearEvidenceImgRef(req: AuthRequest, res: Response ) {
             })
         }
 
-        return res.status(200).json({
-            message: "Evidence image reference cleared"
-        })
+        return res.status(200).json({ message: "Evidence image reference cleared"})
 
     } catch (error) {
-        return res.status(500).json({
-            message: "Failed to clear evidence image reference. Internal server error"
-        })
+        return res.status(500).json({ message: "Failed to clear evidence image reference. Internal server error"})
     }
 }
