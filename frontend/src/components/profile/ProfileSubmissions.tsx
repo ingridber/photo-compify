@@ -17,7 +17,8 @@ export default function ProfileSubmissions({showOnlyWins = false}: Props) {
 
     useEffect(() => {
         async function loadSubmissions() {
-            // DET HÄR GÖR ATT NYA SUBMISSIONS INTE DYKER UPP I FLÖDET I PROFILEN DIREKT, SKA FUNDERA PÅ LÖSNING 
+            // DET HÄR GÖR ATT NYA SUBMISSIONS INTE DYKER UPP I FLÖDET I PROFILEN DIREKT, SKA FUNDERA PÅ LÖSNING
+            // tillfälligt löst med sessionStorage.clear i uplaodsubmission, deletesubmission
             try {
                 const cached = sessionStorage.getItem("profile-submissions");
 
@@ -97,8 +98,20 @@ export default function ProfileSubmissions({showOnlyWins = false}: Props) {
 
                                     return (
                                         !showOnlyWins && (
-                                            <div className={profileStyle.placementContainer}>
-
+                                            <div className={profileStyle.placementContainer}
+                                                onClick={
+                                                    phase !== "ended"
+                                                        ? () =>
+                                                            navigate(
+                                                                `/competitions/${
+                                                                    typeof submission.competition === "string"
+                                                                        ? submission.competition
+                                                                        : submission.competition._id
+                                                                }`
+                                                            )
+                                                        : undefined
+                                                }
+                                                style={{cursor: phase !== "ended" ? 'pointer' : 'default'}}>
                                                 {/* ÄNDRA FÄRG PÅ MEDALJ EFTER PLACERING?  */}
                                                 <img
                                                     src={ 

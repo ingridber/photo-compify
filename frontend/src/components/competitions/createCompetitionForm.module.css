@@ -7,16 +7,6 @@
     margin-top: var(--main-margin);
 }
 
-.pageTitle {
-  margin: 0 0 2rem;
-  font: 300 clamp(1.1rem, 3vw, 1.9rem) / 1.1 var(--heading);
-  letter-spacing: .07em;
-  text-transform: uppercase;
-  color: var(--text);
-  text-align: center;
-  padding-top: 2rem;
-}
-
 .hero {
     position: relative;
     display: flex;
@@ -97,12 +87,9 @@
     background: transparent;
     margin: 0 ;
     padding: 0 0 0.1rem;
-
     font: 300 clamp(1.6rem, 3.5vw, 2.4rem)/1.1 var(--heading);
     letter-spacing: 0.07em;
-    text-transform: uppercase;
     color: var(--text);
-
     transition: border-color 180ms ease;
 }
 

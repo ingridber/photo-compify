@@ -5,21 +5,18 @@ import type { ComponentType } from 'react';
 
 import Header from './components/header/Header';
 import { NavBarMobile } from './components/nav-bar/NavBarMobile';
-import { ProtectedRoute } from './components/ProtectedRoute';
 import Footer from './components/footer/Footer';
 
 import { useUser } from './hooks/useUser';
 import { getCurrentUser } from './services/user';
+import { ProtectedRoute } from './components/ProtectedRoute';
 
 // Pages
 import { Home } from './pages/Home';
 import { SignIn } from './pages/SignIn';
 import Register from './pages/Register';
 import CompetitionsPage from './components/competitions/CompetitionsPage';
-import CompetitionPage from './pages/CompetitionPage';
 import SubmitToCompetition from './pages/SubmitToCompetitionPage';
-import CreateCompetitionPage from './pages/CreateCompetitionPage';
-import ImageUpload from './pages/ImageUpload';
 import { ManageAccount } from './pages/ManageAccount';
 import { ProfilePage } from './pages/ProfilePage';
 import PublicProfilePage from './pages/PublicProfilePage';
@@ -37,6 +34,8 @@ import { ChangeProfilePicture } from './components/manage-account/ChangeProfileP
 import ProfileSubmissions from './components/profile/ProfileSubmissions';
 import ProfileCompetitions from './components/profile/ProfileCompetitions';
 import Users from './components/admin/Users';
+import CreateCompetitionForm from './components/competitions/CreateCompetitionForm';
+import CompetitionDetail from './components/single-competition/CompetitionDetail';
 
 const protectedElement = (Component: ComponentType) => (
   <ProtectedRoute>
@@ -79,9 +78,9 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<SignIn />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/image-upload" element={<ImageUpload />} />
 
         {/* competitions */}
+        <Route path="/create-competition" element={protectedElement(CreateCompetitionForm)}/>
         <Route path="/competitions" element={<CompetitionsPage />} />
         <Route path="/competitions/:id" element={<CompetitionPage />} />
         <Route
@@ -96,7 +95,6 @@ function App() {
           path="/create-competition"
           element={protectedElement(CreateCompetitionPage)}
         />
-
         {/* profile */}
         <Route path="/profile" element={protectedElement(ProfilePage)}>
           <Route index element={<ProfileSubmissions />} />

@@ -1,15 +1,15 @@
 import { useState, useRef } from 'react';
 import styles from './createCompetitionForm.module.css';
-import formStyles from '../styles/form.module.css';
-import { uploadImage } from "../services/imageApi";
-import FileSizeValidation from "../utils/FileSizeValidation";
-import FileFormatValidation from "../utils/FileFormatValidation";
+import formStyles from '../../styles/form.module.css';
+import { uploadImage } from '../../services/imageApi';
+import FileSizeValidation from '../../utils/FileSizeValidation';
+import FileFormatValidation from "../../utils/FileFormatValidation";
 import { useNavigate } from 'react-router';
-import AVAILABLE_THEMES from '../constants/availableThemes';
+import AVAILABLE_THEMES from '../../constants/availableThemes';
 import Select from 'react-select';
 import type { MultiValue } from 'react-select';
-import type { ThemeOption } from '../types/competitions';
-import { apiCall } from '../utils/apiCall';
+import type { ThemeOption } from '../../types/competitions';
+import { apiCall } from '../../utils/apiCall';
 
 const TITLE_MAX = 50;
 const DESC_MAX = 250;
