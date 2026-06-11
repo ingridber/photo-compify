@@ -35,6 +35,7 @@ import ProfileCompetitions from './components/profile/ProfileCompetitions';
 import Users from './components/admin/Users';
 import CreateCompetitionForm from './components/competitions/CreateCompetitionForm';
 import CompetitionDetail from './components/single-competition/CompetitionDetail';
+import CompetitionsPage from './components/competitions/CompetitionsPage';
 
 const protectedElement = (Component: ComponentType) => (
   <ProtectedRoute>
@@ -80,7 +81,7 @@ function App() {
 
         {/* competitions */}
         <Route path="/create-competition" element={protectedElement(CreateCompetitionForm)}/>
-        <Route path="/competitions" element={<CompetitionDetail />} />
+        <Route path="/competitions" element={<CompetitionsPage />} />
         <Route path="/competitions/:id" element={<CompetitionDetail />} />
         <Route
           path="/competitions/:id/submit"
