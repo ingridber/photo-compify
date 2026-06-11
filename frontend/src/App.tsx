@@ -15,7 +15,6 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { Home } from './pages/Home';
 import { SignIn } from './pages/SignIn';
 import Register from './pages/Register';
-import CompetitionsPage from './components/competitions/CompetitionsPage';
 import SubmitToCompetition from './pages/SubmitToCompetitionPage';
 import { ManageAccount } from './pages/ManageAccount';
 import { ProfilePage } from './pages/ProfilePage';
@@ -81,8 +80,8 @@ function App() {
 
         {/* competitions */}
         <Route path="/create-competition" element={protectedElement(CreateCompetitionForm)}/>
-        <Route path="/competitions" element={<CompetitionsPage />} />
-        <Route path="/competitions/:id" element={<CompetitionPage />} />
+        <Route path="/competitions" element={<CompetitionDetail />} />
+        <Route path="/competitions/:id" element={<CompetitionDetail />} />
         <Route
           path="/competitions/:id/submit"
           element={protectedElement(SubmitToCompetition)}
@@ -93,7 +92,7 @@ function App() {
         />
         <Route
           path="/create-competition"
-          element={protectedElement(CreateCompetitionPage)}
+          element={protectedElement(CreateCompetitionForm)}
         />
         {/* profile */}
         <Route path="/profile" element={protectedElement(ProfilePage)}>
