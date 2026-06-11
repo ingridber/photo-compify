@@ -131,11 +131,7 @@ export default function HandleReports() {
             setStatusMessage(err instanceof Error ? err.message : "Something went wrong");
         }
     }
-
-
-
-
-
+    
     const unresolvedReports = reports.filter(r => !r.resolved);
     const resolvedReports = reports.filter(r => r.resolved);
 
