@@ -38,9 +38,6 @@ export const buildCompetitionQuery = async (
   // Get pagination values (page number, limit per page, skip amount)
   const { page, limit, skip } = getPagination(req.query);
 
-  // Current timestamp used for filtering time-based competition phases
-  const now = new Date();
-
   // Build base MongoDB filter depending on competition status
   const query: any = {
     ...getCompetitionFilter(status),

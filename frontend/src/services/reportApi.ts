@@ -1,6 +1,8 @@
 import { apiCall } from "../utils/apiCall";
 import type { UserRef } from "../types/competitions";
 
+export type reportTypes = CheckReport | CreateReportData | ResolveReportData;
+
 // ---------- CHECK PREVIOUS REPORT ----------
 interface CheckReport {
     submissionId: string;
@@ -60,7 +62,7 @@ export async function warnUser(userId: string) {
 }
 
 // ---------- RESOLVE REPORT ----------
-export interface ResolveReportData {
+interface ResolveReportData {
     auditedBy: string;
     reportedUserContact?: string;
     reportedUserWarnings?: number;
