@@ -89,6 +89,10 @@ function App() {
           element={protectedElement(SubmitToCompetition)}
         />
         <Route
+            path="/competitions/:id/submit/:submissionId"
+            element={protectedElement(SubmitToCompetition)}
+        />
+        <Route
           path="/create-competition"
           element={protectedElement(CreateCompetitionPage)}
         />
