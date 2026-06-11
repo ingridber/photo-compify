@@ -8,7 +8,7 @@ import { requireRole } from "../middleware/requireRole";
 
 const router = express.Router();
 router.post("/", authenticateToken, uploadRateLimit, upload.single("image"), checkFileSize, createImage);
-router.delete("/:id", deleteImage);
+router.delete("/:id", authenticateToken, deleteImage);
 // router.delete("/:id", requireRole(["admin"]), deleteImage); LÄGG TILLBAKA
 router.patch("/:id", authenticateToken, updateImage);
 

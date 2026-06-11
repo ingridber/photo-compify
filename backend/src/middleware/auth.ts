@@ -48,10 +48,8 @@ export function authenticateToken(req : AuthRequest, res: Response, next: NextFu
 };
 
 export function extractUser(req: AuthRequest, _res: Response, next: NextFunction) {
-  const authHeader = req.headers["authorization"];
-  const headerToken = authHeader && authHeader.split(" ")[1];
   const cookieToken = req.cookies?.token;
-  const token = headerToken || cookieToken;
+  const token = cookieToken;
 
   if (!token) return next();
 

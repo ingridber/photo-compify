@@ -160,7 +160,7 @@ export async function login(req: Request, res: Response): Promise<Response> {
 
         // ---------- SKAPA OCH SPARA TOKEN ----------
         const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN } as any);
-        res.cookie("token", token, { httpOnly: true, secure: NODE_ENV === "production", sameSite: "none" });
+        res.cookie("token", token, { httpOnly: true, secure: NODE_ENV === "production", sameSite: "lax" });
 
         // ---------- RESET ATTEMPTS VID SUCCESS ----------
         user.loginAttempts = 0;
