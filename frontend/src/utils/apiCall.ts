@@ -6,7 +6,10 @@ export async function apiCall(path: string, method: HttpMethod = "GET", body?: R
     const BASE_URL = import.meta.env.VITE_API_URL;
     if (!BASE_URL) throw new Error("VITE_API_URL is not defined");
     const isFormData = body instanceof FormData;
-    const headers: HeadersInit = isFormData ? {} : { "Content-Type": "application/json", "x-csrf-token": getCsrfToken() };
+    const headers: HeadersInit = {
+        "x-csrf-token": getCsrfToken(),
+        ...(!isFormData && { "Content-Type": "application/json" }),
+    };
     return await fetch(`${BASE_URL}${path}`, {
         method: method,
         credentials: "include",
