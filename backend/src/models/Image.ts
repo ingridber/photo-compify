@@ -22,7 +22,13 @@ const imageSchema = new Schema<ImageInterface>({
   fileFormat: {
     type: String,
     required: true
-  }
+  },
+
+  uploadedBy: {
+  type: Schema.Types.ObjectId,
+  ref: "User",
+  required: true
+}
 });
 
 imageSchema.methods.getSignedUrl = async function () {
