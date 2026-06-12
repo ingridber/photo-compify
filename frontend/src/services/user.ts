@@ -11,7 +11,7 @@ export async function register(email: string, username: string, password: string
     });
 };
 
-export async function getCsrfToken() {
+export async function getCsrfTokenCall() {
     const BASE_URL = import.meta.env.VITE_API_URL;
     if (!BASE_URL) throw new Error("VITE_API_URL is not defined");
     return await fetch(`${BASE_URL}/csrf-token`, {

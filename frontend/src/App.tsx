@@ -8,7 +8,7 @@ import { NavBarMobile } from './components/nav-bar/NavBarMobile';
 import Footer from './components/footer/Footer';
 
 import { useUser } from './hooks/useUser';
-import { getCurrentUser } from './services/user';
+import { getCsrfTokenCall, getCurrentUser } from './services/user';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { ProtectedRoleRoute } from './components/ProtectedRoleRoute';
 
@@ -39,6 +39,7 @@ import CreateCompetitionForm from './components/competitions/CreateCompetitionFo
 import CompetitionDetail from './components/single-competition/CompetitionDetail';
 import CompetitionsPage from './components/competitions/CompetitionsPage';
 import Competitions from "./components/admin/Competition";
+import { setCsrfToken } from './utils/csrfToken';
 
 const protectedElement = (Component: ComponentType) => (
   <ProtectedRoute>
@@ -71,6 +72,8 @@ function App() {
         setLoading(true);
         const res = await getCurrentUser();
         if (res) setUser(res.data);
+        const csrfToken = await getCsrfTokenCall();
+        setCsrfToken((await csrfToken.json()).token);
       } finally {
         setLoading(false);
       }

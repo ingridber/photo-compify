@@ -1,6 +1,6 @@
 import styles from "../styles/form.module.css";
 import { useState } from "react";
-import { getCsrfToken, login } from "../services/user";
+import { getCsrfTokenCall, login } from "../services/user";
 import { useUser } from "../hooks/useUser";
 import { useNavigate, useLocation, Link } from "react-router";
 import { setCsrfToken } from "../utils/csrfToken";
@@ -51,7 +51,7 @@ export function SignInForm() {
                     role: data.role,
                 });
 
-                const csrfToken = await getCsrfToken();
+                const csrfToken = await getCsrfTokenCall();
                 setCsrfToken((await csrfToken.json()).token);
                 setErrors({});
                 setUsername("");
