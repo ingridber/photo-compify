@@ -1,4 +1,5 @@
-import { Request, Response } from "express";
+import { Response } from "express";
+import { AuthRequest } from "../types";
 import { supabase } from "../config/supabase";
 import { Image } from "../models/Image";
 import { validateImage } from "../services/sightengine";
@@ -6,7 +7,7 @@ import { validateImage } from "../services/sightengine";
 
 
 // POST - CREATE IMAGE
-export async function createImage(req: Request, res: Response) {
+export async function createImage(req: AuthRequest, res: Response) {
   let uploadedPath: string | null = null;
 
   try {
@@ -40,15 +41,25 @@ export async function createImage(req: Request, res: Response) {
     }
 
     uploadedPath = data.path;
+    const userId = req.user?.id;
+
+    //console.log("USER ID:", userId);
+
+
+    if (!userId) {
+      return res.status(401).json({
+        message: "Unauthorized"
+      });
+    }
     const savedImage = await Image.create({
       filename: data.path,
       fileSize: imageFile.size,
       fileFormat: imageFile.mimetype,
-      uploadedAt: new Date()
+      uploadedAt: new Date(),
+      uploadedBy: userId
     });
+    //console.log(savedImage);
 
-
-    
     return res.status(201).json({
       message: "Image uploaded successfully",
       data: {
@@ -77,15 +88,29 @@ export async function createImage(req: Request, res: Response) {
 }
 
 // DELETE IMAGE
-export async function deleteImage(req: Request, res: Response) {
+export async function deleteImage(req: AuthRequest, res: Response) {
   try {
     const { id } = req.params;
 
     const image = await Image.findById(id);
 
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({
+        message: "Unauthorized"
+      });
+    }
+
     if (!image) {
       return res.status(404).json({
         message: "Image not found"
+      });
+    }
+
+    if (image.uploadedBy?.toString() !== userId) {
+      return res.status(403).json({
+        message: "You can only delete your own images"
       });
     }
 
@@ -117,15 +142,29 @@ export async function deleteImage(req: Request, res: Response) {
 }
 
 // PATCH
-export async function updateImage(req: Request, res: Response) {
+export async function updateImage(req: AuthRequest, res: Response) {
   try {
     const { id } = req.params;
 
     const image = await Image.findById(id);
 
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({
+        message: "Unauthorized"
+      });
+    }
+
     if (!image) {
       return res.status(404).json({
         message: "Image not found"
+      });
+    }
+
+    if (image.uploadedBy?.toString() !== userId) {
+      return res.status(403).json({
+        message: "You can only update your own images"
       });
     }
 
