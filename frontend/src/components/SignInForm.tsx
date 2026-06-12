@@ -52,7 +52,7 @@ export function SignInForm() {
                 });
 
                 const csrfToken = await getCsrfToken();
-                setCsrfToken(await csrfToken.json());
+                setCsrfToken((await csrfToken.json()).token);
                 setErrors({});
                 setUsername("");
                 setPassword("");
