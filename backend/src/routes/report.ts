@@ -9,11 +9,10 @@ const routerReport = express.Router();
 routerReport.post("/create", reportRateLimit, createReport);
 routerReport.post("/check", reportRateLimit, checkNoPreviousReport);
 
-// ALLT NEDAN -> requireRole : LÄGG TILLBAKA
-routerReport.get("/", authenticateToken, getReports);
-routerReport.patch("/:id", authenticateToken, reportUser);
-routerReport.patch("/accept/:id", authenticateToken, hardAcceptReport);
-routerReport.patch("/decline/:id", authenticateToken, declineReport)
-routerReport.patch("/clear/:id", authenticateToken, clearEvidenceImgRef)
+routerReport.get("/", authenticateToken, requireRole(["admin"]), getReports);
+routerReport.patch("/:id", authenticateToken, requireRole(["admin"]), reportUser);
+routerReport.patch("/accept/:id", authenticateToken, requireRole(["admin"]), hardAcceptReport);
+routerReport.patch("/decline/:id", authenticateToken, requireRole(["admin"]), declineReport)
+routerReport.patch("/clear/:id", authenticateToken, requireRole(["admin"]), clearEvidenceImgRef)
 
 export {routerReport};
