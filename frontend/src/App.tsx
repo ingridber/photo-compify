@@ -10,6 +10,7 @@ import Footer from './components/footer/Footer';
 import { useUser } from './hooks/useUser';
 import { getCurrentUser } from './services/user';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { ProtectedRoleRoute } from './components/ProtectedRoleRoute';
 
 // Pages
 import { Home } from './pages/Home';
@@ -25,6 +26,7 @@ import Admin from './pages/Admin';
 import Gdpr from './pages/Gdpr';
 import HandleReports from './pages/HandleReports';
 import Guidelines from './pages/Guidelines';
+import NotFoundPage from './pages/NotFound';
 
 // Components
 import { ChangeUsername } from './components/manage-account/ChangeUsername';
@@ -42,6 +44,12 @@ const protectedElement = (Component: ComponentType) => (
   <ProtectedRoute>
     <Component />
   </ProtectedRoute>
+);
+
+const protectedRoleElement = (Component: ComponentType) => (
+  <ProtectedRoleRoute>
+    <Component />
+  </ProtectedRoleRoute>
 );
 
 function ScrollToTop() {
@@ -119,13 +127,14 @@ function App() {
         <Route path="/guidelines" element={<Guidelines />} />
 
         {/* admin  */}
-        <Route path="/admin" element={<Admin />}>
+        <Route path="/admin" element={protectedRoleElement(Admin)}>
           <Route index element={<Navigate to="users" replace />} />
           <Route path='users' element={<Users />} />
           <Route path='competitions' element={<Competitions />} />
           <Route path="reports" element={<HandleReports />} />
         </Route>
 
+        <Route path="*" element={<NotFoundPage/>} />
       </Routes>
     </main>
 
