@@ -51,8 +51,19 @@ export async function fetchCompetitionsForAdminPage(pageNumber: number, searchVa
     return response.json();
 }
 
-// ---------- update competitions for admin/Competitions----------
-export async function updateCompetitionsForAdminPage(id: string, data: Partial<Competition>) {
+// ---------- update competition phase for admin/Competitions----------
+export async function updateCompetitionsPhaseForAdminPage(id: string, data: Partial<Competition>) {
+    const response = await apiCall(`/admin/competitions/${id}/phase`,"PATCH",data);
+
+    if(!response.ok) {
+        throw new Error("Failed to update competition");
+    }
+
+    return response.json();
+}
+
+// ---------- update competition phase for admin/Competitions----------
+export async function updateCompetitionsTitleForAdminPage(id: string, data: Partial<Competition>) {
     const response = await apiCall(`/admin/competitions/${id}`,"PATCH",data);
 
     if(!response.ok) {
