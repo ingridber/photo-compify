@@ -300,37 +300,87 @@ export async function deleteCompetition(req: AuthRequest, res: Response) {
 
 // --------- SET COMPETITION PHASE ---------
 // -----------------------------------------
-export async function adminSetCompetitionPhase(req: AuthRequest, res: Response) {
+export async function adminSetCompetitionPhase(
+  req: AuthRequest,
+  res: Response,
+) {
   const isAdmin = req.user!.role === "admin";
 
-  if (!isAdmin) { return res.status(403).json({message: "Admin only",});}
+  if (!isAdmin) {
+    return res.status(403).json({
+      message: "Admin only",
+    });
+  }
 
   const { id } = req.params;
 
-  const phaseSchema = z.object({phase: z.enum(["submission", "voting", "ended"]),});
+  const phaseSchema = z.object({
+    phase: z.enum(["submission", "voting", "ended"]),
+  });
+
   const validation = phaseSchema.safeParse(req.body);
 
-  if (!validation.success) { return res.status(400).json({message: "Invalid phase",});}
+  if (!validation.success) {
+    return res.status(400).json({
+      message: "Invalid phase",
+    });
+  }
 
   const { phase } = validation.data;
+
   const competition = await Competition.findById(id);
 
-  if (!competition) { return res.status(404).json({message: "Competition not found",});}
+  if (!competition) {
+    return res.status(404).json({
+      message: "Competition not found",
+    });
+  }
+
+  const currentPhase = competition.phase;
+
+  // Ended is permanent
+  if (currentPhase === "ended") {
+    return res.status(400).json({
+      message: "Ended competitions cannot be changed or deleted",
+    });
+  }
+
+  // Voting cannot go back to phase Submission
+  if (
+    currentPhase === "voting" &&
+    phase === "submission"
+  ) {
+    return res.status(400).json({
+      message:
+        "Cannot move competition back to submission",
+    });
+  }
+
+  // No change if comp is already in that phase
+  if (currentPhase === phase) {
+    return res.status(400).json({
+      message: "Competition is already in this phase",
+    });
+  }
+
+  const now = new Date();
+  const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
   competition.phase = phase;
-  const now = new Date();
 
-  if (phase === "submission") {
-    competition.startDate = now;
-  }
-
+  // Submission -> Voting
   if (phase === "voting") {
     competition.votingStartDate = now;
+    competition.endDate = new Date(
+      now.getTime() + 2 * MS_PER_DAY,
+    );
   }
 
+  // Submission/Voting -> Ended
   if (phase === "ended") {
     competition.endDate = now;
   }
+
   await competition.save();
 
   return res.status(200).json({
