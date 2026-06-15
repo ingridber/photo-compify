@@ -101,7 +101,6 @@ export async function register(req: Request, res: Response): Promise<Response> {
     });
 };
 
-// --------------------------------------
 // ---------- LOGIN CONTROLLER ----------
 // --------------------------------------
 export async function login(req: Request, res: Response): Promise<Response> {
@@ -160,7 +159,7 @@ export async function login(req: Request, res: Response): Promise<Response> {
 
         // ---------- SKAPA OCH SPARA TOKEN ----------
         const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN } as any);
-        res.cookie("token", token, { httpOnly: true, secure: NODE_ENV === "production", sameSite: "lax" });
+        res.cookie("token", token, { httpOnly: true, secure: NODE_ENV === "production", sameSite: "none" });
 
         // ---------- RESET ATTEMPTS VID SUCCESS ----------
         user.loginAttempts = 0;
@@ -201,7 +200,6 @@ export async function login(req: Request, res: Response): Promise<Response> {
     }
 }
 
-// --------------------------------------
 // ---------- GET CURRENT USER ----------
 // --------------------------------------
 export async function getCurrentUser(req: AuthRequest, res: Response): Promise<Response> {

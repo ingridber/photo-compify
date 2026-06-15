@@ -8,7 +8,7 @@ const { generateCsrfToken, doubleCsrfProtection, invalidCsrfTokenError } = doubl
     getSessionIdentifier: (req) => req.cookies.token ?? "",
     cookieName: "x-csrf-token",
     cookieOptions: {
-        sameSite: "lax",
+        sameSite: "none",
         secure: process.env.NODE_ENV === "production",
         httpOnly: true,
     },
