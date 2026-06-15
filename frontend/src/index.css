@@ -20,7 +20,7 @@
   --bg-dark: #001F45;
   --comp-card-bg: #F2F1EB;
   --nav-bg: #F2F1EB;
-  --image-bg: url("images/background_light.png");
+  --image-bg: url("assets/images/background_light.png");
 
   /* ----- OTHER ----- */
   --shadow: 0 4px 12px rgba(93, 137, 150, 0.35);
@@ -114,7 +114,7 @@
   --bg-dark: #001229;
   --comp-card-bg: #171616;
   --nav-bg: #171616;
-  --image-bg: url("images/background_dark.png");
+  --image-bg: url("assets/images/background_dark.png");
 
   /* ----- TEXT ----- */
   --text: #F2F1EB;
