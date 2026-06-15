@@ -2,7 +2,8 @@
 
 Photo Compify is a full-stack web application for photo competitions.  
 Users can create competitions, submit photos, vote on submissions, view public profiles, etc.  
-A competition runs for 7 days from creation. Five days for users to submit their photos and 2 days for voting. Then the winners are determined and notified.
+A competition runs for 7 days from creation. Five days for users to submit their photos and 2 days for voting. Then the winners are determined and notified.  
+The link to the live page can be found [HERE](https://photo-compify.vercel.app/)
 
 ## Tech Stack
 
@@ -27,6 +28,7 @@ A competition runs for 7 days from creation. Five days for users to submit their
 - Notification retrieval and read-state updates.
 - Account data export as JSON.
 - Reporting images for copyright or breaking guidelines
+- Administration page for user management and handling reports
 
 ## API documentation
 
@@ -72,7 +74,7 @@ npm run dev
 ```bash
 npm run dev      # tsx watch --env-file=.env src/server.ts
 npm run build    # tsc
-npm start        # node --env-file=.env dist/server.js
+npm start        # node dist/server.js
 ```
 
 ## Frontend scripts
