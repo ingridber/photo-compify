@@ -3,6 +3,7 @@ import { getPagination } from "../utils/competitions/pagination";
 import { buildActiveCompetitionAggregation } from "../utils/competitions/competitionAggregation";
 import { getThemeFilter } from "../utils/competitions/themeFilter";
 import { supabase } from "../config/supabase";
+import { Request } from "express";
 
 // Generates a signed URL for an image stored in Supabase
 async function getSignedImageUrl(filename: string) {
@@ -16,7 +17,7 @@ async function getSignedImageUrl(filename: string) {
 }
 
 export const buildCompetitionQuery = async (
-  req: any,
+  req: Request,
   User: any,
   Competition: any
 ) => {
