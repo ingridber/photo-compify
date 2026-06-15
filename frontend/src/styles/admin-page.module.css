@@ -1,0 +1,42 @@
+.adminPage {
+    display: flex;
+    min-height: 100vh;
+    margin-top: 70px;
+    gap: 2rem;
+
+}
+
+.menuContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 220px;
+    flex-shrink: 0;
+    padding: 1rem;
+    border-right: 1px solid #333;
+}
+
+.menuContainer button {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    color: var(--text);
+    border: 1px solid var(--text);
+    
+}
+
+.active {
+    background: var(--bg) !important;
+    color: var(--text);
+    font-weight: 600;
+}
+
+.outletContainer {
+    flex: 1;
+    min-width: 0;
+    padding: 1rem;
+}

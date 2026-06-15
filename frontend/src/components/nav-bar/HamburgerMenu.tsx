@@ -3,11 +3,12 @@ import { useNavigate } from "react-router";
 import styles from "./HamburgerMenu.module.css";
 import { useUser } from "../../hooks/useUser";
 import { DisplayProfilePicture } from "../display-profile-picture/DisplayProfilePicture";
+import { logout } from "../../services/user";
 
 export default function HamburgerMenu() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const { user } = useUser();
+  const { user, setUser } = useUser();
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -30,6 +31,12 @@ export default function HamburgerMenu() {
   const goTo = (path: string) => {
     navigate(path);
     setOpen(false);
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    setUser(null);
+    navigate("/", { replace: true });
   };
 
   return (
@@ -72,12 +79,6 @@ export default function HamburgerMenu() {
           ) : (
             <>
 
-              <button
-                onClick={() => goTo("/profile/account")}
-                className={styles.menuBtn}
-              >
-                Manage account
-              </button>
 
               <button
                 onClick={() =>
@@ -86,6 +87,23 @@ export default function HamburgerMenu() {
               >
                 My Competitions
               </button>
+
+              <button
+                onClick={() => goTo("/profile/account")}
+                className={styles.menuBtn}
+              >
+                Manage account
+              </button>
+
+
+              <button
+                onClick={handleLogout}
+                className={styles.menuBtn}
+              >
+                Sign out
+              </button>
+
+
             </>
           )}
         </div>

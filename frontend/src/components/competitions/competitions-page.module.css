@@ -9,6 +9,10 @@
   align-items: center;
 }
 
+.pageCardContainer {
+  width: 100%;
+}
+
 /* ----- TITLES ----- */
 .pageHeader {
   margin-bottom: 2rem;
@@ -197,7 +201,6 @@
 }
 
 /* ----- THEMES ----- */
-
 .selectWrapper .cinema-select__control {
   width: 100%;
   background: transparent;
@@ -298,12 +301,11 @@
 
   .pageTitle {
     font-size: 1.9rem;
-    margin-left: 1rem ;
+    text-align: center;
   }
 
   .pageDescription {
     font-size: .75rem;
-    margin-left: 1rem ;
-
+    text-align: center;
   }
 }

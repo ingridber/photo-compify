@@ -2,7 +2,7 @@ import multer from "multer";
 
 const storage = multer.memoryStorage();
 
-const fileFilter = (req: any, file: any, cb: any) => {
+const fileFilter = (_req: any, file: any, cb: any) => {
   const allowedTypes = [ "image/jpeg", "image/png", "image/webp"];
 // "image/jpeg",
   if (allowedTypes.includes(file.mimetype)) {

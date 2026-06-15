@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { Response } from "express";
 import { 
     changeUsername, 
     changePassword, 
@@ -13,24 +13,29 @@ import {
 } from "../controllers/usersControllers";
 import { editProfileDetails } from "../controllers/editControllers";
 import { authenticateToken } from "../middleware/auth";
-import { get } from "http";
-import { getSubmission } from "../controllers/submissionsController";
+import { exportUserData } from "../controllers/ExportUserDataController";
+import type { AuthRequest } from "../types";
 
 
 const routerUser = express.Router();
 
-routerUser.get("/profile", authenticateToken, (req: Request, res: Response) => {
+routerUser.get("/export-my-data", (_req: AuthRequest, _res: Response, next) => {
+    console.log("User data downloaded");
+    next();
+}, authenticateToken, exportUserData);
+
+routerUser.get("/profile", authenticateToken, (req: AuthRequest, res: Response) => {
     res.json({
         message: "Authenticated",
-        user: (req as any).user
+        user: req.user
     });
 });
 
 routerUser.patch('/username', authenticateToken, changeUsername);
 routerUser.patch('/password', authenticateToken, changePassword);
 
-routerUser.patch('/profilepicture', authenticateToken, changeProfilePicture);
-routerUser.delete('/profilepicture', authenticateToken, deleteProfilePicture);
+routerUser.patch('/profilePicture', authenticateToken, changeProfilePicture);
+routerUser.delete('/profilePicture', authenticateToken, deleteProfilePicture);
 
 routerUser.post('/logout', logout);
 routerUser.delete('/', authenticateToken, deleteUser);

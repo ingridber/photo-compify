@@ -1,5 +1,6 @@
-import { Request, Response, NextFunction } from "express";
+import type { Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import type { AuthRequest } from "../types";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
@@ -7,12 +8,7 @@ const JWT_SECRET = process.env.JWT_SECRET as string;
 // ------------------------------------------------------
 // ---------- UNAUTHORIZED? You shall not pass ----------
 // ------------------------------------------------------
-export function authenticateToken(req : Request, res: Response, next: NextFunction) {
-
-    // ---------- KONTROLLERA TOKEN i HEADER?? ----------
-    // --------------------------------------------------
-    const authHeader = req.headers["authorization"];
-    const headerToken = authHeader && authHeader.split(" ")[1];
+export function authenticateToken(req : AuthRequest, res: Response, next: NextFunction) {
 
     // ---------- HÄMTA TOKEN OM DEN FINNS I COOKIES ----------
     // --------------------------------------------------------
@@ -20,7 +16,7 @@ export function authenticateToken(req : Request, res: Response, next: NextFuncti
 
     // ---------- SÄTT TOKEN ----------
     // --------------------------------
-    const token = headerToken || cookieToken;
+    const token = cookieToken;
 
     // ---------- KOLLA TOKEN ----------
     // ---------------------------------
@@ -35,8 +31,11 @@ export function authenticateToken(req : Request, res: Response, next: NextFuncti
     // ---------- VERIFIERA TOKEN ----------
     // -------------------------------------
     try {
-        const decoded = jwt.verify(token, JWT_SECRET) as {id: string};
-        (req as any).user = decoded;
+        const decoded = jwt.verify(token, JWT_SECRET) as {
+            id: string;
+            role: "user" | "moderator" | "admin";
+        };
+        req.user = decoded;
 
         next();
     } catch(err) {
@@ -48,20 +47,21 @@ export function authenticateToken(req : Request, res: Response, next: NextFuncti
     };
 };
 
-export function extractUser(req: Request, _res: Response, next: NextFunction) {
-  const authHeader = req.headers["authorization"];
-  const headerToken = authHeader && authHeader.split(" ")[1];
+export function extractUser(req: AuthRequest, _res: Response, next: NextFunction) {
   const cookieToken = req.cookies?.token;
-  const token = headerToken || cookieToken;
+  const token = cookieToken;
 
   if (!token) return next();
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as { id: string };
-    (req as any).user = decoded;
+    const decoded = jwt.verify(token, JWT_SECRET) as {
+         id: string;
+        role: "user" | "moderator" | "admin";
+        };
+    req.user = decoded;
+    
   } catch {
     // invalid token — continue without user
   }
-
   next();
 }

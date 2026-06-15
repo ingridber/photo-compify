@@ -1,5 +1,5 @@
-import { AuthRequest } from "../types/index";
-import { Request, Response } from "express";
+import type { AuthRequest, CompetitionSubmissionInterface, InterfaceUser } from "../types/index";
+import type { Request, Response } from "express";
 import { Submission } from "../models/Submission";
 import { Competition } from "../models/Competition";
 import { supabase } from "../config/supabase";
@@ -10,7 +10,7 @@ import z from "zod";
 
 export async function getSubmission(req: Request, res: Response) {
     try {
-        const submission = await Submission.findById(req.params.id).populate("user", "username");
+        const submission = await Submission.findById(req.params.id).populate<{ user: Pick<InterfaceUser, "_id" | "username"> }>("user", "username");
 
         if (!submission) {
             return res.status(404).json({
@@ -31,16 +31,15 @@ export async function getSubmission(req: Request, res: Response) {
 };
 
 const createSubmissionSchema = z.object({
-    imageId: z.string({ required_error: "No image ID provided"})
+    imageId: z.string({ error: "No image ID provided" })
 })
 
 export async function createSubmission(req: AuthRequest, res: Response) {
-
     const validation = createSubmissionSchema.safeParse(req.body);
 
-    if(!validation.success){
+    if (!validation.success) {
         const message = validation.error.issues?.[0]?.message ?? "Validation failed";
-        return res.status(400).json({message});
+        return res.status(400).json({ message });
     }
 
     try {
@@ -67,7 +66,7 @@ export async function createSubmission(req: AuthRequest, res: Response) {
         }
 
         const existingSubmission = await Submission.findOne({
-            _id: { $in: competition.submissions as Types.ObjectId[] },
+            competition: competition._id,
             user: req.user!.id,
         });
 
@@ -89,7 +88,7 @@ export async function createSubmission(req: AuthRequest, res: Response) {
             });
         }
 
-        const newSubmission = await Submission.create({
+        const newSubmission: CompetitionSubmissionInterface = await Submission.create({
             user: req.user!.id,
             image: imageDoc._id,
             competition: competition._id,
@@ -108,9 +107,11 @@ export async function createSubmission(req: AuthRequest, res: Response) {
     }
 }
 
+// TODO: review 6
 export async function voteOnSubmission(req: AuthRequest, res: Response) {
     const id = req.params.id;
     let submission;
+    let competition;
 
     try {
         submission = await Submission.findById(id);
@@ -130,7 +131,7 @@ export async function voteOnSubmission(req: AuthRequest, res: Response) {
             });
         };
 
-        const competition = await Competition.findById(submission.competition);
+        competition = await Competition.findById(submission.competition);
         if (!competition) {
             return res.status(404).json({
                 code: 'COMPETITION_NOT_FOUND',
@@ -150,16 +151,16 @@ export async function voteOnSubmission(req: AuthRequest, res: Response) {
         };
 
         const submissionsCount = await Submission.countDocuments({
-            competition: submission.competition,
+            competition: competition._id,
             user: { $ne: req.user!.id },
         });
 
-        const maxVotesAllowed = submissionsCount < 6 ? 1 : 3; //if the amount of submissions is lower than 6 you only get one vote
+        const maxVotesAllowed = submissionsCount < 6 ? 1 : 3;
 
         await CompetitionVote.findOneAndUpdate(
             {
                 user: req.user!.id,
-                competition: submission.competition,
+                competition: competition._id,
                 [`submissions.${maxVotesAllowed - 1}`]: { $exists: false },
                 submissions: { $ne: submission._id }
             },
@@ -172,8 +173,10 @@ export async function voteOnSubmission(req: AuthRequest, res: Response) {
             { $addToSet: { votes: req.user!.id } }
         );
 
+        // TODO: någonting kan hända här review 6 ?, totalCount kan drifta med increase - 
+        // samma limits på comp som på submissions
         await Competition.updateOne(
-            { _id: submission.competition },
+            { _id: competition._id },
             { $inc: { totalVoteCount: 1 } }
         );
 
@@ -184,7 +187,7 @@ export async function voteOnSubmission(req: AuthRequest, res: Response) {
         if (error.code === 11000 || error.codeName === 'DuplicateKey') {
             const existing = await CompetitionVote.findOne({
                 user: req.user!.id,
-                competition: submission!.competition,
+                competition: competition!._id,
             });
 
             if (existing?.submissions.some(s => s.toString() === id)) {
@@ -221,7 +224,7 @@ export async function removeVoteFromSubmission(req: AuthRequest, res: Response) 
         };
 
         const result = await CompetitionVote.updateOne(
-            { user: req.user!.id, competition: submission.competition },
+            { user: req.user!.id, competition: submission.competition as Types.ObjectId },
             { $pull: { submissions: submission._id } }
         );
 
@@ -237,7 +240,7 @@ export async function removeVoteFromSubmission(req: AuthRequest, res: Response) 
             { $pull: { votes: new Types.ObjectId(req.user!.id) } }
         );
         await Competition.updateOne(
-            { _id: submission.competition },
+            { _id: submission.competition as Types.ObjectId },
             { $inc: { totalVoteCount: -1 } }
         );
 
@@ -264,7 +267,10 @@ export async function deleteSubmission(req: AuthRequest, res: Response) {
             })
         };
 
-        if (submission.user.toString() !== req.user!.id) {
+        const isOwner = submission.user.toString() === req.user!.id;
+        const isAdmin = req.user!.role === "admin";
+
+        if (!isOwner && !isAdmin) {
             return res.status(403).json({
                 code: 'FORBIDDEN',
                 message: 'You are not the owner of this submission',
@@ -300,21 +306,19 @@ export async function deleteSubmission(req: AuthRequest, res: Response) {
     }
 };
 
-const updateSubmissionSchema = z.object ({
-    description: z.string().optional()
+const updateSubmissionSchema = z.object({
+    imageId: z.string({ error: "No image ID provided" })
 })
 
 export async function updateSubmission(req: AuthRequest, res: Response) {
-
     const validation = updateSubmissionSchema.safeParse(req.body);
 
-    if(!validation.success){
+    if (!validation.success) {
         const message = validation.error.issues?.[0]?.message ?? "Validation failed";
-        return res.status(400).json({message});
+        return res.status(400).json({ message });
     }
 
     try {
-        const { description } = validation.data;
         const submission = await Submission.findById(req.params.id);
 
         if (!submission) {
@@ -325,7 +329,10 @@ export async function updateSubmission(req: AuthRequest, res: Response) {
             })
         };
 
-        if (submission.user.toString() !== req.user!.id) {
+        const isOwner = submission.user.toString() === req.user!.id;
+        const isAdmin = req.user!.role === "admin";
+
+        if (!isOwner && !isAdmin) {
             return res.status(403).json({
                 code: 'FORBIDDEN',
                 message: 'You are not the owner of this submission',
@@ -333,40 +340,26 @@ export async function updateSubmission(req: AuthRequest, res: Response) {
             })
         };
 
-        if (description) submission.description = description;
+        const { imageId } = validation.data;
 
-        if (req.file) {
-            const oldImageDoc = await Image.findById(submission.image);
+        const newImageDoc = await Image.findById(imageId);
 
-            if (oldImageDoc) {
-                await supabase.storage.from("images").remove([oldImageDoc.filename]);
-                await Image.findByIdAndDelete(oldImageDoc._id);
-            };
-
-            const fileName = `${Date.now()}-${req.file.originalname}`;
-            const { data, error } = await supabase.storage
-                .from("images")
-                .upload(fileName, req.file.buffer, {
-                    contentType: req.file.mimetype
-                });
-
-            if (error) {
-                return res.status(500).json({
-                    code: 'IMAGE_UPLOAD_FAILED',
-                    message: 'Failed to upload image',
-                    status: 500,
-                })
-            };
-
-            const newImageDoc = await Image.create({
-                filename: data.path,
-                uploadedAt: new Date(),
-                fileSize: req.file.size,
-                fileFormat: req.file.mimetype,
+        if (!newImageDoc) {
+            return res.status(404).json({
+                code: 'IMAGE_NOT_FOUND',
+                message: 'The referenced image was not found',
+                status: 404,
             });
-
-            submission.image = newImageDoc._id;
         };
+
+        const oldImageDoc = await Image.findById(submission.image);
+
+        if (oldImageDoc) {
+            await supabase.storage.from("images").remove([oldImageDoc.filename]);
+            await Image.findByIdAndDelete(oldImageDoc._id);
+        };
+
+        submission.image = newImageDoc._id;
 
         await submission.save();
         return res.status(200).json(submission);

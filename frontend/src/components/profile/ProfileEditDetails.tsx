@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { updateUserDetails } from "../../services/api";
+import { updateUserDetails } from "../../services/user";
 import profileStyle from "./profile.module.css";
 import Select from "react-select";
 import type { MultiValue } from "react-select";
@@ -80,10 +80,10 @@ export default function ProfileEditDetails({ handleSave }: EditProps) {
                         isOptionDisabled={() => selectedThemes.length >= 3}
                         menuPortalTarget={document.body}
                         styles={{
-                          option: (base) => ({
-                              ...base,
-                              color: "black"
-                          }),}}
+                                   option: (base, state) => ({
+                                        ...base,
+                                        color: state.isDisabled ? "#999" : "black"
+                                    }),}}
                     />
                 </div>
             </div>

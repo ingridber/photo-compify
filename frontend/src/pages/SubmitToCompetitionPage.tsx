@@ -1,25 +1,27 @@
 import { useNavigate, useParams } from "react-router";
 import ImageUploadForm from "../components/images/ImageUploadForm";
-import mixins from "../styles/mixins.module.css";
+import modalStyles from "../styles/upload-overlay.module.css";
 
 export default function SubmitToCompetition() {
-  const { id } = useParams<{ id: string }>();
+  const { id, submissionId } = useParams<{ id: string, submissionId: string }>();
   const navigate = useNavigate();
 
   return (
-    <div className={mixins.modalOverlay}>
+    <div className={modalStyles.modalOverlay}>
       <div 
-      className={mixins.modalContent} 
+      className={modalStyles.modalContent} 
       onClick={(e) => e.stopPropagation()}>
           <button 
-              className={mixins.closeBtn}
+              className={modalStyles.closeBtn}
               onClick={() => navigate(-1)}>
                   ✕
           </button>
 
           <ImageUploadForm 
             pictureType="submission"
-            competitionId={id}/>
+            competitionId={id}
+            submissionId={submissionId ?? ""}
+            />
       </div>
     </div>
   );

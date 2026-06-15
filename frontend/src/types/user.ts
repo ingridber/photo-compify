@@ -5,12 +5,15 @@ import type { Competition, Submission } from "./competitions";
 export type User = {
     _id: string;
     username: string;
+    email?: string;
+    role: "user" | "moderator" | "admin";
     profilePicture?: {
         _id: string;
         url: string;
     } | null;
-    camera: string;
-    themes: string[];
+    camera?: string;
+    themes?: string[];
+    lastLogin?: string;
 };
 
 export type UserContextType = {

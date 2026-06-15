@@ -1,8 +1,9 @@
 import styles from "../styles/form.module.css";
 import { useState } from "react";
-import { login } from "../services/api";
+import { getCsrfTokenCall, login } from "../services/user";
 import { useUser } from "../hooks/useUser";
 import { useNavigate, useLocation, Link } from "react-router";
+import { setCsrfToken } from "../utils/csrfToken";
 
 interface FormErrors {
     username?: string;
@@ -43,11 +44,15 @@ export function SignInForm() {
                 setUser({
                     _id: data._id,
                     username: data.username,
+                    email: data.email,
                     profilePicture: data.profilePicture || null,
                     camera: data.camera,
                     themes: data.themes,
+                    role: data.role,
                 });
 
+                const csrfToken = await getCsrfTokenCall();
+                setCsrfToken((await csrfToken.json()).token);
                 setErrors({});
                 setUsername("");
                 setPassword("");

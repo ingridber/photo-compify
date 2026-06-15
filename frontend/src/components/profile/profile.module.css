@@ -335,7 +335,7 @@
   inset: auto 0 0;
   display: flex;
   align-items: center;
-  padding: .5rem;
+  padding: .5rem .5rem .1rem .5rem;
   color: white;
   font: .72rem var(--sans);
   letter-spacing: .14em;
@@ -363,10 +363,11 @@
 .placementContainer {
   position: absolute;
   right: .5rem;
-  bottom: .5rem;
+  bottom: .1rem;
   display: flex;
   align-items: center;
   gap: .2rem;
+  cursor: pointer;
 }
 
 .medalIcon,
@@ -374,7 +375,7 @@
   width: 1.2rem;
   margin-left: .5rem;
   object-fit: contain;
-  filter: var(--back-btn-icon);
+  filter: var(--iconLight);
 }
 
 .emptyText {
@@ -389,45 +390,6 @@
   text-transform: uppercase;
 }
 
-.fullscreenModal {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem;
-  background: rgba(0,0,0,.85);
-  backdrop-filter: blur(8px);
-  animation: fadeUp .18s ease;
-}
-
-.fullscreenContent {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.25rem;
-}
-
-.fullscreenImage {
-  max-width: 100%;
-  max-height: 75vh;
-  object-fit: contain;
-  box-shadow: 0 20px 80px rgba(0,0,0,.45);
-}
-
-.closeFullscreenBtn {
-  padding: .8rem 1.6rem;
-  border: none;
-  border-radius: 999px;
-  background: rgba(255,255,255,.08);
-  color: white;
-  font-size: .72rem;
-  letter-spacing: .14em;
-  backdrop-filter: blur(10px);
-  cursor: pointer;
-}
-
 /* ---------- MOBILE LAYOUT ---------- */
 @media (max-width: 740px) {
     .heroInner {
@@ -437,13 +399,12 @@
         padding: 1rem .5rem 0;
     }
 
-
-  .pill {
-    padding: .7rem .85rem;
-    font-size: .6rem;
-    font-weight: 00;
-    letter-spacing: .2em;
-}
+    .pill {
+      padding: .7rem .85rem;
+      font-size: .6rem;
+      font-weight: 00;
+      letter-spacing: .2em;
+  }
 
   .editBtn {
     width: 50%;
@@ -456,10 +417,6 @@
     width: 100%;
     grid-template-columns: repeat(2, 1fr);
     gap: .35rem;
-  }
-
-  .fullscreenImage {
-    max-height: 100%;
   }
 
   .editPanel {
@@ -494,7 +451,6 @@
   .editInput {
     font-size: 16px;
   }
-
 
   @media (max-width: 480px) {
   .editForm {

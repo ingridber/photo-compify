@@ -1,6 +1,11 @@
+import { apiCall } from "../utils/apiCall";
+
 export async function uploadImage(formData: FormData) {
-  return fetch("http://localhost:3000/api/v1/images", {
-    method: "POST",
-    body: formData
-  });
+  return apiCall("/images", "POST", formData );
+}
+
+export async function deleteImage(id: string) {
+  const res =  await apiCall(`/images/${id}`, "DELETE")
+  if(!res.ok) {return false};
+  return true;
 }

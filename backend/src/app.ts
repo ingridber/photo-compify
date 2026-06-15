@@ -7,21 +7,29 @@ import { routerUser } from "./routes/users";
 import { authRouter } from "./routes/auth";
 import { errorHandler } from "./middleware/errorHandler";
 import { RateLimit } from "./middleware/rateLimiter";
+import { routerReport } from "./routes/report";
 import cors from "cors";
 import { submissionRouter } from "./routes/submissions";
-
+import  notificationRouter  from "./routes/notificationRoutes"
+import adminRouter from "./routes/admin";
+import { doubleCsrfProtection, generateCsrfToken } from "./middleware/csrfMiddleware";
 
 const app = express();
 
 app.use(express.json());
-app.use(cookieParser());
 app.use(RateLimit);
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: process.env.CLIENT_URL,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-csrf-token'],
     credentials: true, 
 }));
+app.use(cookieParser());
+app.use(doubleCsrfProtection);
+
+app.get("/api/v1/csrf-token", (req, res) => {
+  res.json({ token: generateCsrfToken(req, res) });
+});
 
 //routes
 app.use('/api/v1/competitions', routerComps);
@@ -31,6 +39,11 @@ app.use('/api/v1/auth', authRouter);
 app.use("/api/v1/images", imagesRoutes);
 app.use("/api/v1/user", routerProfile);
 app.use("/api/v1/user", routerUser);
+app.use("/api/v1/notifications", notificationRouter);
+app.use('/api/v1/report', routerReport)
+
+// Admin route
+app.use("/api/v1/admin", adminRouter)
 
 app.use((req, res) => {
     res.status(404).json({

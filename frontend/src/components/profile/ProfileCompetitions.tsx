@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { getUserComps } from "../../services/api";
+import { getUserComps } from "../../services/user";
 import CompetitionsProfileCard from "../competitions/CompetitionsProfileCard";
 import { Throbber } from "../user-feedback/Throbber";
-import type { Competition } from "../../types/competitions";
+import type { Competition, Phase } from "../../types/competitions";
 import profileStyle from "./profile.module.css";
 
 export default function ProfileCompetitions() {
@@ -36,16 +36,13 @@ export default function ProfileCompetitions() {
         {competitions.length > 0 ? (
             [...competitions]
                 .sort((a, b) => {
-                    const phaseOrder = {
+                    const phaseOrder: Record<Phase, number> = {
                         voting: 0,
                         submission: 1,
                         ended: 2,
                     };
 
-                    const phaseA = a.phase;
-                    const phaseB = b.phase;
-
-                    return phaseOrder[phaseA] - phaseOrder[phaseB];
+                    return phaseOrder[a.phase] - phaseOrder[b.phase];
                 })
                 .map((competition, i) => (
                     <div

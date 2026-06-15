@@ -1,6 +1,6 @@
 import styles from "../styles/form.module.css";
 import { useState, useEffect } from "react";
-import { register } from "../services/api";
+import { register } from "../services/user";
 import { useNavigate } from "react-router";
 import { Throbber } from "./user-feedback/Throbber";
 
@@ -272,6 +272,7 @@ export default function RegisterForm() {
                             {isLoading ? "Processing..." : "Register"}
                         </button>
                     </div>
+                        <p style={{textAlign: "center", fontSize: ".7rem", opacity: ".5"}}>protected by reCAPTCHA</p>
                 </form>
             </section>
         )}

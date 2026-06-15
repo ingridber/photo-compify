@@ -1,0 +1,325 @@
+.page {
+  padding: 2rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.header p {
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+}
+
+.search,
+.competitionFilter {
+  width: 280px;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--text);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+}
+
+.search::placeholder {
+   color: var(--text);
+}
+
+.card {
+  background: var(--comp-card-bg);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table thead {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.table th {
+  text-align: left;
+  padding: 1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.table td {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  font-weight: 500;
+  color: var(--text);
+}
+
+.table tbody tr:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+td > input {
+  width: 280px;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--text);
+  border-radius: 8px;
+  background: var(--bg-light);
+  color: var(--text);
+  outline: none;
+  font-weight: 500;
+}
+
+.compSelect {
+  padding: 0.45rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #cfd4dc;
+  background: var(--bg);
+  min-width: 120px;
+  cursor: pointer;
+}
+
+.compUser {
+  color: var(--submit-btn);
+  border-color: var(--submit-btn);
+  background: var(--bg-light);
+}
+
+.compModerator {
+  color: var(--moderator-btn);
+  border-color: var(--moderator-btn);
+  background: var(--bg-light);
+}
+
+.compAdmin {
+  color: var(--abort-btn);
+  border-color: var(--abort-btn);
+  background: var(--bg-light);
+}
+
+option[value="submission"] {
+  color: var(--submit-btn);
+  font-weight: 500;
+}
+
+option[value="voting"] {
+  color: var(--moderator-btn);
+  font-weight: 500;
+}
+
+option[value="ended"] {
+  color: var(--abort-btn);
+  font-weight: 500;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  color: var(--text);
+}
+
+.actions button,
+td > button {
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #d8d8d8;
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.actions button:hover,
+td > button:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+@media (max-width: 900px) {
+  .header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .filters {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .search,
+  .competitionFilter {
+    width: 100%;
+  }
+
+  .card {
+    overflow-x: auto;
+  }
+
+  .table {
+    min-width: 800px;
+  }
+}
+
+/* ===== TABLETS ===== */
+@media (max-width: 768px) {
+  .page {
+    padding: 1.25rem;
+  }
+
+  .header h1 {
+    font-size: 1.6rem;
+  }
+
+  .header p {
+    font-size: 0.85rem;
+  }
+
+  .search,
+  .competitionFilter {
+    padding: 0.75rem 0.9rem;
+  }
+
+  .table {
+    min-width: 750px;
+  }
+
+  .table th,
+  .table td {
+    padding: 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  td > input {
+    width: 220px;
+    padding: 0.7rem 0.85rem;
+  }
+
+  .compSelect {
+    min-width: 100px;
+    padding: 0.4rem 0.6rem;
+  }
+
+  .actions button,
+  td > button {
+    padding: 0.5rem 0.8rem;
+  }
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 600px) {
+  .page {
+    padding: 1rem;
+  }
+
+  .header h1 {
+    font-size: 1.4rem;
+  }
+
+  .header p {
+    font-size: 0.8rem;
+  }
+
+  .search,
+  .competitionFilter {
+    font-size: 0.9rem;
+  }
+
+  .card {
+    border-radius: 10px;
+  }
+
+  .table {
+    min-width: 700px;
+  }
+
+  .table th {
+    font-size: 0.75rem;
+  }
+
+  .table td {
+    font-size: 0.8rem;
+  }
+
+  td > input {
+    width: 180px;
+    padding: 0.65rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .compSelect {
+    min-width: 90px;
+    font-size: 0.8rem;
+  }
+
+  .actions button,
+  td > button {
+    padding: 0.45rem 0.7rem;
+  }
+}
+
+/* ===== EXTRA SMALL MOBILES ===== */
+@media (max-width: 420px) {
+  .page {
+    padding: 0.75rem;
+  }
+
+  .header h1 {
+    font-size: 1.2rem;
+  }
+
+  .header p {
+    font-size: 0.75rem;
+  }
+
+  .search,
+  .competitionFilter {
+    padding: 0.65rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .table {
+    min-width: 650px;
+  }
+
+  .table th,
+  .table td {
+    padding: 0.6rem;
+  }
+
+  td > input {
+    width: 140px;
+    padding: 0.55rem 0.65rem;
+    font-size: 0.75rem;
+  }
+
+  .compSelect {
+    min-width: 80px;
+    font-size: 0.75rem;
+  }
+
+  .actions button,
+  td > button {
+    padding: 0.4rem 0.6rem;
+  }
+}

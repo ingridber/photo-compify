@@ -85,7 +85,10 @@ export default function CompetitionsCard({ competition }: Props) {
       </div>
       <div className={styles.hideEnd}>
         <p className={`${styles.specsTitle} ${styles.endsOn}`}>{phase === "ended" ? 'Ended on' : 'Ends on'}</p>
-        <p className={styles.endDate}>{new Date(competition.endDate).toLocaleDateString()}</p>
+        <p className={styles.endDate}>{phase === "ended"
+    ? new Date(competition.endDate).toLocaleDateString()
+    : new Date(competition.endDate).toLocaleDateString()}
+</p>
       </div>
     </div>
   </div>

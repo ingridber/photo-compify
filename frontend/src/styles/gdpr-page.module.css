@@ -1,0 +1,28 @@
+.btn {
+    margin:0 0 3rem 0.5rem;
+    padding: 0.9rem 1.5rem;
+    background: transparent;
+    border: 1px solid var(--text);
+    color: var(--text);
+    font-size: 0.95rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.btn:hover:not(:disabled) {
+    background-color: var(--text);
+    color: white !important;
+}
+
+/* ----- MOBILE ----- */
+@media (max-width: 768px) {
+    .btn {
+        width: 100%;
+        margin-left: 0;
+    }
+}

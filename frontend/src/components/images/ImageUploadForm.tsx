@@ -1,25 +1,34 @@
 import { useRef, useState } from "react";
 import "./ImageUploadForm.css";
 import { uploadImage } from "../../services/imageApi";
-import FileSizeValidation from "./FileSizeValidation";
-import FileFormatValidation from "./FileFormatValidation";
-import { updateProfilePicture, createSubmission } from "../../services/api";
-import { getCurrentUser } from "../../services/api";
+import FileSizeValidation from "../../utils/FileSizeValidation";
+import FileFormatValidation from "../../utils/FileFormatValidation";
+import { updateProfilePicture} from "../../services/user";
+import { createSubmission, updateSubmission } from "../../services/competitions";
+import { getCurrentUser } from "../../services/user";
 import { useUser } from "../../hooks/useUser";
 import { useNavigate } from "react-router";
+import Cropper from "react-easy-crop";
+import getCroppedImg from "./getCroppedImg";
+import { apiCall } from "../../utils/apiCall";
 
 type PictureProps = {
     pictureType? : string | null;
     competitionId?: string;
+    submissionId?: string;
     onUploadSuccess?: () => void;
 };
 
-export default function ImageUploadForm({pictureType, competitionId, onUploadSuccess}: PictureProps) {
+export default function ImageUploadForm({pictureType, competitionId, submissionId, onUploadSuccess}: PictureProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [message, setMessage] = useState<string>("");
+
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [_croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
 
   const fileSizeRules = FileSizeValidation();
   const fileFormatRules = FileFormatValidation();
@@ -39,8 +48,18 @@ export default function ImageUploadForm({pictureType, competitionId, onUploadSuc
 
     if (!file) return;
 
+    // Ta bort alla mellanslag från filnamnet
+    const noSpacesFile = new File(
+      [file],
+      file.name
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9.-]/g, ""),
+      { type: file.type }
+    );
+
     // format check
-    const formatError = fileFormatRules.validateFileFormat(file);
+    const formatError = fileFormatRules.validateFileFormat(noSpacesFile);
     if (formatError) {
       setMessage(formatError);
       setSelectedFile(null);
@@ -49,7 +68,7 @@ export default function ImageUploadForm({pictureType, competitionId, onUploadSuc
     }
 
     // size check
-    const sizeError = fileSizeRules.validateFileSize(file);
+    const sizeError = fileSizeRules.validateFileSize(noSpacesFile);
     if (sizeError) {
       setMessage(sizeError);
       setSelectedFile(null);
@@ -57,8 +76,8 @@ export default function ImageUploadForm({pictureType, competitionId, onUploadSuc
       return;
     }
 
-    setSelectedFile(file);
-    setPreviewUrl(URL.createObjectURL(file));
+    setSelectedFile(noSpacesFile);
+    setPreviewUrl(URL.createObjectURL(noSpacesFile));
   };
 
   const handleUpload = async () => {
@@ -78,7 +97,6 @@ export default function ImageUploadForm({pictureType, competitionId, onUploadSuc
         throw new Error(data.message || "Upload failed");
       }
 
-      // ----------------------------------------
       // ---------- HANDLE PROFILE PIC ----------
       // ----------------------------------------
       if(pictureType === 'profile') {
@@ -95,7 +113,8 @@ export default function ImageUploadForm({pictureType, competitionId, onUploadSuc
         setUser({
           _id: currentUser.data._id,
           username: currentUser.data.username,
-          profilePicture: currentUser.data.profilePicture
+          profilePicture: currentUser.data.profilePicture,
+          role: currentUser.data.role
         })
 
         if(onUploadSuccess) {
@@ -106,12 +125,15 @@ export default function ImageUploadForm({pictureType, competitionId, onUploadSuc
       }
       // ----------------------------------------
       // ----------------------------------------
-      // ----------------------------------------
-
-
 
       if(pictureType === 'submission' && competitionId) {
           try {
+              if (submissionId) {
+                  await updateSubmission(submissionId, data.data._id);
+                  setMessage("submission updated");
+                  navigate(`/competitions/${competitionId}`);
+                  return;
+              }
               await createSubmission(competitionId, data.data._id );
               setMessage("submission added");
               navigate(`/competitions/${competitionId}`);
@@ -124,11 +146,8 @@ export default function ImageUploadForm({pictureType, competitionId, onUploadSuc
 
       if (pictureType === 'logo' && competitionId) {
           try {
-              const res = await fetch(`http://localhost:3000/api/v1/competitions/${competitionId}`, {
-                  method: 'PATCH',
-                  credentials: 'include',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ logoBanner: data.data._id }),
+              const res = await apiCall(`/competitions/${competitionId}`, "PATCH", {
+                  logoBanner: data.data._id
               });
               if (!res.ok) throw new Error('Failed to update logo');
               setMessage("Logo updated");
@@ -171,14 +190,41 @@ export default function ImageUploadForm({pictureType, competitionId, onUploadSuc
         style={{ display: "none" }}
       />
 
-      <div className="upload-box" onClick={handleOpenFilePicker}>
-        {previewUrl ? (
+      <div
+        className="upload-box"
+        onClick={!previewUrl ? handleOpenFilePicker : undefined}
+      >
+      {previewUrl ? (
+        pictureType === "profile" ? (
+        <Cropper
+            image={previewUrl}
+            crop={crop}
+            zoom={zoom}
+            aspect={1}
+            cropShape="round"
+            onCropChange={setCrop}
+            onZoomChange={setZoom}
+            onCropComplete={async (_, croppedAreaPixels) => {
+                setCroppedAreaPixels(croppedAreaPixels);
+
+                if (!previewUrl) return;
+
+                const croppedImage = await getCroppedImg(
+                    previewUrl,
+                    croppedAreaPixels
+                );
+
+                setSelectedFile(croppedImage);
+            }}
+        />
+        ) : (
           <img
             src={previewUrl}
             alt="preview"
             className="preview-image"
           />
-        ) : (
+        )
+      ) : (
           <div className="upload">
             <p className="upload-plus">+</p>
             <h2 className="upload-title">Upload Image</h2>
@@ -188,8 +234,6 @@ export default function ImageUploadForm({pictureType, competitionId, onUploadSuc
       </div>
 
       <p className="upload-info">Max 1MB, JPG, PNG, WEBP</p>
-
-
 
       <button
         className={`upload-button ${selectedFile ? "active" : ""}`}

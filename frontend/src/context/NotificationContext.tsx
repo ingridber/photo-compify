@@ -1,80 +1,76 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
+import { apiCall } from '../utils/apiCall';
+import { useUser } from '../hooks/useUser';
 
 interface Notification {
-    id: string;
+    _id: string;        
+    competition: string; 
     title: string;
-    message: string;
-    isRead: boolean;
+    description: string; 
+    read: boolean;       
+    phase: string;
+    createdAt: string;
 }
 
 interface NotificationContextType {
     notifications: Notification[];
-    markAsRead: (id: string) => void;
+    unreadCount: number;
+    markAsRead: (id: string) => Promise<void>; 
+    refresh: () => void;
 }
-
 
 export const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
 export const NotificationProvider = ({ children }: { children: React.ReactNode }) => {
-    
     const [notifications, setNotifications] = useState<Notification[]>([]);
-    const [mockCompetition, setMockCompetition] = useState({
-    title: "Bästa naturbilden",
-    phase: "submission"
-});
+    const [updateTrigger, setUpdateTrigger] = useState(0);
+    const {user} = useUser();
 
-    const markAsRead = (id: string) => {
-        setNotifications(prevNotifications =>
-            prevNotifications.map(notis => {
-                if (notis.id === id) {
-                    return {...notis, isRead: true};
-                }
-                return notis;
-            })
-        );
-    };
+    const refresh = () => setUpdateTrigger(prev => prev + 1);
 
     useEffect(() => {
-    const timer = setInterval(() => {
-        if (mockCompetition.phase === "submission") {
-            setMockCompetition({
-                ...mockCompetition,
-                phase: "voting"
-            });
-            
-            const newNotification: Notification = {
-                id: Date.now().toString(),
-                title: mockCompetition.title,
-                message: "Tävlingen har nu gått i röstningsfasen!",
-                isRead: false
-            };
+        const fetchNotifications = async () => {
+            try {
+                if (!user) return
+                const response = await apiCall("/notifications");
 
-            setNotifications(prev => [...prev, newNotification]);
+                if (!response.ok) throw new Error("Failed to fetch notifications");
 
-        } else if (mockCompetition.phase === "voting") {
-            setMockCompetition({
-                ...mockCompetition,
-                phase: "ended"
-            });
+                const data = await response.json();
+                setNotifications(data);
+            } catch (error) {
+                console.error("Could not fetch notifications");
+            }
+        };
 
-            const newNotification: Notification = {
-                id: Date.now().toString(),
-                title: mockCompetition.title,
-                message: "Tävlingen är nu avslutad.",
-                isRead: false
-            };
+        fetchNotifications();
 
-            setNotifications(prev => [...prev, newNotification]);
+        const interval = setInterval(fetchNotifications, 30000); 
+
+        return () => clearInterval(interval);
+    }, [updateTrigger]);
+
+    const markAsRead = async (id: string) => {
+        try {
+            const response = await apiCall(`/notifications/${id}/read`, "PATCH");
+
+            if (!response.ok) throw new Error("Failed to update notification status");
+
+            setNotifications(prevNotifications =>
+                prevNotifications.map(notis => 
+                    notis._id === id ? { ...notis, read: true } : notis
+                )
+            );
+        } catch (error) {
+            console.error("Could not mark notification as read");
         }
-    }, 30000);
+    };
 
-    return () => clearInterval(timer);
-}, [mockCompetition]);
+    const unreadCount = notifications.filter(n => !n.read).length;
 
-
-return (
-    <NotificationContext.Provider value={{ notifications, markAsRead}}>
-        {children}
-    </NotificationContext.Provider>
-    )
+    return (
+        <NotificationContext.Provider value={{ notifications, unreadCount, markAsRead, refresh }}>
+            {children}
+        </NotificationContext.Provider>
+    );
 };
