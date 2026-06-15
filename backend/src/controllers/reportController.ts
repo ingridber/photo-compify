@@ -7,6 +7,7 @@ import { verifyRecaptcha } from "../utils/verifyRecaptcha";
 
 // RESEND
 const resend = new Resend(process.env.RESEND_API_KEY);
+const notifyReport = process.env.NOTIFY_REPORT as string;
 
 // ----- CHECK REPORT & RECAPTCHA-----
 // Lösning för att minimera calls till supabase för att hantera att bild inte laddas upp innan create
@@ -70,6 +71,22 @@ export const createReport = async (req: Request, res: Response) => {
                 description,
                 evidenceImg,
             });
+
+            console.log(notifyReport);
+
+        try {
+            await resend.emails.send({
+                    from: "onboarding@resend.dev",
+                      to: notifyReport,
+                    subject: "New Report Received",
+                    html: 
+                        `<h1>Report received</h1>
+                        <p>New report (ID: ${reportId}) has been submitted.</p>
+                        `
+                })
+        } catch(err) {
+            console.log("Failed to send report notification: ", err)
+        }
 
         // meddela via mail om skapad rapport - kanske ha med i mailet vad användaren skrivit i beskrivningen och vilken bild hen anmält?
         try {
