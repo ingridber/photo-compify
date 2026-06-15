@@ -225,4 +225,12 @@
       margin-top: -1rem;
       padding-left: 0.5rem;
     }
+
+    .sliderSection::before {
+      background: none;
+    }
+
+    .sliderSection::after {
+      background: none;
+    }
 }
