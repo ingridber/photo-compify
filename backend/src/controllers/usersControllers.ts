@@ -355,7 +355,6 @@ export async function deleteUser(req: AuthRequest, res: Response) {
     };
 };
 
-
 // ---------- USER COMPS ----------
 // --------------------------------
 export async function getUserCompetitions(req: AuthRequest, res: Response) {
@@ -379,18 +378,22 @@ export async function getUserCompetitions(req: AuthRequest, res: Response) {
         .populate("logoBanner");;
 
         // ---------- ADD SIGNED URL ----------
-        await Promise.all(
-
+        const formattedCompetitions = await Promise.all(
             competitions.map(async (competition: CompetitionInterface) => {
+                let signedLogoUrl = "";
+
                 if (competition.logoBanner && "getSignedUrl" in competition.logoBanner) {
-                    competition.signedLogoUrl = await competition.logoBanner.getSignedUrl();
+                    signedLogoUrl = await competition.logoBanner.getSignedUrl();
                 }
+
+                return {
+                    ...competition.toObject(),
+                    signedLogoUrl,
+                };
             })
         );
 
-        return res.status(200).json({
-            competitions
-        });
+        return res.status(200).json({competitions: formattedCompetitions,});
 
     } catch (err) {
         console.log("GET USER COMPETITIONS ERROR", err);
