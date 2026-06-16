@@ -235,8 +235,9 @@ export async function deleteCompetition(req: AuthRequest, res: Response) {
         status: 404,
       });
     }
+    let isOwner = null;
 
-    const isOwner = competition.owner.toString() === req.user!.id;
+    if (competition.owner) isOwner = competition.owner.toString() === req.user!.id;
     const isAdmin = req.user!.role === "admin";
 
     if (!isOwner && !isAdmin) {
