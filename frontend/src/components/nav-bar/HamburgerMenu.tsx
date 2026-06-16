@@ -34,9 +34,9 @@ export default function HamburgerMenu() {
   };
 
   const handleLogout = async () => {
+    navigate("/", { replace: true });
     await logout();
     setUser(null);
-    navigate("/", { replace: true });
   };
 
   return (
