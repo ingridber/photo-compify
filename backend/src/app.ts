@@ -17,13 +17,13 @@ import { doubleCsrfProtection, generateCsrfToken } from "./middleware/csrfMiddle
 const app = express();
 
 app.use(express.json());
-app.use(RateLimit);
 app.use(cors({
     origin: process.env.CLIENT_URL,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization', 'x-csrf-token'],
     credentials: true, 
 }));
+app.use(RateLimit);
 app.use(cookieParser());
 app.use(doubleCsrfProtection);
 
