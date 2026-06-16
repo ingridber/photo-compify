@@ -253,7 +253,7 @@ export async function deleteProfilePicture(req: AuthRequest, res: Response) {
 // ---------- LOGOUT SESSION ----------
 // ------------------------------------
 export function logout(_req: Request, res: Response) {
-    res.clearCookie("token");
+    res.clearCookie("token", { httpOnly: true, secure: true, sameSite: "none" });
     res.status(200).json({ message: "Logged out" });
 }
 
