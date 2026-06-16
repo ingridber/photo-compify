@@ -23,7 +23,13 @@
   font-weight: 500;
 }
 
-.search {
+.filters {
+  display: flex;
+  gap: 1rem;
+}
+
+.search,
+.userFilter {
   width: 280px;
   padding: 0.85rem 1rem;
   border: 1px solid var(--text);
@@ -104,7 +110,7 @@
   padding: 0.45rem 0.75rem;
   border-radius: 8px;
   border: 1px solid #cfd4dc;
-  background :var(--bg);
+  background: var(--bg);
   min-width: 120px;
   cursor: pointer;
 }
@@ -152,7 +158,7 @@ td > button {
 
 .roleUser {
   color: var(--submit-btn);
-  border-color:var(--submit-btn);
+  border-color: var(--submit-btn);
   background: var(--bg-light);
 }
 
