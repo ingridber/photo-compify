@@ -60,7 +60,7 @@ export async function changeUsername(req: AuthRequest, res: Response) {
         });
 
     } catch (error) {
-        res.status(500).json({ message: "Server error", error });
+        res.status(500).json({ message: "Server error"});
     }
 }
 
@@ -131,7 +131,7 @@ export async function changePassword(req: AuthRequest, res: Response) {
         return res.status(200).json({ message: "Password updated" });
 
     } catch (err) {
-        return res.status(500).json({ message: "Server error", err });
+        return res.status(500).json({ message: "Server error"});
     }
 
 };
@@ -193,8 +193,7 @@ export async function changeProfilePicture(req: AuthRequest, res: Response) {
         console.log("CHANGE PROFILE PICTURE ERROR: usersControllers.ts", error);
 
         res.status(500).json({
-            message: "Server error",
-            error
+            message: "Server error"
         });
     };
 };
@@ -246,8 +245,7 @@ export async function deleteProfilePicture(req: AuthRequest, res: Response) {
     } catch (err) {
         console.log("DELETE PROFILE PICTURE ERROR: usersControllers.ts", err);
         return res.status(500).json({
-            message: "Server error",
-            err
+            message: "Server error"
         });
     }
 }
@@ -352,12 +350,10 @@ export async function deleteUser(req: AuthRequest, res: Response) {
         })
     } catch (err) {
         return res.status(500).json({
-            message: "Server error",
-            err
+            message: "Server error"
         });
     };
 };
-
 
 // ---------- USER COMPS ----------
 // --------------------------------
@@ -382,25 +378,28 @@ export async function getUserCompetitions(req: AuthRequest, res: Response) {
         .populate("logoBanner");;
 
         // ---------- ADD SIGNED URL ----------
-        await Promise.all(
-
+        const formattedCompetitions = await Promise.all(
             competitions.map(async (competition: CompetitionInterface) => {
+                let signedLogoUrl = "";
+
                 if (competition.logoBanner && "getSignedUrl" in competition.logoBanner) {
-                    competition.signedLogoUrl = await competition.logoBanner.getSignedUrl();
+                    signedLogoUrl = await competition.logoBanner.getSignedUrl();
                 }
+
+                return {
+                    ...competition.toObject(),
+                    signedLogoUrl,
+                };
             })
         );
 
-        return res.status(200).json({
-            competitions
-        });
+        return res.status(200).json({competitions: formattedCompetitions,});
 
     } catch (err) {
         console.log("GET USER COMPETITIONS ERROR", err);
 
         return res.status(500).json({
-            message: "Server error",
-            err
+            message: "Server error"
         });
     };
 };
@@ -456,8 +455,7 @@ export async function getUserSubmissions(req: AuthRequest,res: Response) {
 
     } catch (err) {
         return res.status(500).json({
-            message: "Server error",
-            err
+            message: "Server error"
         });
     }
 }
@@ -634,8 +632,7 @@ export async function getUserStats(req: AuthRequest, res: Response) {
     } catch (err) {
 
         return res.status(500).json({
-            message: "Server error",
-            err
+            message: "Server error"
         });
     }
 }

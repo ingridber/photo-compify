@@ -103,8 +103,7 @@ export async function deleteUserById(
 
     } catch (err) {
         return res.status(500).json({
-            message: "Server error",
-            err
+            message: "Server error"
         });
     }
 }
