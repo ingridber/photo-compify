@@ -110,12 +110,14 @@ export default function ImageUploadForm({pictureType, competitionId, submissionI
           throw new Error("No current User found")
         }
 
-        setUser({
-          _id: currentUser.data._id,
-          username: currentUser.data.username,
-          profilePicture: currentUser.data.profilePicture,
-          role: currentUser.data.role
-        })
+        setUser(prev => {
+          if (!prev) return null;
+
+          return {
+            ...prev,
+            profilePicture: currentUser.data.profilePicture
+          };
+        });
 
         if(onUploadSuccess) {
           setTimeout(() => {
