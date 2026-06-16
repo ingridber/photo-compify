@@ -20,23 +20,26 @@ export default function Users() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [roleFilter, setRoleFilter] = useState("");
 
   // Fetches users whenever page or search changes
   useEffect(() => {
-  if (search.trim().length < 2) {
-    setUsers([]);
-    setTotalPages(1);
-    return;
-  }
+    const hasSearch = search.trim().length >= 2;
+    const hasRole = roleFilter !== "";
+    if (!hasSearch && !hasRole) {
+      setUsers([]);
+      setTotalPages(1);
+      return;
+    }
 
-  // eslint-disable-next-line react-hooks/immutability
-  loadUsers(page, search);
-}, [page, search]);
+    // eslint-disable-next-line react-hooks/immutability
+    loadUsers(page, search, roleFilter);
+  }, [page, search, roleFilter]);
 
   //--------------load users--------------
-  async function loadUsers(pageNumber: number, search: string) {
+  async function loadUsers(pageNumber: number, search: string, role: string) {
     try {
-      const data = await fetchUsers(pageNumber, search);
+      const data = await fetchUsers(pageNumber, search, role);
 
       setUsers(data.users);
       setTotalPages(data.pagination.totalPages);
@@ -55,7 +58,7 @@ export default function Users() {
 
     try {
       await updateRole(id, role);
-      loadUsers(page, search);
+      loadUsers(page, search, roleFilter);
     } catch (error) {
       console.log(error);
     }
@@ -87,21 +90,34 @@ export default function Users() {
           <p>Manage all users on the platform</p>
         </div>
 
-        <input
-          className={styles.search}
-          placeholder="Search by username, email or role..."
-          value={search}
-          onChange={(e) => {
-            const value = e.target.value;
-            setSearch(value)
-            setPage(1);
+        <div className={styles.filters}>
+          <input
+            className={styles.search}
+            placeholder="Search by username or email..."
+            value={search}
+            onChange={(e) => {
+              const value = e.target.value;
+              setSearch(value);
+              setPage(1);
 
-            if(value.trim().length < 2) {
-              setUsers([]);
-              setTotalPages(1);
-            }
-          }}
-        />
+              if (value.trim().length < 2) {
+                setUsers([]);
+                setTotalPages(1);
+              }
+            }}
+          />
+
+          <select
+            className={styles.userFilter}
+            value={roleFilter}
+            onChange={(e) => setRoleFilter(e.target.value)}
+          >
+            <option value="">Choose role</option>
+            <option value="user">User</option>
+            <option value="moderator">Moderator</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
       </div>
 
       {/* TABLE =  tabell*/}
