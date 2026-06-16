@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { getPagination } from "../utils/competitions/pagination";
 import { User } from "../models/User";
 
-
 // Function to get all users
 export async function getAllUsers(req: Request, res: Response) {
   try {
@@ -12,49 +11,31 @@ export async function getAllUsers(req: Request, res: Response) {
     // Gets search term from query parameters
     const search = req.query.search as string | undefined;
 
-    // Dont return users if nothing is searched
-    if(!search?.trim()) {
-      return res.status(200).json({
-        users: [],
-        pagination: {
-          page: 1,
-          limit,
-          totalUsers: 0,
-          totalPages: 1,
-        },
-      });
-    }
-
     // Gets role filter from the query parameters
     const role = req.query.role as string | undefined;
     // Gets warnings filter from the query parameters
     const warnings = req.query.warnings as string | undefined;
 
-    
     // Creates an empty filter object
     const filter: any = {};
 
-  
-    // If search term is provided
-    if (search) {
-      // Searches username, email, or role using a case-insensitive regex
-      filter.$or = [
-        { username: { $regex: search, $options: "i" } },
-        { email: { $regex: search, $options: "i" } },
-        { role: { $regex: search, $options: "i" } },
-      ];
-    }
-
-    // If a valid role filter is provided
+    // Role filter
     if (role && ["user", "moderator", "admin"].includes(role)) {
-      // Filters users by the specified role
       filter.role = role;
     }
 
-    if(warnings !== undefined) {
-      filter.warnings = {$gte: Number(warnings)}
-    };
+    // Search filter
+    if (search) {
+      filter.$or = [
+        { username: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+      ];
+    }
 
+    // Warning filter
+    if (warnings !== undefined) {
+      filter.warnings = { $gte: Number(warnings) };
+    }
 
     // get users from the database
     // Selects only the specified fields
@@ -63,7 +44,7 @@ export async function getAllUsers(req: Request, res: Response) {
     // Limits the number of returned documents
     const users = await User.find(filter)
       .select("username email role warnings createdAt lastLogin")
-      .sort({createdAt: -1})
+      .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
 
@@ -107,7 +88,7 @@ export async function updateUserRole(req: Request, res: Response) {
     const user = await User.findByIdAndUpdate(
       req.params.id,
       { role },
-      { new: true }
+      { new: true },
     );
 
     if (!user) {
@@ -119,7 +100,6 @@ export async function updateUserRole(req: Request, res: Response) {
     // Returns the updated user
     return res.status(200).json(user);
   } catch {
-    
     return res.status(500).json({
       message: "Something went wrong",
     });
