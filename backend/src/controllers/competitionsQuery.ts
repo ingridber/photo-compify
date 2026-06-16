@@ -91,7 +91,12 @@ export const buildCompetitionQuery = async (
           as: "owner",
         },
       },
-      { $unwind: "$owner" },
+      {
+        $unwind: {
+        path: "$owner",
+        preserveNullAndEmptyArrays: true,
+        },
+      },
 
       // Populate image reference from images collection
       {

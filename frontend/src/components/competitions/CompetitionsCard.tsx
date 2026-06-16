@@ -77,7 +77,7 @@ export default function CompetitionsCard({ competition }: Props) {
     <div className={styles.cardFooter}>
       <div className={styles.hideOwner}>
         <p className={styles.specsTitle}>Hosted by</p>
-        <p className={styles.owner}>{competition.owner?.username}</p>
+        <p className={styles.owner}>{competition.owner ? competition.owner.username : "Deleted User"}</p>
       </div>  
       <div>
         <p className={styles.specsTitle}>Participants</p>
