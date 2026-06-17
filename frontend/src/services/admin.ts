@@ -3,8 +3,10 @@ import { apiCall } from "../utils/apiCall";
 
 
 // ---------- fetchUser for admin/Users ----------
-export async function fetchUsers(pageNumber: number, search: string) {
-    const response = await apiCall( `/admin/users?page=${pageNumber}&limit=10&search=${search}`);
+export async function fetchUsers(pageNumber: number, search: string, role?: string) {
+    const response = await apiCall( `/admin/users?page=${pageNumber}&limit=10&search=${search}${
+    role ? `&role=${role}` : ""
+  }`);
 
     if(!response.ok) {
         throw new Error("Failed to fetch users");
